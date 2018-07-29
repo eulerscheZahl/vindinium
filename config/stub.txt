@@ -1,0 +1,25 @@
+read size:int
+loop size read line:string(30)
+read myID
+gameloop
+read entityCount:int
+loop entityCount read entityType:word(4) id:int x:int y:int life:int gold:int
+write WAIT
+
+STATEMENT
+Four legendary heroes were fighting for the land of Vindinium
+Making their way in the dangerous woods
+Slashing goblins and stealing gold mines
+And looking for a tavern where to drink their gold
+
+INPUT
+entityCount: the number of entities
+entityType: HERO or MINE
+id: the ID of a hero or the owner of a mine
+x: the x position of the entity
+y: the y position of the entity
+life: the life of a hero (-1 for mines)
+gold: the gold of a hero (-1 for mines)
+
+OUTPUT
+WAIT | NORTH | EAST | SOUTH | WEST

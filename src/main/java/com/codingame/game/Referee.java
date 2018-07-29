@@ -6,6 +6,7 @@ import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
 import vindinium.Board;
 import vindinium.Config;
+import vindinium.Hero;
 import vindinium.Tile;
 import vindinium.view.ViewController;
 
@@ -66,22 +67,40 @@ public class Referee extends AbstractReferee {
     public void gameTurn(int turn) {
         Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
 
-        sendInputs(player, turn < gameManager.getPlayerCount());
-        player.execute();
-        try {
-            String action = player.getOutputs().get(0).toUpperCase();
-            Tile target = player.hero.tile;
-            if (action.equals("WAIT")) ;
-            else if (action.equals("NORTH") && target.y > 0) target = board.tiles[target.x][target.y - 1];
-            else if (action.equals("SOUTH") && target.y + 1 < board.size) target = board.tiles[target.x][target.y + 1];
-            else if (action.equals("EAST") && target.x + 1 < board.size) target = board.tiles[target.x + 1][target.y];
-            else if (action.equals("WEST") && target.x > 0) target = board.tiles[target.x - 1][target.y];
-            else throw new AbstractPlayer.TimeoutException(); // todo: other exception for invalid action
-
-            player.hero.move(target);
-        } catch (AbstractPlayer.TimeoutException timeout) {
-            // todo: handle that
+        String action = "WAIT";
+        if (player.isActive()) {
+            sendInputs(player, turn < gameManager.getPlayerCount());
+            player.execute();
+            try {
+                action = player.getOutputs().get(0).trim().toUpperCase();
+            } catch (AbstractPlayer.TimeoutException timeout) {
+                player.deactivate("timeout");
+            }
         }
+        Hero hero = player.hero;
+        Tile target = hero.tile;
+        String message = "";
+        if (action.contains(" ")) {
+            message = action.substring(action.indexOf(' ') + 1);
+            action = action.substring(0, action.indexOf(' '));
+        }
+        if (action.equals("WAIT")) ;
+        else if (action.equals("NORTH")) {
+            if (target.y > 0) target = board.tiles[target.x][target.y - 1];
+        } else if (action.equals("SOUTH")) {
+            if (target.y + 1 < board.size) target = board.tiles[target.x][target.y + 1];
+        } else if (action.equals("EAST")) {
+            if (target.x + 1 < board.size) target = board.tiles[target.x + 1][target.y];
+        } else if (action.equals("WEST")) {
+            if (target.x > 0) target = board.tiles[target.x - 1][target.y];
+        } else {
+            player.deactivate("invalid action: \"" + action + "\"");
+        }
+
+        hero.move(board, target);
+        hero.fight(board);
+        hero.finalize(board);
+        player.setScore(hero.gold);
     }
 
     private Long getSeed(Properties params) {

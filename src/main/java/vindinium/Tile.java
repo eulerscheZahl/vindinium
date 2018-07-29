@@ -29,7 +29,7 @@ public class Tile {
             case Mine:
                 return "M";
             default:
-                return " ";
+                return ".";
         }
     }
 

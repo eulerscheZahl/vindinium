@@ -49,6 +49,6 @@ public class Mine {
 
     public void conquer(Hero hero) {
         owner = hero;
-        mineSprite.setImage(TileFactory.getInstance().mines[hero.player.getIndex()]);
+        mineSprite.setImage(TileFactory.getInstance().mines[hero == null ? 4 : hero.player.getIndex()]);
     }
 }

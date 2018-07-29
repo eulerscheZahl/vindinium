@@ -18,7 +18,7 @@ public class Board {
 
     public void transferMines(Hero from, Hero to) {
         for (Mine m : mines) {
-            if (m.owner == from) m.owner = to;
+            if (m.owner == from) m.conquer(to);
         }
     }
 

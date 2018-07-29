@@ -7,6 +7,9 @@ import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.view.TileFactory;
 import vindinium.view.ViewController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Hero {
     public Player player;
     public Tile tile;
@@ -14,10 +17,12 @@ public class Hero {
     public int lastDir;
     public int life;
     public int gold;
-    public int lastRespawn = -1;
+    private boolean justRespawned = false;
+
     private Group group;
     private Sprite sprite;
     private static int SPRITE_SIZE = 32;
+    private GraphicEntityModule entityManager;
 
     static final int maxLife = 100;
     static final int beerLife = 50;
@@ -34,13 +39,15 @@ public class Hero {
     }
 
     public void initUI(GraphicEntityModule entityManager) {
+        this.entityManager = entityManager;
+
         group = entityManager.createGroup();
         group.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);
 
         sprite = entityManager.createSprite()
-                .setImage(TileFactory.getInstance().heroes[player.getIndex()*9])
+                .setImage(TileFactory.getInstance().heroes[player.getIndex() * 9])
                 .setBaseHeight(SPRITE_SIZE)
                 .setBaseWidth(SPRITE_SIZE)
                 .setAlpha(1.0)
@@ -52,6 +59,7 @@ public class Hero {
         if (gold >= beerGold) {
             gold -= beerGold;
             life += beerLife;
+            if (life > maxLife) life = maxLife;
         }
     }
 
@@ -59,16 +67,41 @@ public class Hero {
         if (life > dayLife) life -= dayLife;
     }
 
-    public void respawn(int turn) {
+    public void respawn(Board board) {
+        justRespawned = true;
         life = maxLife;
         tile = spawnPos;
-        lastRespawn = turn;
+        sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + lastDir]);
+        entityManager.commitEntityState(0, sprite);
+        group.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
+                .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE));
+
+        for (Hero h : board.heroes) {
+            if (h == this || tile != h.tile) continue;
+            board.transferMines(h, this);
+            h.respawn(board);
+        }
     }
 
-    public void fightMine(Tile target) {
+    public void fightMine(Board board, Tile target) {
+        if (target.mine.owner == this) return;
         life -= mineLife;
         if (life > 0) {
             target.mine.conquer(this);
+        } else {
+            board.transferMines(this, null);
+            respawn(board);
+        }
+    }
+
+    public void fight(Board board) {
+        for (Hero h : board.heroes) {
+            if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
+            h.defend();
+            if (h.life <= 0) {
+                board.transferMines(h, this);
+                h.respawn(board);
+            }
         }
     }
 
@@ -76,22 +109,34 @@ public class Hero {
         life -= defendLife;
     }
 
-    public void move(Tile target) {
-        day();
-        if (target.type == Tile.Type.Wall) return;
+    public void move(Board board, Tile target) {
+        if (target.type == Tile.Type.Wall) {
+            // reset sprite for respawn
+            sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
+            entityManager.commitEntityState(0, sprite);
+            return;
+        }
 
         if (target.type == Tile.Type.Tavern) drinkBeer();
-        else if (target.type == Tile.Type.Mine) fightMine(target);
+        else if (target.type == Tile.Type.Mine) fightMine(board, target);
         else {
-            if (tile.x < target.x) lastDir = 0;
+            if (tile.y < target.y) lastDir = 0;
             else if (tile.x > target.x) lastDir = 1;
-            else if (tile.y < target.y) lastDir = 2;
+            else if (tile.x < target.x) lastDir = 2;
             else if (tile.y > target.y) lastDir = 3;
             tile = target;
 
+            sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
+            entityManager.commitEntityState(0, sprite);
             group.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                     .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE));
         }
+    }
+
+    public void finalize(Board board) {
+        justRespawned = false;
+        day();
+        gold += board.countMines(this);
     }
 
     public String print() {
