@@ -18,10 +18,7 @@ public class HeroHud {
         _container.add(graphicEntityModule.createSprite().setX(5).setY(50).setZIndex(1).setImage(player.getAvatarToken()).setAnchorX(0.5).setBaseHeight(175).setBaseWidth(175));
         _container.add(_messageText = graphicEntityModule.createText("").setX(5).setY(300).setFillColor(0xc0c0c0).setFontSize(20).setAnchorX(0.5));
         _container.add(_goldText = graphicEntityModule.createText("Gold: " + "0").setX(5).setY(350).setFontSize(20).setFillColor(0xffff00).setAnchorX(0.5));
-        _container.add(_healthText = graphicEntityModule.createText("Health: " + "1000").setX(5).setY(400).setFontSize(20).setFillColor(0xff1a53).setAnchorX(0.5));
-
-        // _container.add(_healthBar = graphicEntityModule.createLine().setX(0).);
-
+        _container.add(_healthText = graphicEntityModule.createText("Health: " + "100").setX(5).setY(400).setFontSize(20).setFillColor(0xff1a53).setAnchorX(0.5));
     }
 
     public void OnRound(String message){
