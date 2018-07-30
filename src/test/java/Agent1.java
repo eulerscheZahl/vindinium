@@ -36,6 +36,7 @@ public class Agent1 {
             }
 
             String[] choices = {"NORTH", "EAST", "SOUTH", "WEST"};
+            if (myID == 0) choices[0] = "NORTHY";
             System.out.println(choices[random.nextInt(choices.length)] + " go there");
         }
     }

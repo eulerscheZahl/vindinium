@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Agent1 {
+class Player {
     public static void main(String[] args) {
         System.err.println("in bot");
         Random random = new Random();

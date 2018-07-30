@@ -1,6 +1,6 @@
 read size:int
 loop size read line:string(30)
-read myID
+read myID:int
 gameloop
 read entityCount:int
 loop entityCount read entityType:word(4) id:int x:int y:int life:int gold:int
@@ -15,6 +15,7 @@ And looking for a tavern where to drink their gold
 INPUT
 entityCount: the number of entities
 entityType: HERO or MINE
+myID: ID of your hero
 id: the ID of a hero or the owner of a mine
 x: the x position of the entity
 y: the y position of the entity
