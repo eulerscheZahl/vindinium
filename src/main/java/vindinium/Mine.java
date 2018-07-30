@@ -14,14 +14,14 @@ public class Mine {
     public Hero owner;
     private static int SPRITE_SIZE = 32;
 
-    public Mine(Tile tile, GraphicEntityModule entityManager) {
+    public Mine(Tile tile, GraphicEntityModule entityManager, Group boardGroup) {
         this.tile = tile;
-        goblinGroup = entityManager.createGroup();
+        boardGroup.add(goblinGroup = entityManager.createGroup());
         goblinGroup.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);
 
-        mineGroup = entityManager.createGroup();
+        boardGroup.add(mineGroup = entityManager.createGroup());
         mineGroup.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);

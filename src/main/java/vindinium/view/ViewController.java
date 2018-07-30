@@ -21,6 +21,7 @@ public class ViewController {
     public static int CELL_SIZE = 24;
     private Board board;
     public static double scaleSize;
+    public Group boardGroup;
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
         this.entityManager = entityManager;
@@ -70,10 +71,12 @@ public class ViewController {
         final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
-
+        int xPos = (entityManager.getWorld().getWidth()-entityManager.getWorld().getHeight())/2;
+        boardGroup = this.entityManager.createGroup().setX(xPos);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
+                boardGroup.add(group);
                 group.setX((int) ((x + 1) * scaleSize))
                         .setY((int) ((y + 1)* scaleSize))
                         .setScale(scaleSize / CELL_SIZE);
@@ -196,6 +199,7 @@ public class ViewController {
                 .setAlpha(1.0)
                 .setZIndex(-1);
         group.add(spawn);
+        boardGroup.add(group);
     }
 
     private boolean hirarchyLess(String s1, String s2) {

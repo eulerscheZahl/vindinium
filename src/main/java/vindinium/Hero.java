@@ -24,7 +24,7 @@ public class Hero {
     private static int SPRITE_SIZE = 32;
     private GraphicEntityModule entityManager;
 
-    static final int maxLife = 100;
+    public static final int maxLife = 100;
     static final int beerLife = 50;
     static final int beerGold = 2;
     static final int dayLife = 1;
@@ -38,10 +38,10 @@ public class Hero {
         this.life = maxLife;
     }
 
-    public void initUI(GraphicEntityModule entityManager) {
+    public void initUI(GraphicEntityModule entityManager, Group boardGroup) {
         this.entityManager = entityManager;
 
-        group = entityManager.createGroup();
+        boardGroup.add(group = entityManager.createGroup());
         group.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
                 .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);

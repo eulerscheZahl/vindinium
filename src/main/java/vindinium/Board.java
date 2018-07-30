@@ -1,6 +1,7 @@
 package vindinium;
 
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Group;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,20 +68,20 @@ public class Board {
     }
 
     private List<Mine> mines = new ArrayList<>();
-    public void initMines(GraphicEntityModule entityManager) {
+    public void initMines(GraphicEntityModule entityManager, Group group) {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (tiles[x][y].type == Tile.Type.Mine) {
-                    tiles[x][y].mine = new Mine(tiles[x][y], entityManager);
+                    tiles[x][y].mine = new Mine(tiles[x][y], entityManager, group);
                     mines.add(tiles[x][y].mine);
                 }
             }
         }
     }
 
-    public void initHeroes(GraphicEntityModule entityManager) {
+    public void initHeroes(GraphicEntityModule entityManager, Group group) {
         for (Hero h : heroes) {
-            h.initUI(entityManager);
+            h.initUI(entityManager, group);
         }
     }
 

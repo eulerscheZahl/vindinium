@@ -8,6 +8,7 @@ import vindinium.Board;
 import vindinium.Config;
 import vindinium.Hero;
 import vindinium.Tile;
+import vindinium.view.HeroHud;
 import vindinium.view.ViewController;
 
 import java.util.Properties;
@@ -22,7 +23,7 @@ public class Referee extends AbstractReferee {
     private GraphicEntityModule graphicEntityModule;
     //@Inject
     //private TooltipModule tooltipModule;
-
+    private HeroHud[] HeroHuds = new HeroHud[4];
     private Board board;
     private ViewController view;
 
@@ -35,15 +36,23 @@ public class Referee extends AbstractReferee {
         System.err.print(board.print());
 
         initGridView();
-        board.initMines(graphicEntityModule);
-        board.initHeroes(graphicEntityModule);
+        board.initMines(graphicEntityModule, view.boardGroup);
+        board.initHeroes(graphicEntityModule, view.boardGroup);
     }
 
     private void initGridView() {
         view = new ViewController(graphicEntityModule, gameManager);//, tooltipModule);
         view.createGrid(board);
+        int c = 0;
+        int remainingSpace =(graphicEntityModule.getWorld().getWidth()-graphicEntityModule.getWorld().getHeight());
+        int rightXPos = remainingSpace/2+graphicEntityModule.getWorld().getHeight();
         for (Player p : gameManager.getPlayers()) {
             view.setSpawn(p.hero.spawnPos, p.getIndex());
+            int w = graphicEntityModule.getWorld().getWidth();
+            int h = graphicEntityModule.getWorld().getHeight();
+
+            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, c < 2 ? 0: (rightXPos), c%2==0?0:(h/2),(remainingSpace/2));
+            c++;
         }
     }
 
@@ -69,9 +78,9 @@ public class Referee extends AbstractReferee {
 
         String action = "WAIT";
         if (player.isActive()) {
-            sendInputs(player, turn < gameManager.getPlayerCount());
-            player.execute();
             try {
+                sendInputs(player, turn < gameManager.getPlayerCount());
+                player.execute();
                 action = player.getOutputs().get(0).trim().toUpperCase();
             } catch (AbstractPlayer.TimeoutException timeout) {
                 player.deactivate("timeout");
@@ -101,6 +110,7 @@ public class Referee extends AbstractReferee {
         hero.fight(board);
         hero.finalize(board);
         player.setScore(hero.gold);
+        HeroHuds[player.getIndex()].OnRound(message);
     }
 
     private Long getSeed(Properties params) {
