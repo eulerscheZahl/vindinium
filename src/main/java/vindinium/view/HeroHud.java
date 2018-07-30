@@ -12,7 +12,7 @@ public class HeroHud {
     private Text _goldText;
     private Text _healthText;
     public HeroHud(Hero hero, GraphicEntityModule graphicEntityModule, Player player, int x, int y, int width){
-        _container = graphicEntityModule.createGroup().setX(width/2+x).setY(y);
+        _container = graphicEntityModule.createGroup().setX(width/2+x).setY(y+50);
         _hero = hero;
         _container.add(graphicEntityModule.createText(player.getNicknameToken()).setFontFamily(fontFamily).setX(5).setY(0).setAnchorX(0.5).setZIndex(1).setFontSize(30).setFillColor(player.getColorToken()));
         _container.add(graphicEntityModule.createSprite().setX(5).setY(50).setZIndex(1).setImage(player.getAvatarToken()).setAnchorX(0.5).setBaseHeight(175).setBaseWidth(175));
@@ -25,6 +25,7 @@ public class HeroHud {
     }
 
     public void OnRound(String message){
+        if(message.length() > 10) message = message.substring(0, 10);
         _messageText.setText(message);
         _goldText.setText("Gold: " + _hero.gold);
         _healthText.setText("Health: " + _hero.life);
