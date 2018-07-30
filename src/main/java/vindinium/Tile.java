@@ -1,9 +1,5 @@
 package vindinium;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-
-import java.util.List;
-
 public class Tile {
     public enum Type {
         Air, Wall, Tavern, Mine
