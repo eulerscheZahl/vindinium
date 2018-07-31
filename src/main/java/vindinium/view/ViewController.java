@@ -70,7 +70,7 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createGroup().setX(xPos).setScale(1080.0 / (CELL_SIZE * (board.size + 2)));
+        boardGroup = this.entityManager.createBufferedGroup().setX(xPos).setScale(1080.0 / (CELL_SIZE * (board.size + 2)));
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();

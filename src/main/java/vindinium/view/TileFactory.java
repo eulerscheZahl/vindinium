@@ -45,7 +45,7 @@ public class TileFactory {
 
         mines = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("mines.png")
-                .setName("mines_")
+                .setName("m")
                 .setWidth(32)
                 .setHeight(32)
                 .setImageCount(1*5)
@@ -56,7 +56,7 @@ public class TileFactory {
 
         goblins = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("goblins.png")
-                .setName("goblins_")
+                .setName("b")
                 .setWidth(32)
                 .setHeight(32)
                 .setImageCount(1*5)
@@ -67,7 +67,7 @@ public class TileFactory {
 
         heroes = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("heroes.png")
-                .setName("heroes_")
+                .setName("h")
                 .setWidth(32)
                 .setHeight(32)
                 .setImageCount(9*6)
@@ -85,7 +85,7 @@ public class TileFactory {
 
         lowlands = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("lowlands_24.png")
-                .setName("lowlands_")
+                .setName("l")
                 .setWidth(24)
                 .setHeight(24)
                 .setImageCount(16 * 6)
@@ -198,7 +198,7 @@ public class TileFactory {
 
         String[] farm = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("farming_fishing_24.png")
-                .setName("farming_fishing_")
+                .setName("f")
                 .setWidth(24)
                 .setHeight(24)
                 .setImageCount(20 * 20)
@@ -225,7 +225,7 @@ public class TileFactory {
 
         String[] rocks = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("stuff.png")
-                .setName("stuff_")
+                .setName("s")
                 .setWidth(24)
                 .setHeight(24)
                 .setImageCount(1 * 10)
@@ -241,7 +241,7 @@ public class TileFactory {
 
         String[] trees = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("tree.png")
-                .setName("tree_")
+                .setName("t")
                 .setWidth(24)
                 .setHeight(24)
                 .setImageCount(1 * 1)
@@ -253,7 +253,7 @@ public class TileFactory {
 
         String[] ground = instance.graphicEntityModule.createSpriteSheetLoader()
                 .setSourceImage("plowed_soil_24.png")
-                .setName("ground_")
+                .setName("g")
                 .setWidth(24)
                 .setHeight(24)
                 .setImageCount(3 * 6)
