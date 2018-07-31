@@ -7,9 +7,6 @@ import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.view.TileFactory;
 import vindinium.view.ViewController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Hero {
     public Player player;
     public Tile tile;
@@ -108,25 +105,37 @@ public class Hero {
         life -= defendLife;
     }
 
+    private void updateSprite() {
+        sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
+        entityManager.commitEntityState(0, sprite);
+    }
+
     public void move(Board board, Tile target) {
         if (target.type == Tile.Type.Wall) {
-            // reset sprite for respawn
-            sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
-            entityManager.commitEntityState(0, sprite);
+            updateSprite();
             return;
         }
 
-        if (target.type == Tile.Type.Tavern) drinkBeer();
-        else if (target.type == Tile.Type.Mine) fightMine(board, target);
+        if (target.type == Tile.Type.Tavern) {
+            updateSprite();
+            drinkBeer();
+        }
+        else if (target.type == Tile.Type.Mine) {
+            updateSprite();
+            fightMine(board, target);
+        }
         else {
             if (tile.y < target.y) lastDir = 0;
             else if (tile.x > target.x) lastDir = 1;
             else if (tile.x < target.x) lastDir = 2;
             else if (tile.y > target.y) lastDir = 3;
+            final Tile t = target;
+            if (board.heroes.stream().anyMatch(h -> h.tile == t)) {
+                target = tile; // can't share position with other hero
+            }
             tile = target;
 
-            sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
-            entityManager.commitEntityState(0, sprite);
+            updateSprite();
             group.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
                     .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
         }

@@ -1,17 +1,15 @@
 <div style="color:#76b2c6;background-color:rgba( 118 , 178 , 198 , 0.1 );padding:20px;margin-right:15px;margin-left:15px;margin-bottom:10px;text-align:left">
-This is a port of the game <a href="https://github.com/ornicar/vindinium">vindinium</a>.
-The port is as close to the original game as possible. There were changes made to the allowed response time per turn, the total number of turns as well as the input/output format.
+    This is a port of the game <a href="https://github.com/ornicar/vindinium">vindinium</a>. The port is as close to the original game as possible. There were changes made to the allowed response time per turn, the total number of turns as well as the
+    input/output format.
 </div>
 
-        <div class="statement-body">
+<div class="statement-body">
     <!-- STORY -->
     <div class="statement-story">
-        <div class="text">
-            Four legendary heroes were fighting for the land of Vindinium </br>
-            Making their way in the dangerous woods </br>
-            Slashing goblins and stealing gold mines </br>
-            And looking for a tavern where to drink their gold </br>
-        </div>
+        Four legendary heroes were fighting for the land of Vindinium </br>
+        Making their way in the dangerous woods </br>
+        Slashing goblins and stealing gold mines </br>
+        And looking for a tavern where to drink their gold </br>
     </div>
     <!-- GOAL -->
     <div class="statement-section statement-goal">
@@ -23,7 +21,7 @@ The port is as close to the original game as possible. There were changes made t
             Vindinium is a multi-player turn based dungeon crawling game. Each player has one hero that can move across a map. The objective is for players to amass the maximum quantity of gold during a predetermined number of turns. Players must take control of
             gold mines to produce gold; however, gold mines are protected by goblins. When a player defeats a goblin, he becomes owner of the gold mine and receives one gold per turn. Furthermore, the goblin now defends the mine against other players.
             Heroes can fight each other. The survivor gets control of all his opponent's gold mines. The killed hero is immediately respawned with all his gold, but no mine. When going to the tavern, heroes can buy beers for gold, restoring their life
-            points. The objective is to create a computer program (a bot) that plays the game of Vindinium as intelligently as possible. It is recommended that you use one of the starter packages as a starting point.
+            points. The objective is to create a computer program (a bot) that plays the game of Vindinium as intelligently as possible.
         </div>
     </div>
 
@@ -35,15 +33,24 @@ The port is as close to the original game as possible. There were changes made t
 </h2>
         <div class="statement-rules-content">
 
-            <strong>Maps</strong> Maps are generated randomly. Generated maps are symmetric, and always contain 4 taverns and 4 heroes.
+            <strong>Maps</strong> Maps are generated randomly. Generated maps are symmetric, and always contain
+            <const>4</const> taverns and
+            <const>4</const> heroes.
 
             <strong>Hero</strong> Heroes can move by one square each turn, and have the following attributes:
             <ul>
-                <li>Life points (HP): Starting at the maximum value = 100. If HP drop to zero, the hero dies (see: Death of a hero).</li>
-                <li>Gold: Starting at zero, this is the success indicator of the hero. At the end of the game, heroes will be scored based on their gold value.</li>
+                <li>Life points (HP): Starting at the maximum value =
+                    <const>100</const>. If HP drop to zero, the hero dies (see: Death of a hero).</li>
+                <li>Gold: Starting at
+                    <const>0</const>, this is the success indicator of the hero. At the end of the game, heroes will be scored based on their gold value.</li>
             </ul>
 
-            <strong>Resolution of a turn</strong> A bot must issue one order per turn. Possible orders are: Stay, North, South, East or West. Once the order is executed, the hero stays put, or moves one square in the given direction.
+            <strong>Resolution of a turn</strong> A bot must issue one order per turn. Possible orders are:
+            <command>WAIT</command>,
+            <command>NORTH</command>,
+            <command>EAST</command>,
+            <command>SOUTH</command> or
+            <command>WEST</command>. Once the order is executed, the hero stays, or moves one square in the given direction.
 
             <em>Hero move</em> If the hero:
             <ul>
@@ -51,31 +58,49 @@ The port is as close to the original game as possible. There were changes made t
                 <li>Steps into a gold mine, he stays in place, and:
                     <ul>
                         <li>If the mine already belongs to the hero, nothing happens.</li>
-                        <li>If the mine is neutral, or belongs to another hero, a fight happens against the goblin guarding the mine. The hero loses 20 life points. If he survives, the mine is his.</li>
+                        <li>If the mine is neutral, or belongs to another hero, a fight happens against the goblin guarding the mine. The hero loses
+                            <const>20</const> life points. If he survives, the mine is his.</li>
                     </ul>
                 </li>
                 <li>Steps into another hero, he stays in place and nothing happens. Hero fights are resolved at the end of the turn.</li>
-                <li>Steps into a tavern, he stays in place and orders a beer. The hero pays 2 gold and receive 50HP. Note than HP can never exceed 100.</li>
-                <li>Times out, i.e. fails to send an order in the given delay (1 second), he stays in place until the game is finished. Note that he can still win if he has more gold than the other players at the end of the game.</li>
+                <li>Steps into a tavern, he stays in place and orders a beer. The hero pays
+                    <const>2</const> gold and receives
+                    <const>50</const> HP. Note than HP can never exceed
+                    <const>100</const>.</li>
+                <li>Times out, i.e. fails to send an order in the given delay, he stays in place until the game is finished. Note that he can still win if he has more gold than the other players at the end of the game.</li>
+            </ul>
 
-                <strong>End of a hero turn</strong> After the hero has moved (or decided to stay in place), a few things happen:
+            <strong>End of a hero turn</strong> After the hero has moved (or decided to stay in place), a few things happen:
 
-                <em>Fights</em> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy.
-                For instance, in this situation, at the end of Hero 1 (@1) turn:
+            <em>Fights</em></br>
+            Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance, in this situation,
+            at the end of Hero 1 (@1) turn:
 
-                <pre>@1@2
-@3</pre> @1 attacks @2. @1 does not attack @3 because it's 2 moves away. The attacking hero doesn't lose any life point, the defending one loses 20 life points. If the defender dies (see: Death of a hero), the attacking hero obtains control
-                of all the loser's gold mines.
+            <!-- TODO: image -->
+            <pre>@1@2
+@3</pre> @1 attacks @2. @1 does not attack @3 because it's
+            <const>2</const> moves away. The attacking hero doesn't lose any life point, the defending one loses
+            <const>20</const> life points. If the defender dies (see: Death of a hero), the attacking hero obtains control of all the loser's gold mines.
 
-                <em>Mining</em> After the the fight's resolution, he gains one gold per controlled mine.
+            <em>Mining</em></br>
+            After the the fight's resolution, he gains one gold per controlled mine.
 
-                <em>Thirst</em> Then, the hero loses one HP (because all this action made him thirsty). Note that heroes don't die of thirst. Worse case, they fall to 1 HP.
+            <em>Thirst</em></br>
+            Then, the hero loses
+            <const>1</const> HP (because all this action made him thirsty). Note that heroes don't die of thirst. Worse case, they fall to
+            <const>1</const> HP.
 
-                <strong>Death of a hero</strong> When a hero HP drops to zero, he ceases to live. The hero immediately respawns on the map at its initial position, with HP=100. The hero loses control of all his gold mines, but keeps all his amassed gold.
-                Be careful, when a hero respawns on its initial position, every opponent that may be at this position is automatically killed. So, you should avoid being at the respawn position of one of the heroes… A hero can't die of thirst. Thirst
-                can put the hero HP to 1, but not to 0.
+            <strong>Death of a hero</strong></br>
+            When a hero HP drops to
+            <const>0</const>, he ceases to live. The hero immediately respawns on the map at its initial position, with HP=
+            <const>100</const>. The hero loses control of all his gold mines, but keeps all his amassed gold. Be careful, when a hero respawns on its initial position, every opponent that may be at this position is automatically killed. So, you should avoid
+            being at the respawn position of one of the heroes... A hero can't die of thirst. Thirst can put the hero HP to
+            <const>1</const>, but not to
+            <const>0</const>.
 
-                <strong>End of the game</strong> The game ends when the maximum number of turns (usually 300) has been reached. The winner is the hero with the greatest amount of gold. If two players have the same amount of gold, there is no winner.
+            <strong>End of the game</strong></br>
+            The game ends when the maximum number of
+            <const>200</const> turns has been reached. The winner is the hero with the greatest amount of gold. If two players have the same amount of gold, there is no winner.
         </div>
     </div>
 
@@ -135,7 +160,7 @@ The port is as close to the original game as possible. There were changes made t
             <div class="title">Initial input</div>
             <div class="text">
 
-                <span class="statement-lineno">First line</span>: the <var>size</var> of the board:
+                <span class="statement-lineno">First line</span>: the <var>size</var> of the board </br>
                 <span class="statement-lineno">Next <var>size</var> lines</span>: The board as strings of length <var>size</var>. The characters can be:
                 <ul>
                     <li>
@@ -149,18 +174,23 @@ The port is as close to the original game as possible. There were changes made t
                 </ul>
                 <span class="statement-lineno">Next line</span>: The ID of your hero
             </div>
-
+            </br>
+            </br>
             <div class="title">Input for one game turn</div>
             <div class="text">
-
-                <span class="statement-lineno">First line</span>: <var>entityCount</var>: the number of entities
-                <span class="statement-lineno">Next <var>entityCount</var> lines</span>: the entity represented as follows:
-                <var>type</var>: the type of the entity, either <const>HERO</const> or <const>MINE</const>
-                <var>id</var>: the id of the hero or the owner of a mine
-                <var>x</var>: the x position of the entity
-                <var>y</var>: the y position of the entity
-                <var>life</var>: the life of a hero (<const>-1</const> for mines)
-                <var>gold</var>: the gold of a hero (<const>-1</const> for mines)
+                <span class="statement-lineno">First line</span>: <var>entityCount</var>: the number of entities </br>
+                <span class="statement-lineno">Next <var>entityCount</var> lines</span>: the entity represented as follows: </br>
+                <var>type</var>: the type of the entity, either
+                <const>HERO</const> or
+                <const>MINE</const>
+                </br>
+                <var>id</var>: the id of the hero or the owner of a mine </br>
+                <var>x</var>: the x position of the entity </br>
+                <var>y</var>: the y position of the entity </br>
+                <var>life</var>: the life of a hero (
+                <const>-1</const> for mines) </br>
+                <var>gold</var>: the gold of a hero (
+                <const>-1</const> for mines)
             </div>
 
             <div class="title">Output for one game turn</div>
@@ -168,11 +198,11 @@ The port is as close to the original game as possible. There were changes made t
 
                 <ul style="padding-bottom: 0;">
                     <li>
-                        <action>WAIT</action> to do nothing
-                        <action>NORTH</action> to go north
-                        <action>EAST</action> to go east
-                        <action>SOUTH</action> to go south
-                        <action>WEST</action> to go west
+                        <action>WAIT</action> to do nothing </br>
+                        <action>NORTH</action> to go north </br>
+                        <action>EAST</action> to go east </br>
+                        <action>SOUTH</action> to go south </br>
+                        <action>WEST</action> to go west </br>
                     </li>
                 </ul>
 
