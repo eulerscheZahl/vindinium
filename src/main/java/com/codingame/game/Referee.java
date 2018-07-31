@@ -114,11 +114,10 @@ public class Referee extends AbstractReferee {
     }
 
     private Long getSeed(Properties params) {
-        return -4366460241541570794L;
-        //try {
-        //    return Long.parseLong(params.getProperty("seed", "0"));
-        //} catch (NumberFormatException nfe) {
-        //    return 0L;
-        //}
+        try {
+            return Long.parseLong(params.getProperty("seed", "0"));
+        } catch (NumberFormatException nfe) {
+            return 0L;
+        }
     }
 }
