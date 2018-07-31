@@ -14,17 +14,15 @@ public class Mine {
     public Hero owner;
     private static int SPRITE_SIZE = 32;
 
-    public Mine(Tile tile, GraphicEntityModule entityManager) {
+    public Mine(Tile tile, GraphicEntityModule entityManager, Group boardGroup) {
         this.tile = tile;
-        goblinGroup = entityManager.createGroup();
-        goblinGroup.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
-                .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
-                .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);
+        boardGroup.add(goblinGroup = entityManager.createGroup());
+        goblinGroup.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
+                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
 
-        mineGroup = entityManager.createGroup();
-        mineGroup.setX((int) ((tile.x + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
-                .setY((int) ((tile.y + 1) * ViewController.scaleSize - 4 * ViewController.scaleSize / ViewController.CELL_SIZE))
-                .setScale(ViewController.scaleSize / ViewController.CELL_SIZE);
+        boardGroup.add(mineGroup = entityManager.createGroup());
+        mineGroup.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
+                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
 
         Sprite goblin = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().goblins[4])

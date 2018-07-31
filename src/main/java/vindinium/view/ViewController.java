@@ -20,7 +20,7 @@ public class ViewController {
     private MultiplayerGameManager<Player> gameManager;
     public static int CELL_SIZE = 24;
     private Board board;
-    public static double scaleSize;
+    public Group boardGroup;
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
         this.entityManager = entityManager;
@@ -29,8 +29,7 @@ public class ViewController {
         TileFactory.getInstance().init(entityManager);
     }
 
-     public void createGrid(Board board) {
-        scaleSize = 1080 / (board.size + 2);
+    public void createGrid(Board board) {
         this.board = board;
         double terrainRandomnessFactor = 0.7 + 0.2 * Math.random();
         double terrainMineTavernFactor = 1.4 + 0.8 * Math.random();
@@ -70,13 +69,14 @@ public class ViewController {
         final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
-
+        int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
+        boardGroup = this.entityManager.createBufferedGroup().setX(xPos).setScale(1080.0 / (CELL_SIZE * (board.size + 2)));
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
-                group.setX((int) ((x + 1) * scaleSize))
-                        .setY((int) ((y + 1)* scaleSize))
-                        .setScale(scaleSize / CELL_SIZE);
+                boardGroup.add(group);
+                group.setX(CELL_SIZE * (x + 1))
+                        .setY(CELL_SIZE * (y + 1));
 
                 boolean outOfGrid = x == -1 || x == board.size || y == -1 || y == board.size;
                 boolean isWater = outOfGrid || waterTiles.contains(board.tiles[x][y]);
@@ -186,9 +186,8 @@ public class ViewController {
 
     public void setSpawn(Tile tile, int index) {
         Group group = this.entityManager.createGroup();
-        group.setX((int) ((tile.x + 1) * scaleSize))
-                .setY((int) ((tile.y + 1) * scaleSize))
-                .setScale(scaleSize / CELL_SIZE);
+        group.setX(CELL_SIZE * (tile.x + 1) - 4)
+                .setY(CELL_SIZE * (tile.y + 1) - 4);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)
@@ -196,6 +195,7 @@ public class ViewController {
                 .setAlpha(1.0)
                 .setZIndex(-1);
         group.add(spawn);
+        boardGroup.add(group);
     }
 
     private boolean hirarchyLess(String s1, String s2) {
@@ -208,7 +208,7 @@ public class ViewController {
         return hirarchy.get(s1) < hirarchy.get(s2);
     }
 
-    private String compassRoseTileName (String primaryName, String secondaryName, Predicate<Tile> isPrimary, Predicate<String> isValidName, Tile tile) {
+    private String compassRoseTileName(String primaryName, String secondaryName, Predicate<Tile> isPrimary, Predicate<String> isValidName, Tile tile) {
         String p = primaryName;
         String s = secondaryName;
 
@@ -262,7 +262,7 @@ public class ViewController {
         }
     }
 
-    private String groundForPosition (int x, int y, String[][] tileTypes) {
+    private String groundForPosition(int x, int y, String[][] tileTypes) {
         if (x == -1) x++;
         if (y == -1) y++;
         if (x == board.size) x--;
@@ -270,7 +270,7 @@ public class ViewController {
         return tileTypes[x][y];
     }
 
-    private List<Tile> connected (List<Tile>positions, List<Tile>explored, Predicate<Tile> canReach) {
+    private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {
         List<Tile> news = new ArrayList<>();
         positions = positions.stream().filter(p -> canReach.test(p)).collect(Collectors.toList());
         explored.addAll(positions);
@@ -288,20 +288,20 @@ public class ViewController {
         return explored;
     }
 
-    private boolean tileIsWall (Tile t) {
+    private boolean tileIsWall(Tile t) {
         return t == null || t.type == Tile.Type.Wall;
     }
 
-    private boolean indexIsWaterEnoughSurroundedInitial (Tile t) {
+    private boolean indexIsWaterEnoughSurroundedInitial(Tile t) {
         return t != null && t.type == Tile.Type.Wall && board.fullNeighbors(t).stream().filter(tile -> tileIsWall(tile)).count() >= 3;
     }
 
-    private boolean indexIsWaterEnoughSurroundedExpand (Tile t, List<Tile> water) {
+    private boolean indexIsWaterEnoughSurroundedExpand(Tile t, List<Tile> water) {
         return t != null && t.type == Tile.Type.Wall && board.fullNeighbors(t).stream().filter(tile -> water.contains(tile)).count() >= 2;
     }
 
 
-    double smoothstep (double min,double max,double value) {
+    double smoothstep(double min, double max, double value) {
         double x = Math.max(0, Math.min(1, (value - min) / (max - min)));
         return x * x * (3 - 2 * x);
     }
