@@ -1,4 +1,4 @@
-package vindinium.view;
+package com.codingame.game.view;
 
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;

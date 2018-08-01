@@ -1,20 +1,16 @@
 package vindinium;
 
-import com.codingame.gameengine.module.entities.GraphicEntityModule;
-import com.codingame.gameengine.module.entities.Group;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Board {
     public Tile[][] tiles;
     public int size;
-    private List<Mine> mines = new ArrayList<>();
+    public List<Mine> mines = new ArrayList<>();
     public List<Hero> heroes = new ArrayList<>();
-                                //S  E  N  W   SE SW  NE  NW
-    private static int[] dirX = { 0, 1, 0, -1, -1, 1, -1, 1 };
-    private static int[] dirY = { 1, 0, -1, 0, 1, 1, -1, -1 };
+                                //N   S   W  E   NW  SW  NE  SE  P
+    private static int[] dirX = { 0,  0, -1, 1,  -1, -1,  1,  1, 0 };
+    private static int[] dirY = { -1, 1,  0, 0,  -1,  1, -1,  1, 0 };
 
     public Board(Tile[][] tiles, int size) {
         this.tiles = tiles;
@@ -69,7 +65,7 @@ public class Board {
         return result;
     }
 
-    public void initMines(GraphicEntityModule entityManager, Group group) {
+    public void initMines() {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 if (tiles[x][y].type == Tile.Type.Mine) {
@@ -80,16 +76,8 @@ public class Board {
         }
     }
 
-    public void initHeroes(GraphicEntityModule entityManager, Group group) {
-        for (Hero h : heroes) {
-            h.initUI(entityManager, group);
-        }
-    }
-
     public Tile neighbors9(Tile t, int dir) {
         if (t == null) return null;
-
-
         int x = t.x + dirX[dir];
         int y = t.y + dirY[dir];
         if(IsOnBoard(x, y)) return tiles[x][y];

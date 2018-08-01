@@ -8,8 +8,8 @@ import vindinium.Board;
 import vindinium.Config;
 import vindinium.Hero;
 import vindinium.Tile;
-import vindinium.view.HeroHud;
-import vindinium.view.ViewController;
+import com.codingame.game.view.HeroHud;
+import com.codingame.game.view.ViewController;
 
 import java.util.Properties;
 import java.util.Random;
@@ -35,14 +35,14 @@ public class Referee extends AbstractReferee {
         board = Config.generateMap(gameManager.getPlayers());
         System.err.print(board.print());
 
+        board.initMines();
         initGridView();
-        board.initMines(graphicEntityModule, view.boardGroup);
-        board.initHeroes(graphicEntityModule, view.boardGroup);
     }
 
     private void initGridView() {
         view = new ViewController(graphicEntityModule, gameManager);//, tooltipModule);
         view.createGrid(board);
+
         int c = 0;
         int remainingSpace =(graphicEntityModule.getWorld().getWidth()-graphicEntityModule.getWorld().getHeight());
         int rightXPos = remainingSpace/2+graphicEntityModule.getWorld().getHeight();
@@ -51,9 +51,10 @@ public class Referee extends AbstractReferee {
             int w = graphicEntityModule.getWorld().getWidth();
             int h = graphicEntityModule.getWorld().getHeight();
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, c < 2 ? 0: (rightXPos), c%2==0?0:(h/2),(remainingSpace/2));
+            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, h+100, c*h/5+h/5,(remainingSpace-100));
             c++;
         }
+
     }
 
     private void sendInputs(Player player, boolean initial) {
@@ -93,6 +94,7 @@ public class Referee extends AbstractReferee {
             message = action.substring(action.indexOf(' ') + 1);
             action = action.substring(0, action.indexOf(' '));
         }
+
         if (action.equals("WAIT")) ;
         else if (action.equals("NORTH")) {
             if (target.y > 0) target = board.tiles[target.x][target.y - 1];
@@ -111,6 +113,7 @@ public class Referee extends AbstractReferee {
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
+        view.onRound();
     }
 
     private Long getSeed(Properties params) {

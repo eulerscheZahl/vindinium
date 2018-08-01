@@ -6,8 +6,8 @@ import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.Hero;
 import vindinium.Mine;
 import vindinium.Tile;
-import vindinium.view.TileFactory;
-import vindinium.view.ViewController;
+import com.codingame.game.view.TileFactory;
+import com.codingame.game.view.ViewController;
 
 
 public class MineView implements IView
@@ -19,13 +19,13 @@ public class MineView implements IView
 
     public MineView(Mine model, GraphicEntityModule entityManager){
         _model = model;
-        _mineGroup = entityManager.createGroup();
-
-        Group goblinGroup = entityManager.createGroup()
-        _mineGroup .add(goblinGroup);
         Tile tile = _model.tile;
-        goblinGroup.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
+
+        _mineGroup = entityManager.createGroup().setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
                 .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
+
+        Group goblinGroup = entityManager.createGroup();
+        _mineGroup .add(goblinGroup);
 
         Sprite goblin = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().goblins[4])
@@ -41,14 +41,13 @@ public class MineView implements IView
                 .setBaseHeight(ViewConstants.SPRITE_SIZE)
                 .setBaseWidth(ViewConstants.SPRITE_SIZE)
                 .setAlpha(1.0)
-                .setZIndex(-1)
-                .setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
-                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
+                .setZIndex(-1);
+
         _mineGroup.add(_mineSprite);
     }
 
     @Override
-    public void OnRound() {
+    public void onRound() {
         if(_model.owner != _previousOwner){
             _previousOwner = _model.owner;
             _mineSprite.setImage(TileFactory.getInstance().mines[_model.owner == null ? 4 : _model.owner.player.getIndex()]);
@@ -56,7 +55,7 @@ public class MineView implements IView
     }
 
     @Override
-    public Group GetView() {
+    public Group getView() {
         return _mineGroup;
     }
 }
