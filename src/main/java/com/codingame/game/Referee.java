@@ -29,6 +29,7 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
+        gameManager.setMaxTurns(ViewConstants.MAX_ROUNDS);
         Properties params = gameManager.getGameParameters();
         System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
@@ -37,6 +38,9 @@ public class Referee extends AbstractReferee {
 
         board.initMines();
         initGridView();
+        TurnCounterView turnCounterView = new TurnCounterView(graphicEntityModule);
+        view._views.add(turnCounterView);
+        turnCounterView.getView();
     }
 
     private void initGridView() {
@@ -51,7 +55,7 @@ public class Referee extends AbstractReferee {
             int w = graphicEntityModule.getWorld().getWidth();
             int h = graphicEntityModule.getWorld().getHeight();
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, h+100, c*h/5+h/5,(remainingSpace-100));
+            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, h+100, c*125+155,(remainingSpace-100));
             c++;
         }
 

@@ -1,9 +1,6 @@
 package com.codingame.game.view;
 
-import com.codingame.game.HeroView;
-import com.codingame.game.IView;
-import com.codingame.game.MineView;
-import com.codingame.game.Player;
+import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
@@ -22,7 +19,7 @@ public class ViewController {
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
-    private ArrayList<IView> _views = new ArrayList<>();
+    public ArrayList<IView> _views = new ArrayList<>();
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
         this.entityManager = entityManager;
@@ -73,7 +70,7 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2)));
+        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX(5);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
@@ -196,6 +193,8 @@ public class ViewController {
             _views.add(view);
             boardGroup.add(view.getView());
         }
+
+        _views.add(new GoldCounterView(board.heroes, entityManager));
     }
 
     public void onRound(){
@@ -205,15 +204,14 @@ public class ViewController {
     }
 
     public void setSpawn(Tile tile, int index) {
-        Group group = this.entityManager.createGroup();
+        Group group = this.entityManager.createGroup().setZIndex(-2);
         group.setX(CELL_SIZE * (tile.x + 1) - 4)
                 .setY(CELL_SIZE * (tile.y + 1) - 4);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)
                 .setBaseWidth(CELL_SIZE)
-                .setAlpha(1.0)
-                .setZIndex(-1);
+                .setAlpha(1.0);
         group.add(spawn);
         boardGroup.add(group);
     }
