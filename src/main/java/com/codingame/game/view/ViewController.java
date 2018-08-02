@@ -29,7 +29,9 @@ public class ViewController {
     }
 
     public void createGrid(Board board) {
-        Sprite frame = entityManager.createSprite().setImage("Frame.png").setZIndex(2).setAnchor(0).setScale(1.2);
+        entityManager.createSprite().setImage("Frame.png").setZIndex(2).setAnchor(0).setScale(1.2);
+        entityManager.createRectangle().setFillColor(0x5c8ab8).setZIndex(-100000).setLineWidth(0).setWidth(1920).setHeight(1080);
+
         this.board = board;
         double terrainRandomnessFactor = 0.7 + 0.2 * Math.random();
         double terrainMineTavernFactor = 1.4 + 0.8 * Math.random();
@@ -70,7 +72,7 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX(5);
+        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight-ViewConstants.FrameLeft-1080)/2+ViewConstants.FrameLeft);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();

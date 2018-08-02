@@ -15,9 +15,9 @@ public class HeroHud {
     public HeroHud(Hero hero, GraphicEntityModule graphicEntityModule, Player player, int x, int y, int width){
         _container = graphicEntityModule.createGroup().setZIndex(3).setX(x).setY(y);
         _hero = hero;
-        _container.add(graphicEntityModule.createText(player.getNicknameToken()).setFontFamily(ViewConstants.FontFamily).setX(120).setY(113/2).setAnchor(0.5).setZIndex(1).setFontSize(30).setFillColor(player.getColorToken()));
+        _container.add(graphicEntityModule.createText(player.getNicknameToken()).setFontFamily(ViewConstants.FontFamily).setX(120).setY(113/2).setAnchor(0.5).setZIndex(1).setFontSize(30).setFillColor(ViewConstants.getPlayerColor(player)));
         _container.add(_messageText = graphicEntityModule.createText("").setX(120).setY(113/2 + 25).setFontSize(20).setAnchorX(0.5));
-        _container.add(_goldText = graphicEntityModule.createText("0").setX(195).setY(25).setFontSize(30).setAnchorX(1).setAnchorY(0.5));
+        _container.add(_goldText = graphicEntityModule.createText("0").setX(195).setY(25).setFontSize(25).setAnchorX(1).setAnchorY(0.5));
         _container.add(graphicEntityModule.createSprite().setImage("coin.png").setX(205).setY(25).setAnchorY(0.5));
         _container.add(_healthText = graphicEntityModule.createText("Health: " + "100").setX(300).setY(80).setFontSize(20).setFillColor(0xff1a53).setAnchorX(0.5));
         _container.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setAnchorX(0).setX(0));

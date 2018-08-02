@@ -38,9 +38,6 @@ public class Referee extends AbstractReferee {
 
         board.initMines();
         initGridView();
-        TurnCounterView turnCounterView = new TurnCounterView(graphicEntityModule);
-        view._views.add(turnCounterView);
-        turnCounterView.getView();
     }
 
     private void initGridView() {
@@ -54,8 +51,9 @@ public class Referee extends AbstractReferee {
             view.setSpawn(p.hero.spawnPos, p.getIndex());
             int w = graphicEntityModule.getWorld().getWidth();
             int h = graphicEntityModule.getWorld().getHeight();
+            int width = (w-ViewConstants.BarRight);
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, h+100, c*125+155,(remainingSpace-100));
+            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width);
             c++;
         }
 

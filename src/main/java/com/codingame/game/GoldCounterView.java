@@ -12,21 +12,21 @@ public class GoldCounterView implements IView{
 
     private List<Hero> _heroes;
     private int _fullHeight;
+    private int _xPos = ViewConstants.BarRight-52;
     private ArrayList<Rectangle> _rectangles = new ArrayList<>();
     public GoldCounterView(List<Hero> heroes, GraphicEntityModule entityModule){
         _heroes = heroes;
         _fullHeight = entityModule.getWorld().getHeight()-150;
         for(int i = 0; i < 4; i++){
-            _rectangles.add(createRectangle(entityModule, i).setFillColor(_heroes.get(i).player.getColorToken()).setZIndex(8-i));
+            _rectangles.add(createRectangle(entityModule, i).setFillColor(ViewConstants.getPlayerColor(_heroes.get(i).player)).setZIndex(8-i));
         }
 
         //overlay to make darker
-        entityModule.createRectangle().setWidth(45).setZIndex(300).setX(entityModule.getWorld().getHeight()+28).setY(100).setHeight(_fullHeight).setFillColor(0x000000).setAlpha(0.1);
+        entityModule.createRectangle().setWidth(45).setZIndex(300).setX(_xPos).setY(100).setHeight(_fullHeight).setFillColor(0x000000).setAlpha(0.1);
     }
 
     private Rectangle createRectangle(GraphicEntityModule entityModule, int num){
-        int x = entityModule.getWorld().getHeight()+28;
-        return entityModule.createRectangle().setX(x).setWidth(45).setY(100).setHeight(_fullHeight/4*num+_fullHeight/4);
+        return entityModule.createRectangle().setX(_xPos).setWidth(45).setY(100).setHeight(_fullHeight/4*num+_fullHeight/4);
     }
 
     @Override
