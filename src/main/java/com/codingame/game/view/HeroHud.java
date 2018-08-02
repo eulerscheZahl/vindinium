@@ -26,7 +26,9 @@ public class HeroHud {
         _container.add(playerImageGroup);
         playerImageGroup.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setBaseWidth(113).setTint(0xc0b9b4));
        // playerImageGroup.add(graphicEntityModule.createRectangle().setWidth(75).setX(113/2).setY(113/2).setHeight(75).setLineWidth(0).setFillColor(0x000000));
-        playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setAnchor(0.5).setBaseHeight(90).setBaseWidth(90));
+        Sprite mask = graphicEntityModule.createSprite().setImage("playerfilter.png").setAnchor(0.5).setBaseHeight(90).setBaseWidth(90).setX(113/2).setY(113/2).setZIndex(10);
+        playerImageGroup.add(mask);
+        playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setMask(mask).setAnchor(0.5).setBaseHeight(100).setBaseWidth(100));
     }
 
     public void OnRound(String message){

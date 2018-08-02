@@ -197,6 +197,9 @@ public class ViewController {
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
+
+        //TOO MUCH DATA :sob:
+       // _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
     public void onRound(){

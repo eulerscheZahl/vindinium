@@ -1,5 +1,7 @@
 package com.codingame.game;
 
+import com.codingame.game.view.ViewController;
+
 public class ViewConstants {
     public static int SPRITE_SIZE = 32;
     public static int MAX_ROUNDS = 800; //TODO: set 800
@@ -11,5 +13,9 @@ public class ViewConstants {
     public static int getPlayerColor(Player player){
         if(player.getIndex()==3) return 0x766000;
         return player.getColorToken();
+    }
+
+    public static int getCellPos(int pos){
+        return (1 + ViewController.CELL_SIZE)*pos;
     }
 }

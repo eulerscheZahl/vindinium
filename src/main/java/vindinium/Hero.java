@@ -44,7 +44,6 @@ public class Hero {
         life = maxLife;
         tile = spawnPos;
 
-
         for (Hero h : board.heroes) {
             if (h == this || tile != h.tile) continue;
             board.transferMines(h, this);

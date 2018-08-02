@@ -1,6 +1,5 @@
 package com.codingame.game;
 
-import com.codingame.gameengine.module.entities.Curve;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
@@ -22,7 +21,7 @@ public class HeroView implements IView{
         _entityManager = entityManager;
         _group = entityManager.createGroup()
                 .setX(ViewController.CELL_SIZE * (model.tile.x + 1) - 4)
-                .setY(ViewController.CELL_SIZE * (model.tile.y + 1) - 4);
+                .setY(ViewController.CELL_SIZE * (model.tile.y + 1) - 4).setZIndex(10);
 
         _sprite = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().heroes[model.player.getIndex() * 9])
