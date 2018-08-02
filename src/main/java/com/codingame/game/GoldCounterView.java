@@ -18,7 +18,7 @@ public class GoldCounterView implements IView{
         _heroes = heroes;
         _fullHeight = entityModule.getWorld().getHeight()-150;
         for(int i = 0; i < 4; i++){
-            _rectangles.add(createRectangle(entityModule, i).setFillColor(ViewConstants.getPlayerColor(_heroes.get(i).player)).setZIndex(8-i));
+            _rectangles.add(createRectangle(entityModule, i).setFillColor(_heroes.get(i).player.getColorToken()).setZIndex(8-i));
         }
 
         //overlay to make darker
