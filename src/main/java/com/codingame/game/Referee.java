@@ -90,8 +90,10 @@ public class Referee extends AbstractReferee {
                 player.execute();
                 action = player.getOutputs().get(0).trim().toUpperCase();
             } catch (AbstractPlayer.TimeoutException timeout) {
-                player.setDeactivated();
-                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " timeout"));
+                if(player.getExpectedOutputLines()==1){
+                    player.setDeactivated();
+                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " timeout"));
+                }
             }
         }
 
@@ -113,8 +115,10 @@ public class Referee extends AbstractReferee {
         } else if (action.equals("WEST")) {
             if (target.x > 0) target = board.tiles[target.x - 1][target.y];
         } else {
-            player.setDeactivated();
-            gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " invalid action: \"" + action + "\""));
+            if(player.getExpectedOutputLines()==1) {
+                player.setDeactivated();
+                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+            }
         }
 
         hero.move(board, target);
