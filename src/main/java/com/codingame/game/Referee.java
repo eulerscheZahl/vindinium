@@ -2,6 +2,7 @@ package com.codingame.game;
 import com.codingame.gameengine.core.AbstractPlayer;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
 import vindinium.Board;
@@ -59,7 +60,6 @@ public class Referee extends AbstractReferee {
             HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width);
             c++;
         }
-
     }
 
     private void sendInputs(Player player, boolean initial) {
@@ -80,7 +80,8 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-        Player player = gameManager.getPlayer(turn % gameManager.getPlayerCount());
+        Player player = gameManager.getPlayer(turn % 4);
+        System.err.println("TURN: " + turn);
 
         String action = "WAIT";
         if (player.isActive()) {
@@ -89,9 +90,11 @@ public class Referee extends AbstractReferee {
                 player.execute();
                 action = player.getOutputs().get(0).trim().toUpperCase();
             } catch (AbstractPlayer.TimeoutException timeout) {
-                player.deactivate("timeout");
+                player.setDeactivated();
+                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " timeout"));
             }
         }
+
         Hero hero = player.hero;
         Tile target = hero.tile;
         String message = "";
@@ -110,7 +113,8 @@ public class Referee extends AbstractReferee {
         } else if (action.equals("WEST")) {
             if (target.x > 0) target = board.tiles[target.x - 1][target.y];
         } else {
-            player.deactivate("invalid action: \"" + action + "\"");
+            player.setDeactivated();
+            gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " invalid action: \"" + action + "\""));
         }
 
         hero.move(board, target);
@@ -119,6 +123,8 @@ public class Referee extends AbstractReferee {
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
         view.onRound();
+        hero.justRespawned = false;
+
 
         Hero leader = board.getLeader();
         for(HeroHud heroHud : HeroHuds){

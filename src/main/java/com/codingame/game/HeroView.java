@@ -38,22 +38,28 @@ public class HeroView implements IView{
         _group.add(_healthBar = entityManager.createRectangle().setWidth(3).setHeight(_healthBarHeight).setX(-5).setFillColor(0x00ff00));
     }
 
+    private boolean wasDead;
+    private int _lastLife = -1;
     @Override
     public void onRound() {
-        if(_model.wasDead){
-            _entityManager.commitEntityState(0.8, _sprite, _group);
+
+        if(_model.justRespawned && !wasDead){
+            wasDead = true;
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
+            _entityManager.commitEntityState(0.8, _sprite, _group);
             _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
                     .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
 
             _entityManager.commitEntityState(1.0, _sprite, _group);
+            _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
         }
         else
         {
-            if(_lastDir != _model.lastDir) {
+            if(_lastDir != _model.lastDir || wasDead) {
+                wasDead = false;
                 _lastDir = _model.lastDir;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
-                _entityManager.commitEntityState(0, _sprite);
+                //_entityManager.commitEntityState(0, _sprite);
             }
 
             if(_model.tile != _lastTile) {
@@ -63,7 +69,10 @@ public class HeroView implements IView{
             }
         }
 
-        _healthBar.setHeight((int)(_healthBarHeight*_model.life/100.0));
+        if(_lastLife != _model.life){
+            _lastLife = _model.life;
+            _healthBar.setHeight((int)(_healthBarHeight*_model.life/100.0));
+        }
     }
 
     @Override

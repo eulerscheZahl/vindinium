@@ -9,8 +9,7 @@ public class Hero {
     public int lastDir;
     public int life;
     public int gold;
-    public boolean wasDead = false;
-    private boolean justRespawned = false;
+    public boolean justRespawned = false;
 
     public static final int maxLife = 100;
     static final int beerLife = 50;
@@ -40,7 +39,6 @@ public class Hero {
 
     public void respawn(Board board) {
         justRespawned = true;
-        wasDead = true;
         life = maxLife;
         tile = spawnPos;
 
@@ -63,7 +61,6 @@ public class Hero {
     }
 
     public void fight(Board board) {
-        wasDead = false;
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
             h.defend();
@@ -79,6 +76,12 @@ public class Hero {
     }
 
     public void move(Board board, Tile target) {
+        //Allways turn
+        if (tile.y < target.y) lastDir = 0;
+        else if (tile.x > target.x) lastDir = 1;
+        else if (tile.x < target.x) lastDir = 2;
+        else if (tile.y > target.y) lastDir = 3;
+
         if (target.type == Tile.Type.Wall) {
             return;
         }
@@ -90,10 +93,6 @@ public class Hero {
             fightMine(board, target);
         }
         else {
-            if (tile.y < target.y) lastDir = 0;
-            else if (tile.x > target.x) lastDir = 1;
-            else if (tile.x < target.x) lastDir = 2;
-            else if (tile.y > target.y) lastDir = 3;
             final Tile t = target;
             if (board.heroes.stream().anyMatch(h -> h.tile == t)) {
                 target = tile; // can't share position with other hero
@@ -103,7 +102,6 @@ public class Hero {
     }
 
     public void finalize(Board board) {
-        justRespawned = false;
         day();
         gold += board.countMines(this);
     }

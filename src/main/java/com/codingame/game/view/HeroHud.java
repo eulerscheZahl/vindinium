@@ -36,10 +36,10 @@ public class HeroHud {
     }
 
     public void OnRound(String message){
-        if(ViewConstants.cropString(message, 10) != _messageText.getText())
+        if(!ViewConstants.cropString(message, 10).equals(_messageText.getText()))
             _messageText.setText(ViewConstants.cropString(message, 10));
 
-        if(_goldText.getText() != _hero.gold+"")
+        if(!_goldText.getText().equals(_hero.gold+""))
             _goldText.setText(_hero.gold+"");
     }
 
