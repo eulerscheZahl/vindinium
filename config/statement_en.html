@@ -6,10 +6,11 @@
 <div class="statement-body">
     <!-- STORY -->
     <div class="statement-story">
-        Four legendary heroes were fighting for the land of Vindinium </br>
-        Making their way in the dangerous woods </br>
-        Slashing goblins and stealing gold mines </br>
-        And looking for a tavern where to drink their gold </br>
+        Four legendary heroes were fighting for the land of Vindinium
+        <br> Making their way in the dangerous woods
+        <br> Slashing goblins and stealing gold mines
+        <br> And looking for a tavern where to drink their gold
+        <br>
     </div>
     <!-- GOAL -->
     <div class="statement-section statement-goal">
@@ -72,9 +73,9 @@
 
             <strong>End of a hero turn</strong> After the hero has moved (or decided to stay in place), a few things happen:
 
-            <em>Fights</em></br>
-            Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance, in this situation,
-            at the end of Hero 1 (@1) turn:
+            <em>Fights</em>
+            <br> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance,
+            in this situation, at the end of Hero 1 (@1) turn:
 
             <!-- TODO: image -->
             <pre>@1@2
@@ -82,24 +83,24 @@
             <const>2</const> moves away. The attacking hero doesn't lose any life point, the defending one loses
             <const>20</const> life points. If the defender dies (see: Death of a hero), the attacking hero obtains control of all the loser's gold mines.
 
-            <em>Mining</em></br>
-            After the the fight's resolution, he gains one gold per controlled mine.
+            <em>Mining</em>
+            <br> After the the fight's resolution, he gains one gold per controlled mine.
 
-            <em>Thirst</em></br>
-            Then, the hero loses
+            <em>Thirst</em>
+            <br> Then, the hero loses
             <const>1</const> HP (because all this action made him thirsty). Note that heroes don't die of thirst. Worse case, they fall to
             <const>1</const> HP.
 
-            <strong>Death of a hero</strong></br>
-            When a hero HP drops to
+            <strong>Death of a hero</strong>
+            <br> When a hero HP drops to
             <const>0</const>, he ceases to live. The hero immediately respawns on the map at its initial position, with HP=
             <const>100</const>. The hero loses control of all his gold mines, but keeps all his amassed gold. Be careful, when a hero respawns on its initial position, every opponent that may be at this position is automatically killed. So, you should avoid
             being at the respawn position of one of the heroes... A hero can't die of thirst. Thirst can put the hero HP to
             <const>1</const>, but not to
             <const>0</const>.
 
-            <strong>End of the game</strong></br>
-            The game ends when the maximum number of
+            <strong>End of the game</strong>
+            <br> The game ends when the maximum number of
             <const>200</const> turns has been reached. The winner is the hero with the greatest amount of gold. If two players have the same amount of gold, there is no winner.
         </div>
     </div>
@@ -160,35 +161,42 @@
             <div class="title">Initial input</div>
             <div class="text">
 
-                <span class="statement-lineno">First line</span>: the <var>size</var> of the board </br>
+                <span class="statement-lineno">First line</span>: the <var>size</var> of the board
+                <br>
                 <span class="statement-lineno">Next <var>size</var> lines</span>: The board as strings of length <var>size</var>. The characters can be:
                 <ul>
                     <li>
-                        <const>.</const>: empty cell <br /></li>
+                        <const>.</const>: empty cell <br></li>
                     <li>
-                        <const>#</const>: wall<br /></li>
+                        <const>#</const>: wall<br></li>
                     <li>
-                        <const>T</const>: tavern<br /></li>
+                        <const>T</const>: tavern<br></li>
                     <li>
-                        <const>M</const>: mine<br /></li>
+                        <const>M</const>: mine<br></li>
                 </ul>
                 <span class="statement-lineno">Next line</span>: The ID of your hero
             </div>
-            </br>
-            </br>
+            <br>
+            <br>
             <div class="title">Input for one game turn</div>
             <div class="text">
-                <span class="statement-lineno">First line</span>: <var>entityCount</var>: the number of entities </br>
-                <span class="statement-lineno">Next <var>entityCount</var> lines</span>: the entity represented as follows: </br>
+                <span class="statement-lineno">First line</span>: <var>entityCount</var>: the number of entities
+                <br>
+                <span class="statement-lineno">Next <var>entityCount</var> lines</span>: the entity represented as follows:
+                <br>
                 <var>type</var>: the type of the entity, either
                 <const>HERO</const> or
                 <const>MINE</const>
-                </br>
-                <var>id</var>: the id of the hero or the owner of a mine </br>
-                <var>x</var>: the x position of the entity </br>
-                <var>y</var>: the y position of the entity </br>
+                <br>
+                <var>id</var>: the id of the hero or the owner of a mine
+                <br>
+                <var>x</var>: the x position of the entity
+                <br>
+                <var>y</var>: the y position of the entity
+                <br>
                 <var>life</var>: the life of a hero (
-                <const>-1</const> for mines) </br>
+                <const>-1</const> for mines)
+                <br>
                 <var>gold</var>: the gold of a hero (
                 <const>-1</const> for mines)
             </div>
@@ -198,13 +206,48 @@
 
                 <ul style="padding-bottom: 0;">
                     <li>
-                        <action>WAIT</action> to do nothing </br>
-                        <action>NORTH</action> to go north </br>
-                        <action>EAST</action> to go east </br>
-                        <action>SOUTH</action> to go south </br>
-                        <action>WEST</action> to go west </br>
+                        <action>WAIT</action> to do nothing
+                    </li>
+                    <li>
+                        <action>NORTH</action> to go north
+                    </li>
+                    <li>
+                        <action>EAST</action> to go east
+                    </li>
+                    <li>
+                        <action>SOUTH</action> to go south
+                    </li>
+                    <li>
+                        <action>WEST</action> to go west
                     </li>
                 </ul>
 
+            </div>
+        </div>
+
+        <!-- Protocol block -->
+        <div class="blk">
+            <div class="title">
+                Constraints
+            </div>
+            <div class="text">
+                <const>
+                    10
+                </const>
+                ≤
+                <var>
+     size
+    </var> ≤
+                <const>
+                    30
+                </const>
+                <br>
+                <br> Response time first turn ≤ <const>1000</const> ms
+                <br> Response time per turn ≤ <const>50</const> ms
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
             </div>
         </div>
