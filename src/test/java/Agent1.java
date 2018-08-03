@@ -38,8 +38,8 @@ public class Agent1 {
             String[] choices = {"NORTH", "EAST", "SOUTH", "WEST"};
             int[] arr = new int[0];
             int z = 0;
-            if(random.nextInt(100)==1) z = arr[1];
-            System.out.println(choices[random.nextInt(choices.length)] + " DO " + k++);
+          //  if(random.nextInt(100)==1) z = arr[1];
+            System.out.println(choices[0] + " DO " + k++);
         }
     }
 }

@@ -43,12 +43,6 @@ public class HeroHud {
             _goldText.setText(_hero.gold+"");
     }
 
-    public void setWinner(){
-        _container.add(_graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-1000).setAnchorX(0).setScale(2).setX(-60).setY(-56).setTint(0x333333));
-        _container.add(_graphicEntityModule.createText("And the winner is:").setX(175).setY(-20).setAnchor(0.5).setFillColor(0xcccccc));
-        _container.setX(ViewConstants.FrameLeft+ (ViewConstants.FrameRight-ViewConstants.FrameLeft)/2-175).setY(1080/2-55);
-    }
-
     public void setLeader(boolean leading){
         if(leading)_medal.setAlpha(1);
         else _medal.setAlpha(0);

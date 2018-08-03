@@ -12,6 +12,8 @@ import vindinium.Tile;
 import com.codingame.game.view.HeroHud;
 import com.codingame.game.view.ViewController;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Properties;
 import java.util.Random;
 
@@ -137,12 +139,14 @@ public class Referee extends AbstractReferee {
         }
 
         if(turn==ViewConstants.MAX_ROUNDS-1){
-            if(leader == null){
-                //TODO: DRAW
+            ArrayList<Hero> heroes = new ArrayList<>();
+            for(Hero h : board.heroes){
+                heroes.add(h);
             }
-            else{
-                HeroHuds[leader.player.getIndex()].setWinner();
-            }
+
+            Comparator<Hero> c = (s1, s2) -> s1.gold < s2.gold? 1 : -1;
+            heroes.sort(c);
+            new EndGameView(graphicEntityModule, heroes);
         }
     }
 
