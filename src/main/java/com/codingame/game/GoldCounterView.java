@@ -22,11 +22,11 @@ public class GoldCounterView implements IView{
         }
 
         //overlay to make darker
-        entityModule.createRectangle().setWidth(45).setZIndex(300).setX(_xPos).setY(100).setHeight(_fullHeight).setFillColor(0x000000).setAlpha(0.1);
+        entityModule.createRectangle().setWidth(45).setZIndex(300).setX(_xPos).setY(90).setHeight(_fullHeight).setFillColor(0x000000).setAlpha(0.1);
     }
 
     private Rectangle createRectangle(GraphicEntityModule entityModule, int num){
-        return entityModule.createRectangle().setX(_xPos).setWidth(45).setY(100).setHeight(_fullHeight/4*num+_fullHeight/4);
+        return entityModule.createRectangle().setX(_xPos).setWidth(45).setY(90).setHeight(_fullHeight/4*num+_fullHeight/4);
     }
 
     @Override

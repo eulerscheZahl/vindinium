@@ -111,4 +111,19 @@ public class Board {
         }
         return result.toString();
     }
+
+    public Hero getLeader(){
+        Hero leader = null;
+        int mostGold = 0;
+        for(Hero hero : heroes){
+            if(hero.gold==mostGold){
+                leader=null;
+            }else if(hero.gold>mostGold){
+                mostGold = hero.gold;
+                leader = hero;
+            }
+        }
+
+        return leader;
+    }
 }

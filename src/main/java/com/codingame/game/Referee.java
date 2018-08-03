@@ -116,6 +116,21 @@ public class Referee extends AbstractReferee {
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
         view.onRound();
+
+        Hero leader = board.getLeader();
+        for(HeroHud heroHud : HeroHuds){
+            if(heroHud._hero == leader) heroHud.setLeader(true);
+            else heroHud.setLeader(false);
+        }
+
+        if(turn==ViewConstants.MAX_ROUNDS-1){
+            if(leader == null){
+                //TODO: DRAW
+            }
+            else{
+                HeroHuds[leader.player.getIndex()].setWinner();
+            }
+        }
     }
 
     private Long getSeed(Properties params) {
