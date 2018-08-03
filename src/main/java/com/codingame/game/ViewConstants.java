@@ -25,4 +25,11 @@ public class ViewConstants {
         if(s.length() > length) return s.substring(0, length);
         return s;
     }
+
+    public static int getEndScreenColor(Player player){
+        if(player.getIndex()==1) return 0x9999FF; //33AAFF
+        if(player.getIndex()==3) return 0xEFFD5F;
+        if(player.getIndex()==0) return 0xFF8080;
+        else return 0x00C200;
+    }
 }

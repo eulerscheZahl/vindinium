@@ -12,7 +12,7 @@ public class EndGameView {
         int xCenter = entityModule.getWorld().getWidth()/2;
         int yCenter = entityModule.getWorld().getHeight()/2;
         Group group = entityModule.createGroup().setX(xCenter).setY(yCenter).setZIndex(1000000000);
-        entityModule.createRectangle().setWidth(xCenter*2).setHeight(yCenter*2).setZIndex(1000000).setAlpha(0.9).setFillColor(0x000000).setLineWidth(0);
+        entityModule.createRectangle().setWidth(xCenter*2).setHeight(yCenter*2).setZIndex(1000000).setAlpha(0.8).setFillColor(0x000000).setLineWidth(0);
 
         group.add(entityModule.createText("VINDINIUM").setFontFamily(ViewConstants.ArialFont).setFontSize(100).setFillColor(0xafafaf).setY(-yCenter+100).setAnchor(0.5));
         int c = 0;
@@ -35,14 +35,14 @@ public class EndGameView {
         Group playerGroup = entityModule.createGroup().setY(yPos);
         group.add(playerGroup);
 
-        playerGroup.add(entityModule.createRectangle().setWidth(150).setHeight(150).setFillColor(0x000000).setX(-500));
-        playerGroup.add(entityModule.createSprite().setImage(hero.player.getAvatarToken()).setBaseWidth(150).setBaseHeight(150).setX(-500));
-        playerGroup.add(entityModule.createRectangle().setWidth(150).setHeight(150).setFillColor(0xaaaaaa).setAlpha(0.4).setX(-350));
+        playerGroup.add(entityModule.createRectangle().setWidth(150).setHeight(150).setFillColor(0x000000).setX(-300));
+        playerGroup.add(entityModule.createSprite().setImage(hero.player.getAvatarToken()).setBaseWidth(150).setBaseHeight(150).setX(-300));
+        playerGroup.add(entityModule.createRectangle().setWidth(150).setHeight(150).setFillColor(0xaaaaaa).setAlpha(0.2).setX(-150));
 
-        playerGroup.add(entityModule.createText(""+position).setX(-295).setAnchor(0.5).setY(65).setFontSize(75).setFontFamily(ViewConstants.ArialFont).setFillColor(hero.player.getColorToken()));
-        playerGroup.add(entityModule.createText(ending).setX(-245).setY(47).setAnchor(0.5).setFontSize(25).setFontFamily(ViewConstants.ArialFont).setFillColor(hero.player.getColorToken()));
+        playerGroup.add(entityModule.createText(""+position).setX(-90).setAnchor(0.5).setY(75).setFontSize(75).setFontFamily(ViewConstants.ArialFont).setFillColor(ViewConstants.getEndScreenColor(hero.player)));
+        playerGroup.add(entityModule.createText(ending).setX(-45).setY(75-50/2).setAnchor(0.5).setFontSize(25).setFontFamily(ViewConstants.ArialFont).setFillColor(ViewConstants.getEndScreenColor(hero.player)));
 
-        playerGroup.add(entityModule.createText(hero.player.getNicknameToken()).setX(0).setY(15).setFontSize(50).setFontFamily(ViewConstants.ArialFont).setFillColor(hero.player.getColorToken()));
-        playerGroup.add(entityModule.createText(hero.gold+ " gold").setX(0).setY(150-15).setAnchorY(1).setFontSize(30).setFontFamily(ViewConstants.ArialFont).setFillColor(0xffffff));
+        playerGroup.add(entityModule.createText(hero.player.getNicknameToken()).setX(50).setY(10).setFontSize(50).setFontFamily(ViewConstants.ArialFont).setFillColor(ViewConstants.getEndScreenColor(hero.player)));
+        playerGroup.add(entityModule.createText(hero.gold+ " gold").setX(50).setY(150-10).setAnchorY(1).setFontSize(40).setFontFamily(ViewConstants.ArialFont).setFillColor(0xffffff));
     }
 }

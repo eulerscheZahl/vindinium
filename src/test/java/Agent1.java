@@ -39,7 +39,7 @@ public class Agent1 {
             int[] arr = new int[0];
             int z = 0;
           //  if(random.nextInt(100)==1) z = arr[1];
-            System.out.println(choices[0] + " DO " + k++);
+            System.out.println(choices[random.nextInt(choices.length)] + " DO " + k++);
         }
     }
 }
