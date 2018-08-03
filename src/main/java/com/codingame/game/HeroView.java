@@ -34,19 +34,27 @@ public class HeroView implements IView{
 
     @Override
     public void onRound() {
-        if(_lastDir != _model.lastDir) {
-            _lastDir = _model.lastDir;
-            if (_model.wasDead)
-                _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
-            else
-                _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
-            _entityManager.commitEntityState(0, _sprite);
-        }
-
-        if(_model.tile != _lastTile) {
-            _lastTile = _model.tile;
+        if(_model.wasDead){
+            _entityManager.commitEntityState(0.8, _sprite, _group);
+            _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
             _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
                     .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
+
+            _entityManager.commitEntityState(1.0, _sprite, _group);
+        }
+        else
+        {
+            if(_lastDir != _model.lastDir) {
+                _lastDir = _model.lastDir;
+                _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
+                _entityManager.commitEntityState(0, _sprite);
+            }
+
+            if(_model.tile != _lastTile) {
+                _lastTile = _model.tile;
+                _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
+                        .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
+            }
         }
     }
 

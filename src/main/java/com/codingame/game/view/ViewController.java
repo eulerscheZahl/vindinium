@@ -211,7 +211,7 @@ public class ViewController {
     public void setSpawn(Tile tile, int index) {
         Group group = this.entityManager.createGroup().setZIndex(-2);
         group.setX(CELL_SIZE * (tile.x + 1) - 4)
-                .setY(CELL_SIZE * (tile.y + 1) - 4);
+                .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(9);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)

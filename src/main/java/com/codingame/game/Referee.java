@@ -30,9 +30,12 @@ public class Referee extends AbstractReferee {
     @Override
     public void init() {
         gameManager.setMaxTurns(ViewConstants.MAX_ROUNDS);
+        gameManager.setTurnMaxTime(50);
+
         Properties params = gameManager.getGameParameters();
         System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
+
         board = Config.generateMap(gameManager.getPlayers());
         System.err.print(board.print());
 
