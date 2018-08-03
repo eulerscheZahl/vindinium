@@ -21,7 +21,7 @@ public class Agent1 {
         }
         int myID = scanner.nextInt();
         System.err.println("id: " + myID);
-
+        int k = 0;
         while (true) {
             int entityCount = scanner.nextInt();
             System.err.println("entityCount: " + entityCount);
@@ -36,7 +36,10 @@ public class Agent1 {
             }
 
             String[] choices = {"NORTH", "EAST", "SOUTH", "WEST"};
-            System.out.println(choices[random.nextInt(choices.length)] + " DO THIS!");
+            int[] arr = new int[0];
+            int z = 0;
+            if(random.nextInt(100)==1) z = arr[1];
+            System.out.println(choices[random.nextInt(choices.length)] + " DO " + k++);
         }
     }
 }
