@@ -2,6 +2,7 @@ package com.codingame.game;
 
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
+import com.codingame.gameengine.module.entities.Rectangle;
 import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.Hero;
 import com.codingame.game.view.TileFactory;
@@ -9,12 +10,14 @@ import com.codingame.game.view.ViewController;
 import vindinium.Tile;
 
 public class HeroView implements IView{
+    private int _healthBarHeight = 32;
     public Hero _model;
     private Sprite _sprite;
     private Group _group;
     private GraphicEntityModule _entityManager;
     private Tile _lastTile;
     private int _lastDir = -1;
+    private Rectangle _healthBar;
 
     public HeroView(Hero model, GraphicEntityModule entityManager){
         _model = model;
@@ -30,6 +33,9 @@ public class HeroView implements IView{
                 .setAlpha(1.0)
                 .setZIndex(-1);
         _group.add(_sprite);
+
+        _group.add(entityManager.createRectangle().setWidth(3).setHeight(_healthBarHeight).setX(-5).setFillColor(0xff0000));
+        _group.add(_healthBar = entityManager.createRectangle().setWidth(3).setHeight(_healthBarHeight).setX(-5).setFillColor(0x00ff00));
     }
 
     @Override
@@ -56,6 +62,8 @@ public class HeroView implements IView{
                         .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
             }
         }
+
+        _healthBar.setHeight((int)(_healthBarHeight*_model.life/100.0));
     }
 
     @Override
