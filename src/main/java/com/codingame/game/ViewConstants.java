@@ -18,4 +18,9 @@ public class ViewConstants {
     public static int getCellPos(int pos){
         return (1 + ViewController.CELL_SIZE)*pos;
     }
+
+    public static String cropString(String s, int length){
+        if(s.length() > length) return s.substring(0, length);
+        return s;
+    }
 }

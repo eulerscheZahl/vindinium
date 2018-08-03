@@ -8,9 +8,9 @@ public class Board {
     public int size;
     public List<Mine> mines = new ArrayList<>();
     public List<Hero> heroes = new ArrayList<>();
-                                //N   S   W  E   NW  SW  NE  SE  P
-    private static int[] dirX = { 0,  0, -1, 1,  -1, -1,  1,  1, 0 };
-    private static int[] dirY = { -1, 1,  0, 0,  -1,  1, -1,  1, 0 };
+                                //N   E   S   W   NW  SW  NE  SE  P
+    private static int[] dirX = { 0,  1,  0, -1,  -1, -1,  1,  1, 0 };
+    private static int[] dirY = { -1, 0,  1,  0,  -1,  1, -1,  1, 0 };
 
     public Board(Tile[][] tiles, int size) {
         this.tiles = tiles;

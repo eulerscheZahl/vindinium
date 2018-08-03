@@ -96,7 +96,7 @@ public class ViewController {
                     for (int i = 0; i < 8; i++) {
                         int x_ = x + dx[i];
                         int y_ = y + dy[i];
-                        if (x_ >= 0 && x_ < board.size && y_ >= 0 && y_ < board.size && !waterTiles.contains(board.tiles[x_][y_])) {
+                        if (board.IsOnBoard(x_, y_) && !waterTiles.contains(board.tiles[x_][y_])) {
                             dir += orientation[i];
                             name = "water_" + tileTypes[x_][y_];
                         }
@@ -199,7 +199,7 @@ public class ViewController {
         _views.add(new GoldCounterView(board.heroes, entityManager));
 
         //TOO MUCH DATA :sob:
-       // _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
+        _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
     public void onRound(){
@@ -237,9 +237,9 @@ public class ViewController {
 
         boolean P = isPrimary.test(board.neighbors9(tile, 8));
         boolean N = isPrimary.test(board.neighbors9(tile, 0));
-        boolean S = isPrimary.test(board.neighbors9(tile, 1));
-        boolean W = isPrimary.test(board.neighbors9(tile, 2));
-        boolean E = isPrimary.test(board.neighbors9(tile, 3));
+        boolean S = isPrimary.test(board.neighbors9(tile, 2));
+        boolean W = isPrimary.test(board.neighbors9(tile, 3));
+        boolean E = isPrimary.test(board.neighbors9(tile, 1));
         boolean NW = isPrimary.test(board.neighbors9(tile, 4));
         boolean SW = isPrimary.test(board.neighbors9(tile, 5));
         boolean NE = isPrimary.test(board.neighbors9(tile, 6));

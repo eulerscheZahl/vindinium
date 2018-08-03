@@ -45,6 +45,7 @@ public class FootstepsView implements IView{
         if(_footSteps.size()==0){
             Sprite steps = _entityModule.createSprite().setImage(footSteps[0])
                     .setZIndex(1)
+                    .setAnchor(0.5)
                     .setBaseWidth(ViewController.CELL_SIZE)
                     .setBaseHeight(ViewController.CELL_SIZE);
 
@@ -62,14 +63,16 @@ public class FootstepsView implements IView{
         //Add new
         ArrayList<Sprite> newSteps = new ArrayList<>();
         for(Hero hero : _heroes){
-            if(_round % 4 != hero.player.getIndex()) continue;
+            if(_round % 4 != 0) continue;
+
+            double dir = hero.lastDir*Math.PI/2.0;
 
             Sprite step = getStep();
-            step.setX(ViewConstants.getCellPos(hero.tile.x) + ViewController.CELL_SIZE)
-                    .setY(ViewConstants.getCellPos(hero.tile.y) + ViewController.CELL_SIZE)
-                    .setAnchor(0.5)
-                    .setAlpha(1)
-                    .setRotation(hero.lastDir>1?1.57:0);
+            step.setX(ViewConstants.getCellPos(hero.tile.x) + ViewController.CELL_SIZE, Curve.NONE)
+                    .setY(ViewConstants.getCellPos(hero.tile.y) + ViewController.CELL_SIZE, Curve.NONE)
+                    .setAlpha(1, Curve.NONE)
+                    .setRotation(dir, Curve.NONE);
+            newSteps.add(step);
         }
 
         //Remove oldest
