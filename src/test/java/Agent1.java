@@ -36,7 +36,7 @@ public class Agent1 {
             }
 
             String[] choices = {"NORTH", "EAST", "SOUTH", "WEST"};
-            System.out.println(choices[random.nextInt(choices.length)] + " go there");
+            System.out.println(choices[random.nextInt(choices.length)] + " DO THIS!");
         }
     }
 }

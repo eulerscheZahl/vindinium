@@ -1,13 +1,11 @@
-package vindinium.view;
+package com.codingame.game.view;
 
-import com.codingame.game.Player;
+import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
-import vindinium.Board;
-import vindinium.Config;
-import vindinium.Tile;
+import vindinium.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +19,7 @@ public class ViewController {
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
+    public ArrayList<IView> _views = new ArrayList<>();
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
         this.entityManager = entityManager;
@@ -30,6 +29,9 @@ public class ViewController {
     }
 
     public void createGrid(Board board) {
+        entityManager.createSprite().setImage("Frame.png").setZIndex(2).setAnchor(0).setScale(1.2);
+        entityManager.createRectangle().setFillColor(0x5c8ab8).setZIndex(-100000).setLineWidth(0).setWidth(1920).setHeight(1080);
+
         this.board = board;
         double terrainRandomnessFactor = 0.7 + 0.2 * Math.random();
         double terrainMineTavernFactor = 1.4 + 0.8 * Math.random();
@@ -70,7 +72,7 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createBufferedGroup().setX(xPos).setScale(1080.0 / (CELL_SIZE * (board.size + 2)));
+        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight-ViewConstants.FrameLeft-1080)/2+ViewConstants.FrameLeft);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
@@ -94,7 +96,7 @@ public class ViewController {
                     for (int i = 0; i < 8; i++) {
                         int x_ = x + dx[i];
                         int y_ = y + dy[i];
-                        if (x_ >= 0 && x_ < board.size && y_ >= 0 && y_ < board.size && !waterTiles.contains(board.tiles[x_][y_])) {
+                        if (board.IsOnBoard(x_, y_) && !waterTiles.contains(board.tiles[x_][y_])) {
                             dir += orientation[i];
                             name = "water_" + tileTypes[x_][y_];
                         }
@@ -182,18 +184,39 @@ public class ViewController {
                 }
             }
         }
+
+        for(Hero hero : board.heroes){
+            HeroView view = new HeroView(hero, entityManager);
+            _views.add(view);
+            boardGroup.add(view.getView());
+        }
+        for(Mine mine : board.mines){
+            MineView view = new MineView(mine, entityManager);
+            _views.add(view);
+            boardGroup.add(view.getView());
+        }
+
+        _views.add(new GoldCounterView(board.heroes, entityManager));
+
+        //TOO MUCH DATA :sob:
+        _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
+    }
+
+    public void onRound(){
+        for(IView view : _views){
+            view.onRound();
+        }
     }
 
     public void setSpawn(Tile tile, int index) {
-        Group group = this.entityManager.createGroup();
+        Group group = this.entityManager.createGroup().setZIndex(-2);
         group.setX(CELL_SIZE * (tile.x + 1) - 4)
-                .setY(CELL_SIZE * (tile.y + 1) - 4);
+                .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(9);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)
                 .setBaseWidth(CELL_SIZE)
-                .setAlpha(1.0)
-                .setZIndex(-1);
+                .setAlpha(1.0);
         group.add(spawn);
         boardGroup.add(group);
     }
@@ -212,15 +235,15 @@ public class ViewController {
         String p = primaryName;
         String s = secondaryName;
 
-        boolean P = isPrimary.test(board.neighbors9(tile, 0));
-        boolean N = isPrimary.test(board.neighbors9(tile, 1));
+        boolean P = isPrimary.test(board.neighbors9(tile, 8));
+        boolean N = isPrimary.test(board.neighbors9(tile, 0));
         boolean S = isPrimary.test(board.neighbors9(tile, 2));
         boolean W = isPrimary.test(board.neighbors9(tile, 3));
-        boolean E = isPrimary.test(board.neighbors9(tile, 4));
-        boolean NW = isPrimary.test(board.neighbors9(tile, 5));
-        boolean SW = isPrimary.test(board.neighbors9(tile, 6));
-        boolean NE = isPrimary.test(board.neighbors9(tile, 7));
-        boolean SE = isPrimary.test(board.neighbors9(tile, 8));
+        boolean E = isPrimary.test(board.neighbors9(tile, 1));
+        boolean NW = isPrimary.test(board.neighbors9(tile, 4));
+        boolean SW = isPrimary.test(board.neighbors9(tile, 5));
+        boolean NE = isPrimary.test(board.neighbors9(tile, 6));
+        boolean SE = isPrimary.test(board.neighbors9(tile, 7));
 
         int nb = (N ? 1 : 0) + (NE ? 1 : 0) + (E ? 1 : 0) + (SE ? 1 : 0) + (S ? 1 : 0) + (SW ? 1 : 0) + (W ? 1 : 0) + (NW ? 1 : 0);
         String name = "";

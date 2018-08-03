@@ -1,11 +1,6 @@
 package vindinium;
 
 import com.codingame.game.Player;
-import com.codingame.gameengine.module.entities.GraphicEntityModule;
-import com.codingame.gameengine.module.entities.Group;
-import com.codingame.gameengine.module.entities.Sprite;
-import vindinium.view.TileFactory;
-import vindinium.view.ViewController;
 
 public class Hero {
     public Player player;
@@ -14,12 +9,8 @@ public class Hero {
     public int lastDir;
     public int life;
     public int gold;
+    public boolean wasDead = false;
     private boolean justRespawned = false;
-
-    private Group group;
-    private Sprite sprite;
-    private static int SPRITE_SIZE = 32;
-    private GraphicEntityModule entityManager;
 
     public static final int maxLife = 100;
     static final int beerLife = 50;
@@ -33,22 +24,6 @@ public class Hero {
         this.spawnPos = spawnPos;
         this.tile = spawnPos;
         this.life = maxLife;
-    }
-
-    public void initUI(GraphicEntityModule entityManager, Group boardGroup) {
-        this.entityManager = entityManager;
-
-        boardGroup.add(group = entityManager.createGroup());
-        group.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
-                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
-
-        sprite = entityManager.createSprite()
-                .setImage(TileFactory.getInstance().heroes[player.getIndex() * 9])
-                .setBaseHeight(SPRITE_SIZE)
-                .setBaseWidth(SPRITE_SIZE)
-                .setAlpha(1.0)
-                .setZIndex(-1);
-        group.add(sprite);
     }
 
     public void drinkBeer() {
@@ -65,12 +40,9 @@ public class Hero {
 
     public void respawn(Board board) {
         justRespawned = true;
+        wasDead = true;
         life = maxLife;
         tile = spawnPos;
-        sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + lastDir]);
-        entityManager.commitEntityState(0, sprite);
-        group.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
-                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
 
         for (Hero h : board.heroes) {
             if (h == this || tile != h.tile) continue;
@@ -91,6 +63,7 @@ public class Hero {
     }
 
     public void fight(Board board) {
+        wasDead = false;
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
             h.defend();
@@ -105,23 +78,15 @@ public class Hero {
         life -= defendLife;
     }
 
-    private void updateSprite() {
-        sprite.setImage(TileFactory.getInstance().heroes[player.getIndex() * 9 + lastDir]);
-        entityManager.commitEntityState(0, sprite);
-    }
-
     public void move(Board board, Tile target) {
         if (target.type == Tile.Type.Wall) {
-            updateSprite();
             return;
         }
 
         if (target.type == Tile.Type.Tavern) {
-            updateSprite();
             drinkBeer();
         }
         else if (target.type == Tile.Type.Mine) {
-            updateSprite();
             fightMine(board, target);
         }
         else {
@@ -134,10 +99,6 @@ public class Hero {
                 target = tile; // can't share position with other hero
             }
             tile = target;
-
-            updateSprite();
-            group.setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
-                    .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4);
         }
     }
 

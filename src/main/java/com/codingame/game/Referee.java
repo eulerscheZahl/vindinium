@@ -8,8 +8,8 @@ import vindinium.Board;
 import vindinium.Config;
 import vindinium.Hero;
 import vindinium.Tile;
-import vindinium.view.HeroHud;
-import vindinium.view.ViewController;
+import com.codingame.game.view.HeroHud;
+import com.codingame.game.view.ViewController;
 
 import java.util.Properties;
 import java.util.Random;
@@ -29,20 +29,24 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
+        gameManager.setMaxTurns(ViewConstants.MAX_ROUNDS);
+        gameManager.setTurnMaxTime(50);
+
         Properties params = gameManager.getGameParameters();
         System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
+
         board = Config.generateMap(gameManager.getPlayers());
         System.err.print(board.print());
 
+        board.initMines();
         initGridView();
-        board.initMines(graphicEntityModule, view.boardGroup);
-        board.initHeroes(graphicEntityModule, view.boardGroup);
     }
 
     private void initGridView() {
         view = new ViewController(graphicEntityModule, gameManager);//, tooltipModule);
         view.createGrid(board);
+
         int c = 0;
         int remainingSpace =(graphicEntityModule.getWorld().getWidth()-graphicEntityModule.getWorld().getHeight());
         int rightXPos = remainingSpace/2+graphicEntityModule.getWorld().getHeight();
@@ -50,10 +54,12 @@ public class Referee extends AbstractReferee {
             view.setSpawn(p.hero.spawnPos, p.getIndex());
             int w = graphicEntityModule.getWorld().getWidth();
             int h = graphicEntityModule.getWorld().getHeight();
+            int width = (w-ViewConstants.BarRight);
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p, c < 2 ? 0: (rightXPos), c%2==0?0:(h/2),(remainingSpace/2));
+            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width);
             c++;
         }
+
     }
 
     private void sendInputs(Player player, boolean initial) {
@@ -93,6 +99,7 @@ public class Referee extends AbstractReferee {
             message = action.substring(action.indexOf(' ') + 1);
             action = action.substring(0, action.indexOf(' '));
         }
+
         if (action.equals("WAIT")) ;
         else if (action.equals("NORTH")) {
             if (target.y > 0) target = board.tiles[target.x][target.y - 1];
@@ -111,6 +118,22 @@ public class Referee extends AbstractReferee {
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
+        view.onRound();
+
+        Hero leader = board.getLeader();
+        for(HeroHud heroHud : HeroHuds){
+            if(heroHud._hero == leader) heroHud.setLeader(true);
+            else heroHud.setLeader(false);
+        }
+
+        if(turn==ViewConstants.MAX_ROUNDS-1){
+            if(leader == null){
+                //TODO: DRAW
+            }
+            else{
+                HeroHuds[leader.player.getIndex()].setWinner();
+            }
+        }
     }
 
     private Long getSeed(Properties params) {
