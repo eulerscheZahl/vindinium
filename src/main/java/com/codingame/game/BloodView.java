@@ -30,8 +30,8 @@ public class BloodView implements IView {
         bloods = entityModule.createSpriteSheetLoader()
                 .setSourceImage("blood.png")
                 .setName("blood")
-                .setWidth(24)
-                .setHeight(24)
+                .setWidth(32)
+                .setHeight(32)
                 .setImageCount(4 * 7)
                 .setImagesPerRow(7)
                 .setOrigCol(0)
@@ -57,8 +57,8 @@ public class BloodView implements IView {
                     .setAnchor(0.5)
                     .setBaseWidth(ViewController.CELL_SIZE)
                     .setBaseHeight(ViewController.CELL_SIZE)
-                    .setX(ViewConstants.getCellPos(tile.x) + ViewController.CELL_SIZE, Curve.NONE)
-                    .setY(ViewConstants.getCellPos(tile.y) + ViewController.CELL_SIZE, Curve.NONE);
+                    .setX(ViewConstants.getCellPos(tile.x) + ViewController.CELL_SIZE - 4, Curve.NONE)
+                    .setY(ViewConstants.getCellPos(tile.y) + ViewController.CELL_SIZE - 4, Curve.NONE);
             _boardGroup.add(sprites[tile.x][tile.y]);
         }
     }
