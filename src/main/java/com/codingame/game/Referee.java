@@ -12,6 +12,7 @@ import vindinium.Tile;
 import com.codingame.game.view.HeroHud;
 import com.codingame.game.view.ViewController;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -122,11 +123,11 @@ public class Referee extends AbstractReferee {
         }
 
         hero.move(board, target);
-        hero.fight(board);
+        List<Tile> fightLocations = hero.fight(board);
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
-        view.onRound();
+        view.onRound(fightLocations);
         hero.justRespawned = false;
 
 

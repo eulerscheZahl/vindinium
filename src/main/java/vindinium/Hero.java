@@ -2,6 +2,9 @@ package vindinium;
 
 import com.codingame.game.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Hero {
     public Player player;
     public Tile tile;
@@ -60,15 +63,18 @@ public class Hero {
         }
     }
 
-    public void fight(Board board) {
+    public List<Tile> fight(Board board) {
+        ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
             h.defend();
+            fightLocations.add(h.tile);
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);
             }
         }
+        return fightLocations;
     }
 
     public void defend() {
