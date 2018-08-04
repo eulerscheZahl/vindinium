@@ -2,6 +2,9 @@ package vindinium;
 
 import com.codingame.game.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Hero {
     public Player player;
     public Tile tile;
@@ -60,15 +63,18 @@ public class Hero {
         }
     }
 
-    public void fight(Board board) {
+    public List<Tile> fight(Board board) {
+        ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
             h.defend();
+            fightLocations.add(h.tile);
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);
             }
         }
+        return fightLocations;
     }
 
     public void defend() {
@@ -76,7 +82,10 @@ public class Hero {
     }
 
     public void move(Board board, Tile target) {
-        //Allways turn
+        if (tile.distance(target) > 1) {
+            target = FindTarget(board, target);
+        }
+
         if (tile.y < target.y) lastDir = 0;
         else if (tile.x > target.x) lastDir = 1;
         else if (tile.x < target.x) lastDir = 2;
@@ -88,17 +97,41 @@ public class Hero {
 
         if (target.type == Tile.Type.Tavern) {
             drinkBeer();
-        }
-        else if (target.type == Tile.Type.Mine) {
+        } else if (target.type == Tile.Type.Mine) {
             fightMine(board, target);
-        }
-        else {
+        } else {
             final Tile t = target;
             if (board.heroes.stream().anyMatch(h -> h.tile == t)) {
                 target = tile; // can't share position with other hero
             }
             tile = target;
         }
+    }
+
+    private Tile FindTarget(Board board, Tile target) {
+        int[][] distToHero = Config.findDistance(board, tile);
+        Tile t = tile;
+        double toTarget = Integer.MAX_VALUE;
+        double toHero = Integer.MAX_VALUE;
+        for (int x = 0; x < board.size; x++) {
+            for (int y = 0; y < board.size; y++) {
+                if (distToHero[x][y] == -1) continue;
+                double d1 = board.tiles[x][y].distance(target);
+                double d2 = board.tiles[x][y].distance(tile);
+                if (d1 < toTarget || d1 == toTarget && d2 < toHero) {
+                    t = board.tiles[x][y];
+                    toTarget = d1;
+                    toHero = d2;
+                }
+            }
+        }
+
+        int[][] distFromTarget = Config.findDistance(board, t);
+        for (Tile next : board.neighbors(tile)) {
+            if (distFromTarget[next.x][next.y] == distFromTarget[tile.x][tile.y] - 1) return next;
+        }
+
+        return null;
     }
 
     public void finalize(Board board) {

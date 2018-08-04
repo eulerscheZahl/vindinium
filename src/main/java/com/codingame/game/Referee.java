@@ -14,12 +14,11 @@ import com.codingame.game.view.ViewController;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
 public class Referee extends AbstractReferee {
-    // Uncomment the line below and comment the line under it to create a Solo Game
-    // @Inject private SoloGameManager<Player> gameManager;
     @Inject
     private MultiplayerGameManager<Player> gameManager;
     @Inject
@@ -92,9 +91,9 @@ public class Referee extends AbstractReferee {
                 player.execute();
                 action = player.getOutputs().get(0).trim().toUpperCase();
             } catch (AbstractPlayer.TimeoutException timeout) {
-                if(player.getExpectedOutputLines()==1){
+                if (player.getExpectedOutputLines() == 1) {
                     player.setDeactivated();
-                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " timeout"));
+                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " timeout"));
                 }
             }
         }
@@ -117,28 +116,39 @@ public class Referee extends AbstractReferee {
         } else if (action.equals("WEST")) {
             if (target.x > 0) target = board.tiles[target.x - 1][target.y];
         } else {
-            if(player.getExpectedOutputLines()==1) {
-                player.setDeactivated();
-                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+            try {
+                if (!action.equals("MOVE")) throw new Exception();
+                String[] parts = message.split(" ");
+                int x = Integer.parseInt(parts[0]);
+                int y = Integer.parseInt(parts[1]);
+                message = "";
+                for (int i = 2; i < parts.length; i++) message += parts[i] + " ";
+                message = message.trim();
+                target = board.tiles[x][y];
+            } catch (Exception ex) {
+                if (player.getExpectedOutputLines() == 1) {
+                    player.setDeactivated();
+                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+                }
             }
         }
 
         hero.move(board, target);
-        hero.fight(board);
+        List<Tile> fightLocations = hero.fight(board);
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
-        view.onRound();
+        view.onRound(fightLocations);
         hero.justRespawned = false;
 
 
         Hero leader = board.getLeader();
-        for(HeroHud heroHud : HeroHuds){
-            if(heroHud._hero == leader) heroHud.setLeader(true);
+        for (HeroHud heroHud : HeroHuds) {
+            if (heroHud._hero == leader) heroHud.setLeader(true);
             else heroHud.setLeader(false);
         }
 
-        if(turn==ViewConstants.MAX_ROUNDS-1){
+        if (turn == ViewConstants.MAX_ROUNDS-1){
             ArrayList<Hero> heroes = new ArrayList<>();
             for(Hero h : board.heroes){
                 heroes.add(h);

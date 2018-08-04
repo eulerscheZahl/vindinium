@@ -9,7 +9,7 @@ import com.codingame.game.view.TileFactory;
 import com.codingame.game.view.ViewController;
 import vindinium.Tile;
 
-public class HeroView implements IView{
+public class HeroView implements IView {
     private int _healthBarHeight = 32;
     public Hero _model;
     private Sprite _sprite;
@@ -59,7 +59,7 @@ public class HeroView implements IView{
                 wasDead = false;
                 _lastDir = _model.lastDir;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
-                //_entityManager.commitEntityState(0, _sprite);
+                _entityManager.commitEntityState(0, _sprite);
             }
 
             if(_model.tile != _lastTile) {

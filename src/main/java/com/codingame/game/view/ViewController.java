@@ -19,7 +19,8 @@ public class ViewController {
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
-    public ArrayList<IView> _views = new ArrayList<>();
+    private ArrayList<IView> _views = new ArrayList<>();
+    public static List<Tile> fightLocations;
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
         this.entityManager = entityManager;
@@ -72,7 +73,7 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight-ViewConstants.FrameLeft-1080)/2+ViewConstants.FrameLeft);
+        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
@@ -185,24 +186,27 @@ public class ViewController {
             }
         }
 
-        for(Hero hero : board.heroes){
+
+        for (Hero hero : board.heroes) {
             HeroView view = new HeroView(hero, entityManager);
             _views.add(view);
             boardGroup.add(view.getView());
         }
-        for(Mine mine : board.mines){
+        for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager);
             _views.add(view);
             boardGroup.add(view.getView());
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
+        _views.add(new BloodView(board, entityManager, boardGroup));
 
         //TOO MUCH DATA :sob:
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
-    public void onRound(){
+    public void onRound(List<Tile> fightLocations) {
+        ViewController.fightLocations = fightLocations;
         for(IView view : _views){
             view.onRound();
         }
