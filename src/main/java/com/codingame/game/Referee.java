@@ -5,6 +5,8 @@ import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
+import com.google.inject.spi.InterceptorBinding;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import vindinium.Board;
 import vindinium.Config;
 import vindinium.Hero;
@@ -91,9 +93,9 @@ public class Referee extends AbstractReferee {
                 player.execute();
                 action = player.getOutputs().get(0).trim().toUpperCase();
             } catch (AbstractPlayer.TimeoutException timeout) {
-                if(player.getExpectedOutputLines()==1){
+                if (player.getExpectedOutputLines() == 1) {
                     player.setDeactivated();
-                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken()+ " timeout"));
+                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " timeout"));
                 }
             }
         }
@@ -116,9 +118,20 @@ public class Referee extends AbstractReferee {
         } else if (action.equals("WEST")) {
             if (target.x > 0) target = board.tiles[target.x - 1][target.y];
         } else {
-            if(player.getExpectedOutputLines()==1) {
-                player.setDeactivated();
-                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+            try {
+                if (!action.equals("MOVE")) throw new InvalidArgumentException(null);
+                String[] parts = message.split(" ");
+                int x = Integer.parseInt(parts[0]);
+                int y = Integer.parseInt(parts[1]);
+                message = "";
+                for (int i = 2; i < parts.length; i++) message += parts[i] + " ";
+                message = message.trim();
+                target = board.tiles[x][y];
+            } catch (Exception ex) {
+                if (player.getExpectedOutputLines() == 1) {
+                    player.setDeactivated();
+                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+                }
             }
         }
 
@@ -132,16 +145,15 @@ public class Referee extends AbstractReferee {
 
 
         Hero leader = board.getLeader();
-        for(HeroHud heroHud : HeroHuds){
-            if(heroHud._hero == leader) heroHud.setLeader(true);
+        for (HeroHud heroHud : HeroHuds) {
+            if (heroHud._hero == leader) heroHud.setLeader(true);
             else heroHud.setLeader(false);
         }
 
-        if(turn==ViewConstants.MAX_ROUNDS-1){
-            if(leader == null){
+        if (turn == ViewConstants.MAX_ROUNDS - 1) {
+            if (leader == null) {
                 //TODO: DRAW
-            }
-            else{
+            } else {
                 HeroHuds[leader.player.getIndex()].setWinner();
             }
         }

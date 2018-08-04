@@ -63,18 +63,34 @@ public class Config {
         return spawn;
     }
 
-    private static boolean[][] findReachable(Board board, Tile spawn) {
-        boolean[][] visited = new boolean[size][size];
-        visited[spawn.x][spawn.y] = true;
+    public static int[][] findDistance(Board board, Tile start) {
+        int[][] dist = new int[size][size];
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                dist[x][y] = -1;
+            }
+        }
+        dist[start.x][start.y] = 0;
 
         Queue<Tile> queue = new LinkedList<>();
-        queue.add(spawn);
+        queue.add(start);
         while (queue.size() > 0) {
             Tile t = queue.poll();
             for (Tile n : board.neighbors(t)) {
-                if (visited[n.x][n.y]) continue;
-                visited[n.x][n.y] = true;
+                if (dist[n.x][n.y] >= 0) continue;
+                dist[n.x][n.y] = dist[t.x][t.y] + 1;
                 queue.add(n);
+            }
+        }
+        return dist;
+    }
+
+    private static boolean[][] findReachable(Board board, Tile spawn) {
+        boolean[][] visited = new boolean[size][size];
+        int[][] dist = findDistance(board, spawn);
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                visited[x][y] = dist[x][y] >= 0;
             }
         }
         return visited;
