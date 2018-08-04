@@ -5,7 +5,6 @@ import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
-import com.google.inject.spi.InterceptorBinding;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import vindinium.Board;
 import vindinium.Config;
@@ -19,8 +18,6 @@ import java.util.Properties;
 import java.util.Random;
 
 public class Referee extends AbstractReferee {
-    // Uncomment the line below and comment the line under it to create a Solo Game
-    // @Inject private SoloGameManager<Player> gameManager;
     @Inject
     private MultiplayerGameManager<Player> gameManager;
     @Inject
