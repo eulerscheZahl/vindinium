@@ -86,8 +86,10 @@ public class Referee extends AbstractReferee {
 
         String action = "WAIT";
         try {
-            sendInputs(player, turn < gameManager.getPlayerCount());
-                player.execute();
+            if(player.getExpectedOutputLines()==1) {
+                sendInputs(player, turn < gameManager.getPlayerCount());
+            }
+            player.execute();
             if(player.getExpectedOutputLines()==1) {
                 action = player.getOutputs().get(0).trim().toUpperCase();
             }
