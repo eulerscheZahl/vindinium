@@ -85,16 +85,16 @@ public class Referee extends AbstractReferee {
         System.err.println("TURN: " + turn);
 
         String action = "WAIT";
-        if (player.isActive()) {
-            try {
-                sendInputs(player, turn < gameManager.getPlayerCount());
+        try {
+            sendInputs(player, turn < gameManager.getPlayerCount());
                 player.execute();
+            if(player.getExpectedOutputLines()==1) {
                 action = player.getOutputs().get(0).trim().toUpperCase();
-            } catch (AbstractPlayer.TimeoutException timeout) {
-                if (player.getExpectedOutputLines() == 1) {
-                    player.setDeactivated();
-                    gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " timeout"));
-                }
+            }
+        } catch (Exception timeout) {
+            if (player.getExpectedOutputLines() == 1) {
+                player.setDeactivated();
+                gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " timeout"));
             }
         }
 
