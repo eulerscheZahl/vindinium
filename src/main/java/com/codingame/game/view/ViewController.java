@@ -2,29 +2,35 @@ package com.codingame.game.view;
 
 import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.module.entities.Entity;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
+import modules.TooltipModule;
 import vindinium.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ViewController {
     private GraphicEntityModule entityManager;
     private MultiplayerGameManager<Player> gameManager;
+    private TooltipModule tooltipModule;
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
     private ArrayList<IView> _views = new ArrayList<>();
+    private ArrayList<HeroView> _heroes = new ArrayList<>();
     public static List<Tile> fightLocations;
 
-    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
+    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
         this.entityManager = entityManager;
         this.gameManager = gameManager;
+        this.tooltipModule = tooltipModule;
 
         TileFactory.getInstance().init(entityManager);
     }
@@ -189,9 +195,12 @@ public class ViewController {
 
         for (Hero hero : board.heroes) {
             HeroView view = new HeroView(hero, entityManager);
+            _heroes.add(view);
             _views.add(view);
+          //  createTooltip(view._model, view.getView());
             boardGroup.add(view.getView());
         }
+
         for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager);
             _views.add(view);
@@ -209,6 +218,10 @@ public class ViewController {
         ViewController.fightLocations = fightLocations;
         for(IView view : _views){
             view.onRound();
+        }
+
+        for(HeroView view : _heroes){
+       //     updateTooltip(view._model, view.getView());
         }
     }
 
@@ -287,6 +300,21 @@ public class ViewController {
 
             return s;
         }
+    }
+
+    private void createTooltip(Hero unit, Entity entity){
+        Map<String, Object> params = new HashMap<>();
+        params.put("Owner", unit.player.getNicknameToken());
+
+        //TODO: load parameters the viewer needs for the general tooltip contents.
+        tooltipModule.registerEntity(entity, params);
+
+        updateTooltip(unit, entity);
+    }
+
+    private void updateTooltip(Hero unit, Entity entity){
+        tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
+                "\ny: " + unit.tile.y);
     }
 
     private String groundForPosition(int x, int y, String[][] tileTypes) {
