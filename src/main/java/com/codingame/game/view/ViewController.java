@@ -197,7 +197,7 @@ public class ViewController {
             HeroView view = new HeroView(hero, entityManager);
             _heroes.add(view);
             _views.add(view);
-          //  createTooltip(view._model, view.getView());
+            createTooltip(view._model, view._sprite);
             boardGroup.add(view.getView());
         }
 

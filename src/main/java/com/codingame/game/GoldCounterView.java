@@ -51,9 +51,4 @@ public class GoldCounterView implements IView{
 
         return sum;
     }
-
-    @Override
-    public Group getView() {
-        return null;
-    }
 }

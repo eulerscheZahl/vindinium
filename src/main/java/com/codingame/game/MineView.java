@@ -53,8 +53,6 @@ public class MineView implements IView
             _mineSprite.setImage(TileFactory.getInstance().mines[_model.owner == null ? 4 : _model.owner.player.getIndex()]);
         }
     }
-
-    @Override
     public Group getView() {
         return _mineGroup;
     }

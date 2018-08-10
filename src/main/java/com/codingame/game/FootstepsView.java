@@ -90,9 +90,4 @@ public class FootstepsView implements IView{
 
         _steps[_steps.length-1] = newSteps;
     }
-
-    @Override
-    public Group getView() {
-        return null;
-    }
 }
