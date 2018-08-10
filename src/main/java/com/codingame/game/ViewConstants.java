@@ -4,7 +4,7 @@ import com.codingame.game.view.ViewController;
 
 public class ViewConstants {
     public static int SPRITE_SIZE = 32;
-    public static int MAX_ROUNDS = 16; //TODO: set 800
+    public static int MAX_ROUNDS = 800; //TODO: set 800
     public static final String FontFamily = "Trebuchet MS";
     public static final String ArialFont = "Arial Black";
 

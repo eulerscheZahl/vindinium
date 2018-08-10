@@ -18,8 +18,10 @@ public class TooltipModule implements Module {
     @Inject
     GraphicEntityModule entityModule;
     Map<Integer, Map<String, Object>> registrations;
-    Map<Integer, Map<String, Object>> newRegistrations;
     Map<Integer, String[]> extra, newExtra;
+    Map<Integer, Map<String, Object>> newRegistrations;
+    Map<Integer, Map<String, Object>> previousRegistrations = new HashMap<>();
+    int size;
 
     @Inject
     TooltipModule(GameManager<AbstractPlayer> gameManager) {
@@ -47,11 +49,20 @@ public class TooltipModule implements Module {
     }
 
     private void sendFrameData() {
-        Object[] data = { newRegistrations, newExtra };
+
+        Object[] data = new Object[]{ newRegistrations, newExtra, size };
         gameManager.setViewData("tooltips", data);
+        previousRegistrations.clear();
+        for(Integer key : newRegistrations.keySet()){
+            previousRegistrations.put(key, newRegistrations.get(key));
+        }
 
         newRegistrations.clear();
         newExtra.clear();
+    }
+
+    public void setSize(int size){
+        this.size = size;
     }
 
     public void registerEntity(Entity<?> entity) {

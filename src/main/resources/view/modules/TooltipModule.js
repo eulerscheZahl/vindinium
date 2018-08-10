@@ -3,7 +3,6 @@ import { WIDTH, HEIGHT } from '../../core/constants.js';
 import * as utils from '../../core/utils.js';
 import { api as entityModule } from '../../entity-module/GraphicEntityModule.js';
 
-
 function getMouseOverFunc(id, tooltip) {
   return function () {
     tooltip.inside[id] = true;
@@ -12,7 +11,7 @@ function getMouseOverFunc(id, tooltip) {
 
 function getMouseOutFunc(id, tooltip) {
   return function () {
- //   delete tooltip.inside[id];
+    delete tooltip.inside[id];
   };
 }
 
@@ -36,14 +35,12 @@ function getMouseMoveFunc(tooltip, container, module) {
         x: pos.x * entityModule.coeff,
         y: pos.y * entityModule.coeff
       };
-      window.alert("Got: " + x + " " + y);
       const showing = [];
       const ids = Object.keys(tooltip.inside).map(n => +n);
 
       for (let id of ids) {
         if (tooltip.inside[id]) 
         {
-
           const entity = entityModule.entities.get(id);
           const state = entity && getEntityState(entity, module.currentFrame.number);
           if (!state || state.alpha === 0 || !state.visible) {
@@ -55,14 +52,34 @@ function getMouseMoveFunc(tooltip, container, module) {
       }
 
       if (showing.length) {
+        ////setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft
+          var cellsize = 24;
+          var scale = 1080.0 / (cellsize*module.size + 2);
+          var y0 = 0;
+          var frameright = 1155*1.2;
+          var frameleft = 15*1.2;
+          var x0 = (frameright-frameleft -1080)/2+frameleft;
         const tooltipBlocks = [];
+        
         for (let show of showing) {
           const entity = entityModule.entities.get(show);
+
           const state = getEntityState(entity, module.currentFrame.number);
           if (state !== null) {
-            let tooltipBlock;
+            var tooltipBlock = '';
             const params = module.currentFrame.registered[show];
-
+            if(params != null)
+              for (var key in params) {
+                    // check if the property/key is defined in the object itself, not in parent
+                  if (params.hasOwnProperty(key)) {           
+                    tooltipBlocks.push(key + ": " + params[key] );
+                  }
+              }
+          // if(params){
+          //   if(params.Type) tooltipBlocks.push("Type: " + params.Type);
+          //   if(params.Owner) tooltipBlocks.push("Owner: " + params.Owner);
+          // }
+          
             tooltip.visible = true;
             const extra = module.currentFrame.extraText[show];
             if (extra && extra.length) {
@@ -71,7 +88,10 @@ function getMouseMoveFunc(tooltip, container, module) {
             tooltipBlocks.push(tooltipBlock);
           }
         }
-        tooltip.label.text = tooltipBlocks.join('\n──────────\n')
+
+        tooltipBlocks.push("x: " + Math.floor((point.x-x0)/cellsize/scale));
+        tooltipBlocks.push("y: " + Math.floor((point.y-y0)/cellsize/scale));
+        tooltip.label.text = tooltipBlocks.join('\n')
       } else {
         tooltip.visible = false;
       }
@@ -100,8 +120,9 @@ export class TooltipModule {
     this.interactive = {};
     this.previousFrame = {
       registrations: {},
-      extra: {}
+      extra: {},
     };
+    this.size = 1080;
     this.lastProgress = 1;
     this.lastFrame = 0;
 
@@ -116,10 +137,10 @@ export class TooltipModule {
     this.currentProgress = progress;
   }
 
-  handleFrameData(frameInfo, [registrations, extra]) {
-    const registered = { ...registrations };
+  handleFrameData(frameInfo, [registrations, extra, size]) {
+    const registered = { ...this.previousFrame.registered, ...registrations };
     const extraText = { ...this.previousFrame.extraText, ...extra };
-    
+    this.size = size;
     Object.keys(registrations).forEach(
       k => {
         this.interactive[k] = true;

@@ -2,10 +2,7 @@ package com.codingame.game.view;
 
 import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
-import com.codingame.gameengine.module.entities.Entity;
-import com.codingame.gameengine.module.entities.GraphicEntityModule;
-import com.codingame.gameengine.module.entities.Group;
-import com.codingame.gameengine.module.entities.Sprite;
+import com.codingame.gameengine.module.entities.*;
 import modules.TooltipModule;
 import vindinium.*;
 
@@ -79,13 +76,19 @@ public class ViewController {
         waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
         int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
+        boardGroup = this.entityManager.createGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
+        BufferedGroup internalGroup = this.entityManager.createBufferedGroup();
+        boardGroup.add(internalGroup);
+        tooltipModule.registerEntity(boardGroup);
+        tooltipModule.setSize(board.size);
         for (int y = -1; y <= board.size; y++) {
             for (int x = -1; x <= board.size; x++) {
                 Group group = this.entityManager.createGroup();
-                boardGroup.add(group);
+                internalGroup.add(group);
                 group.setX(CELL_SIZE * (x + 1))
                         .setY(CELL_SIZE * (y + 1));
+                if(x>= 0 && y >= 0 && x < board.size && y < board.size)
+                    addCellTooltip(group, x, y);
 
                 boolean outOfGrid = x == -1 || x == board.size || y == -1 || y == board.size;
                 boolean isWater = outOfGrid || waterTiles.contains(board.tiles[x][y]);
@@ -198,12 +201,11 @@ public class ViewController {
             _heroes.add(view);
             _views.add(view);
             createTooltip(view._model, view._sprite);
-            createTooltip(view._model, view.getView());
             boardGroup.add(view.getView());
         }
 
         for (Mine mine : board.mines) {
-            MineView view = new MineView(mine, entityManager);
+            MineView view = new MineView(mine, entityManager, tooltipModule);
             _views.add(view);
             boardGroup.add(view.getView());
         }
@@ -212,6 +214,13 @@ public class ViewController {
         _views.add(new BloodView(board, entityManager, boardGroup));
 
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
+    }
+
+    public void addCellTooltip(Entity entity, int x, int y){
+        Map<String, Object> params = new HashMap<>();
+        params.put("x", x+"");
+        params.put("y", y+"");
+        tooltipModule.registerEntity(entity, params);
     }
 
     public void onRound(List<Tile> fightLocations) {
@@ -304,13 +313,13 @@ public class ViewController {
 
     private void createTooltip(Hero unit, Entity entity){
         Map<String, Object> params = new HashMap<>();
+        params.put("Type", "Hero");
         params.put("Owner", unit.player.getNicknameToken());
 
         //TODO: load parameters the viewer needs for the general tooltip contents.
         tooltipModule.registerEntity(entity, params);
-
-      //  updateTooltip(unit, entity);
     }
+
 
     private void updateTooltip(Hero unit, Entity entity){
         tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
