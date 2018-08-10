@@ -12,7 +12,7 @@ function getMouseOverFunc(id, tooltip) {
 
 function getMouseOutFunc(id, tooltip) {
   return function () {
-    delete tooltip.inside[id];
+ //   delete tooltip.inside[id];
   };
 }
 
@@ -27,6 +27,8 @@ function getEntityState(entity, frame, progress) {
 function getMouseMoveFunc(tooltip, container, module) {
   return function (ev) {
     if (tooltip) {
+        
+
       var pos = ev.data.getLocalPosition(container);
       tooltip.x = pos.x;
       tooltip.y = pos.y;
@@ -34,12 +36,14 @@ function getMouseMoveFunc(tooltip, container, module) {
         x: pos.x * entityModule.coeff,
         y: pos.y * entityModule.coeff
       };
-
+      window.alert("Got: " + x + " " + y);
       const showing = [];
       const ids = Object.keys(tooltip.inside).map(n => +n);
 
       for (let id of ids) {
-        if (tooltip.inside[id]) {
+        if (tooltip.inside[id]) 
+        {
+
           const entity = entityModule.entities.get(id);
           const state = entity && getEntityState(entity, module.currentFrame.number);
           if (!state || state.alpha === 0 || !state.visible) {
@@ -115,7 +119,7 @@ export class TooltipModule {
   handleFrameData(frameInfo, [registrations, extra]) {
     const registered = { ...registrations };
     const extraText = { ...this.previousFrame.extraText, ...extra };
-
+    
     Object.keys(registrations).forEach(
       k => {
         this.interactive[k] = true;

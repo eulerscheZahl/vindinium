@@ -198,6 +198,7 @@ public class ViewController {
             _heroes.add(view);
             _views.add(view);
             createTooltip(view._model, view._sprite);
+            createTooltip(view._model, view.getView());
             boardGroup.add(view.getView());
         }
 
@@ -210,7 +211,6 @@ public class ViewController {
         _views.add(new GoldCounterView(board.heroes, entityManager));
         _views.add(new BloodView(board, entityManager, boardGroup));
 
-        //TOO MUCH DATA :sob:
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
@@ -309,7 +309,7 @@ public class ViewController {
         //TODO: load parameters the viewer needs for the general tooltip contents.
         tooltipModule.registerEntity(entity, params);
 
-        updateTooltip(unit, entity);
+      //  updateTooltip(unit, entity);
     }
 
     private void updateTooltip(Hero unit, Entity entity){
