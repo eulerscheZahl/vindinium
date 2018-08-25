@@ -238,19 +238,24 @@ public class ViewController {
     }
 
     private ArrayList<Point> takeRegion(ArrayList<ArrayList<Point>> regions, boolean[][] filled, TileType[][] types, int size) {
-        for (TileType type : new TileType[]{TileType.WATER, TileType.ROCK, TileType.EARTH}) {
-            for (ArrayList<Point> region : regions) {
-                if (types[region.get(0).x][region.get(0).y] == type) return region;
-            }
+        for (ArrayList<Point> region : regions) {
+            if (types[region.get(0).x][region.get(0).y] == TileType.WATER) return region;
         }
 
         ArrayList<Point> best = null;
         double score = 1e9;
         for (ArrayList<Point> region : regions) {
             double tmp = regionScore(region, filled, types, size);
+            if (tmp == 0) return region;
             if (tmp < score) {
                 best = region;
                 score = regionScore(region, filled, types, size);
+            }
+        }
+
+        for (TileType type : new TileType[]{TileType.ROCK, TileType.EARTH}) {
+            for (ArrayList<Point> region : regions) {
+                if (types[region.get(0).x][region.get(0).y] == type) return region;
             }
         }
         return best;
