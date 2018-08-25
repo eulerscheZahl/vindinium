@@ -34,4 +34,9 @@ public class Tile {
         int dy = this.y - t.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
+
+    public void shrink() {
+        x--;
+        y--;
+    }
 }

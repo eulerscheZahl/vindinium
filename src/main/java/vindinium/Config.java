@@ -22,6 +22,7 @@ public class Config {
             fillBoard(board, spawnPos);
             if (board.countMines() == 0) continue;
             if (!placeTaverns(board, spawnPos)) continue;
+            while (board.shrink()) size = board.size;
 
             players.get(0).hero = new Hero(players.get(0), spawnPos);
             players.get(1).hero = new Hero(players.get(1), board.tiles[spawnPos.x][size - spawnPos.y - 1]);

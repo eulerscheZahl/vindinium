@@ -76,16 +76,29 @@ public class Board {
         }
     }
 
-    public Tile neighbors9(Tile t, int dir) {
-        if (t == null) return null;
-        int x = t.x + dirX[dir];
-        int y = t.y + dirY[dir];
-        if(IsOnBoard(x, y)) return tiles[x][y];
-        return null;
-    }
-
     public boolean IsOnBoard(int x, int y){
         return x >= 0 && x < size && y >= 0 && y < size;
+    }
+
+    public boolean shrink() {
+        if (size <= 10) return false;
+        for (int i = 0; i < size; i++) {
+            if (tiles[0][i].type != Tile.Type.Wall ||
+                    tiles[i][0].type != Tile.Type.Wall ||
+                    tiles[size - 1][i].type != Tile.Type.Wall ||
+                    tiles[i][size - 1].type != Tile.Type.Wall) return false;
+        }
+        size -= 2;
+        Tile[][] newTiles = new Tile[size][size];
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                newTiles[x][y] = tiles[x+1][y+1];
+                tiles[x+1][y+1].shrink();
+            }
+        }
+        this.tiles = newTiles;
+
+        return true;
     }
 
     public String print() {
