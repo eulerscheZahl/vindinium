@@ -7,9 +7,12 @@ import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.*;
 
+import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -29,13 +32,26 @@ public class ViewController {
         TileFactory.getInstance().init(entityManager);
     }
 
+    private enum TileType {
+        WATER, EARTH, ROCK, PLAIN
+    }
+
+    private class Point {
+        public int x, y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
     public void createGrid(Board board) {
         entityManager.createSprite().setImage("Frame.png").setZIndex(2).setAnchor(0).setScale(1.2);
         entityManager.createRectangle().setFillColor(0x5c8ab8).setZIndex(-100000).setLineWidth(0).setWidth(1920).setHeight(1080);
 
         this.board = board;
-        double terrainRandomnessFactor = 0.7 + 0.2 * Math.random();
-        double terrainMineTavernFactor = 1.4 + 0.8 * Math.random();
+        double terrainRandomnessFactor = 0.7 + 0.2 * Config.random.nextDouble();
+        double terrainMineTavernFactor = 1.4 + 0.8 * Config.random.nextDouble();
 
         List<Tile> allTiles = new ArrayList<>();
         for (int y = 0; y < board.size; y++) {
@@ -47,8 +63,13 @@ public class ViewController {
         List<Tile> mines = allTiles.stream().filter(tile -> tile.type == Tile.Type.Mine).collect(Collectors.toList());
 
         double[] noise = generatePerlinNoise(board.size, board.size, 4, 0.05, 0.3);
-        String[][] tileTypes = new String[board.size][board.size];
-        for (int i = 0; i < allTiles.size(); i++) {
+        TileType[][] tileTypes = new TileType[board.size + 2][board.size + 2];
+        for (int x = 0; x < board.size + 2; x++) {
+            for (int y = 0; y < board.size + 2; y++) {
+                tileTypes[x][y] = TileType.WATER;
+            }
+        }
+        for (int i = 0; i < board.size * board.size; i++) {
             Tile t = allTiles.get(i);
             double mineFactor = 0, tavernFactor = 0;
             for (Tile tavern : taverns) {
@@ -61,7 +82,7 @@ public class ViewController {
             mineFactor /= mines.size();
 
             double value = noise[i] * terrainRandomnessFactor + terrainMineTavernFactor * (mineFactor - tavernFactor);
-            tileTypes[t.x][t.y] = value < 0.3 ? "earth" : value > 0.8 - 0.1 * Math.random() ? "rock" : "plain";
+            tileTypes[t.x + 1][t.y + 1] = value < 0.3 ? TileType.EARTH : value > 0.8 - 0.1 * Config.random.nextDouble() ? TileType.ROCK : TileType.PLAIN;
         }
 
         List<Tile> waterTiles = connected(allTiles.stream()
@@ -69,84 +90,46 @@ public class ViewController {
                         .collect(Collectors.toList()),
                 new ArrayList<Tile>(),
                 t -> indexIsWaterEnoughSurroundedInitial(t));
-        final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
-        waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
-        final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
-        int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
+        int initialSize;
+        do {
+            initialSize = waterTiles.size();
+            final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
+            waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
+        } while (waterTiles.size() != initialSize);
+        for (Tile water : waterTiles) {
+            tileTypes[water.x + 1][water.y + 1] = TileType.WATER;
+        }
+
+        ArrayList<ArrayList<Point>> regions = findRegions(tileTypes, board.size + 2);
+        boolean[][] filled = new boolean[board.size + 2][board.size + 2];
+
         boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
-        for (int y = -1; y <= board.size; y++) {
-            for (int x = -1; x <= board.size; x++) {
+        while (regions.size() > 0) {
+            ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);
+            regions.remove(take);
+            for (Point p : take) {
+                int x = p.x - 1;
+                int y = p.y - 1;
+                filled[p.x][p.y] = true;
                 Group group = this.entityManager.createGroup();
                 boardGroup.add(group);
-                group.setX(CELL_SIZE * (x + 1))
-                        .setY(CELL_SIZE * (y + 1));
+                group.setX(CELL_SIZE * p.x)
+                        .setY(CELL_SIZE * p.y);
 
-                boolean outOfGrid = x == -1 || x == board.size || y == -1 || y == board.size;
-                boolean isWater = outOfGrid || waterTiles.contains(board.tiles[x][y]);
+                String name = smoothEdge(p, tileTypes, filled, board.size + 2);
+                if (!TileFactory.getInstance().tiles.containsKey(name))
+                    name = tileTypes[p.x][p.y].toString().toLowerCase();
 
-                String name = compassRoseTileName(groundForPosition(x, y, tileTypes),
-                        "water",
-                        tile -> tile != null && !finalWater.contains(tile),
-                        s -> TileFactory.getInstance().tiles.containsKey(s),
-                        outOfGrid ? null : board.tiles[x][y]);
-                if (outOfGrid) {
-                    String dir = "";
-                    int[] dx = {0, 0, 1, -1, 1, -1, 1, -1};
-                    int[] dy = {1, -1, 0, 0, 1, 1, -1, -1};
-                    String[] orientation = {"s", "n", "e", "w", "se", "sw", "ne", "nw"};
-                    for (int i = 0; i < 8; i++) {
-                        int x_ = x + dx[i];
-                        int y_ = y + dy[i];
-                        if (board.IsOnBoard(x_, y_) && !waterTiles.contains(board.tiles[x_][y_])) {
-                            dir += orientation[i];
-                            name = "water_" + tileTypes[x_][y_];
-                        }
-                        if (i >= 3 && !dir.equals("")) break;
-                    }
-
-                    if (!dir.equals(""))
-                        name += "_" + dir;
-                }
-
-                if (!name.contains("water")) {
-                    String current = tileTypes[x][y];
-                    String north = y > 0 ? tileTypes[x][y - 1] : current;
-                    String east = x < board.size - 1 ? tileTypes[x + 1][y] : current;
-                    String south = y < board.size - 1 ? tileTypes[x][y + 1] : current;
-                    String west = x > 0 ? tileTypes[x - 1][y] : current;
-                    String dir = "";
-                    String other = "";
-                    if (hirarchyLess(current, north)) {
-                        dir += "n";
-                        other = north;
-                    }
-                    if (hirarchyLess(current, south)) {
-                        dir += "s";
-                        other = south;
-                    }
-                    if (hirarchyLess(current, east)) {
-                        dir += "e";
-                        other = east;
-                    }
-                    if (hirarchyLess(current, west)) {
-                        dir += "w";
-                        other = west;
-                    }
-                    if (!other.equals("")) {
-                        String tmp = name + "_" + other + "_" + dir;
-                        if (TileFactory.getInstance().tiles.containsKey(tmp)) name = tmp;
-                    }
-                }
                 if (name.equals("plain")) {
                     double center = 2 * (0.5 - Math.abs(noise[x + y * board.size] - 0.5));
-                    if (Math.random() < 0.2 * center) {
+                    if (Config.random.nextDouble() < 0.2 * center) {
                         String[] choices = {
                                 "plain_grass1",
                                 "plain_grass2",
                                 "plain_flower",
                                 "plain_grass3"
                         };
-                        name = choices[(int) (Math.random() * Math.random() * 4)];
+                        name = choices[(int) (Config.random.nextDouble() * Config.random.nextDouble() * 4)];
                     }
                 }
                 name = TileFactory.getInstance().tiles.get(name);
@@ -159,11 +142,11 @@ public class ViewController {
                         .setZIndex(-1);
                 group.add(background);
 
-                if (!outOfGrid && !isWater) {
+                if (tileTypes[p.x][p.y] != TileType.WATER) {
                     if (board.tiles[x][y].type == Tile.Type.Wall) {
                         String[] cand = new String[]{TileFactory.getInstance().tree};
-                        if (tileTypes[x][y].equals("rock")) cand = TileFactory.getInstance().rockStuff;
-                        if (tileTypes[x][y].equals("earth")) cand = TileFactory.getInstance().earthStuff;
+                        if (tileTypes[x][y] == TileType.ROCK) cand = TileFactory.getInstance().rockStuff;
+                        if (tileTypes[x][y] == TileType.EARTH) cand = TileFactory.getInstance().earthStuff;
                         String obst = cand[Config.random.nextInt(cand.length)];
                         Sprite obstacle = entityManager.createSprite()
                                 .setImage(obst)
@@ -205,9 +188,119 @@ public class ViewController {
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
+    private String smoothEdge(Point p, TileType[][] tileTypes, boolean[][] filled, int size) {
+        TileType current = tileTypes[p.x][p.y];
+        String result = current.toString();
+        String direction = "";
+        TileType other = current;
+        if (p.y > 0 && current != tileTypes[p.x][p.y - 1] && !filled[p.x][p.y - 1]) {
+            direction += "N";
+            other = tileTypes[p.x][p.y - 1];
+        }
+        if (p.y < size - 1 && current != tileTypes[p.x][p.y + 1] && !filled[p.x][p.y + 1]) {
+            direction += "S";
+            other = tileTypes[p.x][p.y + 1];
+        }
+        if (p.x > 0 && current != tileTypes[p.x - 1][p.y] && !filled[p.x - 1][p.y]) {
+            other = tileTypes[p.x - 1][p.y];
+            direction += "W";
+        }
+        if (p.x < size - 1 && current != tileTypes[p.x + 1][p.y] && !filled[p.x + 1][p.y]) {
+            other = tileTypes[p.x + 1][p.y];
+            direction += "E";
+        }
+        if (direction.length() > 1) {
+            current = other;
+            other = tileTypes[p.x][p.y];
+            if (direction.equals("NE")) direction = "SW";
+            else if (direction.equals("NW")) direction = "SE";
+            else if (direction.equals("SE")) direction = "NW";
+            else if (direction.equals("SW")) direction = "NE";
+        }
+        if (other == current) {
+            if (p.x > 0 && p.y > 0 && current != tileTypes[p.x - 1][p.y - 1] && !filled[p.x - 1][p.y - 1]) {
+                direction += "NW";
+                other = tileTypes[p.x - 1][p.y - 1];
+            }
+            if (p.x < size - 1 && p.y > 0 && current != tileTypes[p.x + 1][p.y - 1] && !filled[p.x + 1][p.y - 1]) {
+                direction += "NE";
+                other = tileTypes[p.x + 1][p.y - 1];
+            }
+            if (p.x > 0 && p.y < size - 1 && current != tileTypes[p.x - 1][p.y + 1] && !filled[p.x - 1][p.y + 1]) {
+                direction += "SW";
+                other = tileTypes[p.x - 1][p.y + 1];
+            }
+            if (p.x < size - 1 && p.y < size - 1 && current != tileTypes[p.x + 1][p.y + 1] && !filled[p.x + 1][p.y + 1]) {
+                direction += "SE";
+                other = tileTypes[p.x + 1][p.y + 1];
+            }
+        }
+
+        if (current != other) result = current + "_" + other + "_" + direction;
+        return result.toLowerCase();
+    }
+
+    private ArrayList<Point> takeRegion(ArrayList<ArrayList<Point>> regions, boolean[][] filled, TileType[][] types, int size) {
+        for (TileType type : new TileType[]{TileType.WATER, TileType.ROCK, TileType.EARTH}) {
+            for (ArrayList<Point> region : regions) {
+                if (types[region.get(0).x][region.get(0).y] == type) return region;
+            }
+        }
+
+        ArrayList<Point> best = null;
+        double score = 1e9;
+        for (ArrayList<Point> region : regions) {
+            double tmp = regionScore(region, filled, types, size);
+            if (tmp < score) {
+                best = region;
+                score = regionScore(region, filled, types, size);
+            }
+        }
+        return best;
+    }
+
+    private double regionScore(ArrayList<Point> region, boolean[][] filled, TileType[][] types, int size) {
+        double errors = 0;
+        for (Point p : region) {
+            String name = smoothEdge(p, types, filled, size);
+            if (!TileFactory.getInstance().tiles.containsKey(name)) errors++;
+        }
+
+        return errors * errors / region.size();
+    }
+
+    private ArrayList<ArrayList<Point>> findRegions(TileType[][] tileTypes, int size) {
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+        ArrayList<ArrayList<Point>> result = new ArrayList<>();
+        boolean[][] visited = new boolean[size][size];
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if (visited[x][y]) continue;
+                ArrayList<Point> region = new ArrayList<>();
+                Stack<Point> stack = new Stack<>();
+                stack.push(new Point(x, y));
+                visited[x][y] = true;
+                while (stack.size() > 0) {
+                    Point p = stack.pop();
+                    region.add(p);
+                    for (int dir = 0; dir < 4; dir++) {
+                        Point q = new Point(p.x + dx[dir], p.y + dy[dir]);
+                        if (q.x < 0 || q.x >= size || q.y < 0 || q.y >= size || visited[q.x][q.y]) continue;
+                        if (tileTypes[p.x][p.y] != tileTypes[q.x][q.y]) continue;
+                        visited[q.x][q.y] = true;
+                        stack.push(q);
+                    }
+                }
+                result.add(region);
+            }
+        }
+        return result;
+    }
+
     public void onRound(List<Tile> fightLocations) {
         ViewController.fightLocations = fightLocations;
-        for(IView view : _views){
+        for (IView view : _views) {
             view.onRound();
         }
     }
@@ -223,78 +316,6 @@ public class ViewController {
                 .setAlpha(1.0);
         group.add(spawn);
         boardGroup.add(group);
-    }
-
-    private boolean hirarchyLess(String s1, String s2) {
-        HashMap<String, Integer> hirarchy = new HashMap<>();
-        hirarchy.put(null, 0);
-        hirarchy.put("water", 0);
-        hirarchy.put("earth", 1);
-        hirarchy.put("rock", 2);
-        hirarchy.put("plain", 3);
-        return hirarchy.get(s1) < hirarchy.get(s2);
-    }
-
-    private String compassRoseTileName(String primaryName, String secondaryName, Predicate<Tile> isPrimary, Predicate<String> isValidName, Tile tile) {
-        String p = primaryName;
-        String s = secondaryName;
-
-        boolean P = isPrimary.test(board.neighbors9(tile, 8));
-        boolean N = isPrimary.test(board.neighbors9(tile, 0));
-        boolean S = isPrimary.test(board.neighbors9(tile, 2));
-        boolean W = isPrimary.test(board.neighbors9(tile, 3));
-        boolean E = isPrimary.test(board.neighbors9(tile, 1));
-        boolean NW = isPrimary.test(board.neighbors9(tile, 4));
-        boolean SW = isPrimary.test(board.neighbors9(tile, 5));
-        boolean NE = isPrimary.test(board.neighbors9(tile, 6));
-        boolean SE = isPrimary.test(board.neighbors9(tile, 7));
-
-        int nb = (N ? 1 : 0) + (NE ? 1 : 0) + (E ? 1 : 0) + (SE ? 1 : 0) + (S ? 1 : 0) + (SW ? 1 : 0) + (W ? 1 : 0) + (NW ? 1 : 0);
-        String name = "";
-
-        if (P) {
-            return p;
-        } else {
-            if (nb == 0) return s;
-            if (N && S || W && E) return s;
-
-            if (SE && nb == 1) name = s + "_" + p + "_se";
-            if (isValidName.test(name)) return name;
-            if (SW && nb == 1) name = s + "_" + p + "_sw";
-            if (isValidName.test(name)) return name;
-            if (NE && nb == 1) name = s + "_" + p + "_ne";
-            if (isValidName.test(name)) return name;
-            if (NW && nb == 1) name = s + "_" + p + "_nw";
-            if (isValidName.test(name)) return name;
-
-            if (N && W) name = p + "_" + s + "_se";
-            if (isValidName.test(name)) return name;
-            if (S && W) name = p + "_" + s + "_ne";
-            if (isValidName.test(name)) return name;
-            if (N && E) name = p + "_" + s + "_sw";
-            if (isValidName.test(name)) return name;
-            if (S && E) name = p + "_" + s + "_nw";
-            if (isValidName.test(name)) return name;
-
-            if (E && !W) name = s + "_" + p + "_e";
-            if (isValidName.test(name)) return name;
-            if (W && !E) name = s + "_" + p + "_w";
-            if (isValidName.test(name)) return name;
-            if (N && !S) name = s + "_" + p + "_n";
-            if (isValidName.test(name)) return name;
-            if (S && !N) name = s + "_" + p + "_s";
-            if (isValidName.test(name)) return name;
-
-            return s;
-        }
-    }
-
-    private String groundForPosition(int x, int y, String[][] tileTypes) {
-        if (x == -1) x++;
-        if (y == -1) y++;
-        if (x == board.size) x--;
-        if (y == board.size) y--;
-        return tileTypes[x][y];
     }
 
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {
