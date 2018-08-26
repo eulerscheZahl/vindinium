@@ -87,13 +87,17 @@ public class ViewController {
                         .collect(Collectors.toList()),
                 new ArrayList<Tile>(),
                 t -> indexIsWaterEnoughSurroundedInitial(t));
-        final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
-        waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
-        final List<Tile> finalWater = waterTiles.stream().collect(Collectors.toList());
-        int xPos = (entityManager.getWorld().getWidth() - entityManager.getWorld().getHeight()) / 2;
-        boardGroup = this.entityManager.createGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
-        BufferedGroup internalGroup = this.entityManager.createBufferedGroup();
-        boardGroup.add(internalGroup);
+        int initialSize;
+        do {
+            initialSize = waterTiles.size();
+            final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
+            waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
+        } while (waterTiles.size() != initialSize);
+
+        for (Tile water : waterTiles) {
+            tileTypes[water.x + 1][water.y + 1] = TileType.WATER;
+        }
+
         tooltipModule.registerEntity(boardGroup);
         tooltipModule.setSize(board.size);
 
@@ -145,7 +149,7 @@ public class ViewController {
         for (int x = 0; x < board.size + 2; x++) {
             for (int y = 0; y < board.size + 2; y++) {
                 if (tileTypes[x][y] != TileType.WATER) {
-                    if (board.tiles[x-1][y-1].type == Tile.Type.Wall) {
+                    if (board.tiles[x - 1][y - 1].type == Tile.Type.Wall) {
                         String[] cand = new String[]{TileFactory.getInstance().tree};
                         if (tileTypes[x][y] == TileType.ROCK) cand = TileFactory.getInstance().rockStuff;
                         if (tileTypes[x][y] == TileType.EARTH) cand = TileFactory.getInstance().earthStuff;
@@ -157,7 +161,7 @@ public class ViewController {
                                 .setZIndex(-1);
                         innerGroup.add(obstacle);
                     }
-                    if (board.tiles[x-1][y-1].type == Tile.Type.Tavern) {
+                    if (board.tiles[x - 1][y - 1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png")
                                 .setX(x * CELL_SIZE)
@@ -305,10 +309,10 @@ public class ViewController {
         return result;
     }
 
-    public void addCellTooltip(Entity entity, int x, int y){
+    public void addCellTooltip(Entity entity, int x, int y) {
         Map<String, Object> params = new HashMap<>();
-        params.put("x", x+"");
-        params.put("y", y+"");
+        params.put("x", x + "");
+        params.put("y", y + "");
         tooltipModule.registerEntity(entity, params);
     }
 
@@ -318,8 +322,8 @@ public class ViewController {
             view.onRound();
         }
 
-        for(HeroView view : _heroes){
-       //     updateTooltip(view._model, view.getView());
+        for (HeroView view : _heroes) {
+            //     updateTooltip(view._model, view.getView());
         }
     }
 
@@ -336,18 +340,7 @@ public class ViewController {
         boardGroup.add(group);
     }
 
-    private boolean hirarchyLess(String s1, String s2) {
-        HashMap<String, Integer> hirarchy = new HashMap<>();
-        hirarchy.put(null, 0);
-        hirarchy.put("water", 0);
-        hirarchy.put("earth", 1);
-        hirarchy.put("rock", 2);
-        hirarchy.put("plain", 3);
-        return hirarchy.get(s1) < hirarchy.get(s2);
-    }
-
-
-    private void createTooltip(Hero unit, Entity entity){
+    private void createTooltip(Hero unit, Entity entity) {
         Map<String, Object> params = new HashMap<>();
         params.put("Type", "Hero");
         params.put("Owner", unit.player.getNicknameToken());
@@ -357,7 +350,7 @@ public class ViewController {
     }
 
 
-    private void updateTooltip(Hero unit, Entity entity){
+    private void updateTooltip(Hero unit, Entity entity) {
         tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
                 "\ny: " + unit.tile.y);
     }
