@@ -98,6 +98,9 @@ public class ViewController {
             tileTypes[water.x + 1][water.y + 1] = TileType.WATER;
         }
 
+        boardGroup = this.entityManager.createGroup()
+                .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
+                .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
         tooltipModule.registerEntity(boardGroup);
         tooltipModule.setSize(board.size);
 
