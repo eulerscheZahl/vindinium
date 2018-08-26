@@ -139,25 +139,28 @@ public class ViewController {
                         .setY(p.y * CELL_SIZE)
                         .setZIndex(-1);
                 innerGroup.add(background);
-
-                if (tileTypes[p.x][p.y] != TileType.WATER) {
-                    if (board.tiles[x][y].type == Tile.Type.Wall) {
+            }
+        }
+        for (int x = 0; x < board.size + 2; x++) {
+            for (int y = 0; y < board.size + 2; y++) {
+                if (tileTypes[x][y] != TileType.WATER) {
+                    if (board.tiles[x-1][y-1].type == Tile.Type.Wall) {
                         String[] cand = new String[]{TileFactory.getInstance().tree};
                         if (tileTypes[x][y] == TileType.ROCK) cand = TileFactory.getInstance().rockStuff;
                         if (tileTypes[x][y] == TileType.EARTH) cand = TileFactory.getInstance().earthStuff;
                         String obst = cand[Config.random.nextInt(cand.length)];
                         Sprite obstacle = entityManager.createSprite()
                                 .setImage(obst)
-                                .setX(p.x * CELL_SIZE)
-                                .setY(p.y * CELL_SIZE)
+                                .setX(x * CELL_SIZE)
+                                .setY(y * CELL_SIZE)
                                 .setZIndex(-1);
                         innerGroup.add(obstacle);
                     }
-                    if (board.tiles[x][y].type == Tile.Type.Tavern) {
+                    if (board.tiles[x-1][y-1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png")
-                                .setX(p.x * CELL_SIZE)
-                                .setY(p.y * CELL_SIZE)
+                                .setX(x * CELL_SIZE)
+                                .setY(y * CELL_SIZE - 4)
                                 .setZIndex(-1);
                         innerGroup.add(tav);
                     }
@@ -169,7 +172,7 @@ public class ViewController {
         for (Hero hero : board.heroes) {
             HeroView view = new HeroView(hero, entityManager);
             _views.add(view);
-            boardGroup.add(view.getView());
+            bufferedGroup.add(view.getView());
         }
         for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager);
@@ -178,10 +181,10 @@ public class ViewController {
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
-        _views.add(new BloodView(board, entityManager, boardGroup));
+        _views.add(new BloodView(board, entityManager, bufferedGroup));
 
         //TOO MUCH DATA :sob:
-        _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
+        _views.add(new FootstepsView(board.heroes, entityManager, bufferedGroup));
     }
 
     private String smoothEdge(Point p, TileType[][] tileTypes, boolean[][] filled, int size) {
