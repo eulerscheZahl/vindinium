@@ -75,11 +75,7 @@ function getMouseMoveFunc(tooltip, container, module) {
                     tooltipBlocks.push(key + ": " + params[key] );
                   }
               }
-          // if(params){
-          //   if(params.Type) tooltipBlocks.push("Type: " + params.Type);
-          //   if(params.Owner) tooltipBlocks.push("Owner: " + params.Owner);
-          // }
-          
+
             tooltip.visible = true;
             const extra = module.currentFrame.extraText[show];
             if (extra && extra.length) {
@@ -89,9 +85,9 @@ function getMouseMoveFunc(tooltip, container, module) {
           }
         }
 
-        tooltipBlocks.push("x: " + Math.floor((point.x-x0)/cellsize/scale));
-        tooltipBlocks.push("y: " + Math.floor((point.y-y0)/cellsize/scale));
-        tooltip.label.text = tooltipBlocks.join('\n')
+        tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale));
+        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale));
+        tooltip.label.text = tooltipBlocks.join('\n');
       } else {
         tooltip.visible = false;
       }

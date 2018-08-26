@@ -67,13 +67,13 @@ public class Referee extends AbstractReferee {
     }
 
     private void sendInputs(Player player, boolean initial) {
-        System.err.println("input to player  " + player.getIndex());
-        if (initial) {
-            System.err.println(board.print().trim());
-            System.err.println(player.getIndex());
-        }
-        System.err.println(board.boardState().trim());
-        System.err.println("------------");
+        //System.err.println("input to player  " + player.getIndex());
+        //if (initial) {
+        //    System.err.println(board.print().trim());
+        //    System.err.println(player.getIndex());
+        //}
+        //System.err.println(board.boardState().trim());
+        //System.err.println("------------");
 
         if (initial) {
             player.sendInputLine(board.print().trim());
@@ -85,7 +85,7 @@ public class Referee extends AbstractReferee {
     @Override
     public void gameTurn(int turn) {
         Player player = gameManager.getPlayer(turn % 4);
-        System.err.println("TURN: " + turn);
+        //System.err.println("TURN: " + turn);
 
         String action = "WAIT";
         try {
@@ -138,8 +138,8 @@ public class Referee extends AbstractReferee {
             }
         }
 
-        hero.move(board, target);
-        List<Tile> fightLocations = hero.fight(board);
+        hero.move(board, target, gameManager);
+        List<Tile> fightLocations = hero.fight(board, gameManager);
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);

@@ -70,27 +70,25 @@
                     <const>100</const>.</li>
                 <li>Times out, i.e. fails to send an order in the given delay, he stays in place until the game is finished. Note that he can still win if he has more gold than the other players at the end of the game.</li>
             </ul>
-
+            <br>
             <strong>End of a hero turn</strong> After the hero has moved (or decided to stay in place), a few things happen:
-
+            <br><br>
             <em>Fights</em>
             <br> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance,
-            in this situation, at the end of Hero 1 (@1) turn:
-
-            <!-- TODO: image -->
-            <pre>@1@2
-@3</pre> @1 attacks @2. @1 does not attack @3 because it's
+            in this situation, at the end of the green Hero's turn:
+            <img src="https://imgur.com/a/YAy99I6" style="width: 100%;border-radius: 5px;"> <br>
+            Green atacks blue. Green does not attack yellow because it's
             <const>2</const> moves away. The attacking hero doesn't lose any life point, the defending one loses
             <const>20</const> life points. If the defender dies (see: Death of a hero), the attacking hero obtains control of all the loser's gold mines.
-
+            <br> <br>
             <em>Mining</em>
             <br> After the the fight's resolution, he gains one gold per controlled mine.
-
+            <br> <br>
             <em>Thirst</em>
             <br> Then, the hero loses
             <const>1</const> HP (because all this action made him thirsty). Note that heroes don't die of thirst. Worse case, they fall to
             <const>1</const> HP.
-
+            <br> <br>
             <strong>Death of a hero</strong>
             <br> When a hero HP drops to
             <const>0</const>, he ceases to live. The hero immediately respawns on the map at its initial position, with HP=
@@ -98,7 +96,7 @@
             being at the respawn position of one of the heroes... A hero can't die of thirst. Thirst can put the hero HP to
             <const>1</const>, but not to
             <const>0</const>.
-
+            <br><br>
             <strong>End of the game</strong>
             <br> The game ends when the maximum number of
             <const>200</const> turns has been reached. The winner is the hero with the greatest amount of gold. If two players have the same amount of gold, there is no winner.
@@ -237,20 +235,17 @@
                 <const>
                     10
                 </const>
-                ≤
+                â‰¤
                 <var>
      size
-    </var> ≤
+    </var> â‰¤
                 <const>
                     30
                 </const>
                 <br>
-                <br> Response time first turn <= <const>1000</const> ms
-                <br> Response time per turn <= <const>50</const> ms
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
+                <br> Response time first turn â‰¤
+                <const>1000</const> ms
+                <br> Response time per turn â‰¤
+                <const>50</const> ms
             </div>
         </div>

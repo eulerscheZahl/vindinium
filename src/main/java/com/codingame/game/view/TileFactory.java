@@ -190,7 +190,17 @@ public class TileFactory {
                 {"plain_grass1", 10, 0},
                 {"plain_grass2", 11, 0},
                 {"plain_grass3", 11, 1},
-                {"plain_flower", 10, 1}
+                {"plain_flower", 10, 1},
+
+                // alias names
+                {"plain_earth_n", 6, 0},
+                {"plain_earth_w", 5, 1},
+                {"plain_earth_e", 7, 1},
+                {"plain_earth_s", 6, 2},
+                {"plain_rock_n", 6, 3},
+                {"plain_rock_w", 5, 4},
+                {"plain_rock_e", 7, 4},
+                {"plain_rock_s", 6, 5},
         };
         for (Object[] objects : tilesConf) {
             tiles.put((String) objects[0], lowlands[(int) objects[2] * 16 + (int) objects[1]]);
