@@ -100,7 +100,11 @@ public class ViewController {
         ArrayList<ArrayList<Point>> regions = findRegions(tileTypes, board.size + 2);
         boolean[][] filled = new boolean[board.size + 2][board.size + 2];
 
-        boardGroup = this.entityManager.createBufferedGroup().setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
+        boardGroup = this.entityManager.createGroup()
+                .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
+                .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
+        Group bufferedGroup = this.entityManager.createBufferedGroup();
+        boardGroup.add(bufferedGroup);
         while (regions.size() > 0) {
             ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);
             regions.remove(take);
@@ -109,7 +113,7 @@ public class ViewController {
                 int y = p.y - 1;
                 filled[p.x][p.y] = true;
                 Group group = this.entityManager.createGroup();
-                boardGroup.add(group);
+                bufferedGroup.add(group);
                 group.setX(CELL_SIZE * p.x)
                         .setY(CELL_SIZE * p.y);
 
@@ -175,7 +179,7 @@ public class ViewController {
         for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager);
             _views.add(view);
-            boardGroup.add(view.getView());
+            bufferedGroup.add(view.getView());
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
