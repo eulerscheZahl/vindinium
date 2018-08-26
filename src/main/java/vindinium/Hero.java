@@ -1,6 +1,7 @@
 package vindinium;
 
 import com.codingame.game.Player;
+import com.codingame.gameengine.core.MultiplayerGameManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,14 @@ public class Hero {
         this.life = maxLife;
     }
 
-    public void drinkBeer() {
+    public void drinkBeer(MultiplayerGameManager<Player> gameManager) {
         if (gold >= beerGold) {
             gold -= beerGold;
             life += beerLife;
             if (life > maxLife) life = maxLife;
+            gameManager.addToGameSummary(player.getNicknameToken() + " buys beer");
+        } else {
+            gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + ": not enough gold to buy beer");
         }
     }
 
@@ -52,18 +56,20 @@ public class Hero {
         }
     }
 
-    public void fightMine(Board board, Tile target) {
+    public void fightMine(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
         if (target.mine.owner == this) return;
         life -= mineLife;
         if (life > 0) {
             target.mine.conquer(this);
+            gameManager.addToGameSummary(player.getNicknameToken() + " conquered a mine");
         } else {
             board.transferMines(this, null);
             respawn(board);
+            gameManager.addToGameSummary(player.getNicknameToken() + " died while trying to conquer a mine");
         }
     }
 
-    public List<Tile> fight(Board board) {
+    public List<Tile> fight(Board board, MultiplayerGameManager<Player> gameManager) {
         ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
@@ -72,6 +78,9 @@ public class Hero {
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);
+                gameManager.addToGameSummary(player.getNicknameToken() + " kills " + h.player.getNicknameToken());
+            } else {
+                gameManager.addToGameSummary(player.getNicknameToken() + " attacks " + h.player.getNicknameToken());
             }
         }
         return fightLocations;
@@ -81,7 +90,7 @@ public class Hero {
         life -= defendLife;
     }
 
-    public void move(Board board, Tile target) {
+    public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
         if (tile.distance(target) > 1) {
             target = FindTarget(board, target);
         }
@@ -92,13 +101,14 @@ public class Hero {
         else if (tile.y > target.y) lastDir = 3;
 
         if (target.type == Tile.Type.Wall) {
+            gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk into a wall");
             return;
         }
 
         if (target.type == Tile.Type.Tavern) {
-            drinkBeer();
+            drinkBeer(gameManager);
         } else if (target.type == Tile.Type.Mine) {
-            fightMine(board, target);
+            fightMine(board, target, gameManager);
         } else {
             final Tile t = target;
             if (board.heroes.stream().anyMatch(h -> h.tile == t)) {
