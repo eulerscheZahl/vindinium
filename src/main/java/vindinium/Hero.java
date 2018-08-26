@@ -141,7 +141,7 @@ public class Hero {
             if (distFromTarget[next.x][next.y] == distFromTarget[tile.x][tile.y] - 1) return next;
         }
 
-        return null;
+        return tile;
     }
 
     public void finalize(Board board) {
