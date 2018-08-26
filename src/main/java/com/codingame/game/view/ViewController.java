@@ -105,6 +105,8 @@ public class ViewController {
                 .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
         Group bufferedGroup = this.entityManager.createBufferedGroup();
         boardGroup.add(bufferedGroup);
+        Group innerGroup = this.entityManager.createGroup();
+        bufferedGroup.add(innerGroup);
         while (regions.size() > 0) {
             ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);
             regions.remove(take);
@@ -112,10 +114,6 @@ public class ViewController {
                 int x = p.x - 1;
                 int y = p.y - 1;
                 filled[p.x][p.y] = true;
-                Group group = this.entityManager.createGroup();
-                bufferedGroup.add(group);
-                group.setX(CELL_SIZE * p.x)
-                        .setY(CELL_SIZE * p.y);
 
                 String name = smoothEdge(p, tileTypes, filled, board.size + 2);
                 if (!TileFactory.getInstance().tiles.containsKey(name))
@@ -137,11 +135,10 @@ public class ViewController {
 
                 Sprite background = entityManager.createSprite()
                         .setImage(name)
-                        .setBaseHeight(CELL_SIZE)
-                        .setBaseWidth(CELL_SIZE)
-                        .setAlpha(1.0)
+                        .setX(p.x * CELL_SIZE)
+                        .setY(p.y * CELL_SIZE)
                         .setZIndex(-1);
-                group.add(background);
+                innerGroup.add(background);
 
                 if (tileTypes[p.x][p.y] != TileType.WATER) {
                     if (board.tiles[x][y].type == Tile.Type.Wall) {
@@ -151,20 +148,18 @@ public class ViewController {
                         String obst = cand[Config.random.nextInt(cand.length)];
                         Sprite obstacle = entityManager.createSprite()
                                 .setImage(obst)
-                                .setBaseHeight(CELL_SIZE)
-                                .setBaseWidth(CELL_SIZE)
-                                .setAlpha(1.0)
+                                .setX(p.x * CELL_SIZE)
+                                .setY(p.y * CELL_SIZE)
                                 .setZIndex(-1);
-                        group.add(obstacle);
+                        innerGroup.add(obstacle);
                     }
                     if (board.tiles[x][y].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png")
-                                .setBaseHeight(CELL_SIZE)
-                                .setBaseWidth(CELL_SIZE)
-                                .setAlpha(1.0)
+                                .setX(p.x * CELL_SIZE)
+                                .setY(p.y * CELL_SIZE)
                                 .setZIndex(-1);
-                        group.add(tav);
+                        innerGroup.add(tav);
                     }
                 }
             }
