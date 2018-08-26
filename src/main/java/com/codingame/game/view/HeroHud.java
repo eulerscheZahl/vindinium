@@ -7,7 +7,7 @@ import vindinium.Hero;
 
 public class HeroHud {
 
-    private Group _container;
+    public Group _container;
     public Hero _hero;
     private Text _messageText;
     private Text _goldText;

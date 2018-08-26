@@ -62,9 +62,4 @@ public class BloodView implements IView {
             _boardGroup.add(sprites[tile.x][tile.y]);
         }
     }
-
-    @Override
-    public Group getView() {
-        return null;
-    }
 }

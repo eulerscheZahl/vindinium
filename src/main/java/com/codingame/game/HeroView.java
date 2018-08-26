@@ -12,7 +12,7 @@ import vindinium.Tile;
 public class HeroView implements IView {
     private int _healthBarHeight = 32;
     public Hero _model;
-    private Sprite _sprite;
+    public Sprite _sprite;
     private Group _group;
     private GraphicEntityModule _entityManager;
     private Tile _lastTile;
@@ -75,7 +75,6 @@ public class HeroView implements IView {
         }
     }
 
-    @Override
     public Group getView() {
         return _group;
     }

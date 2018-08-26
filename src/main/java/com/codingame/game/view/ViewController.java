@@ -2,29 +2,29 @@ package com.codingame.game.view;
 
 import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
-import com.codingame.gameengine.module.entities.GraphicEntityModule;
-import com.codingame.gameengine.module.entities.Group;
-import com.codingame.gameengine.module.entities.Sprite;
+import com.codingame.gameengine.module.entities.*;
+import modules.TooltipModule;
 import vindinium.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ViewController {
     private GraphicEntityModule entityManager;
     private MultiplayerGameManager<Player> gameManager;
+    private TooltipModule tooltipModule;
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
     private ArrayList<IView> _views = new ArrayList<>();
+    private ArrayList<HeroView> _heroes = new ArrayList<>();
     public static List<Tile> fightLocations;
 
-    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager) {
+    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
         this.entityManager = entityManager;
         this.gameManager = gameManager;
+        this.tooltipModule = tooltipModule;
 
         TileFactory.getInstance().init(entityManager);
     }
@@ -93,9 +93,16 @@ public class ViewController {
             final List<Tile> initialWater = waterTiles.stream().collect(Collectors.toList());
             waterTiles = waterTiles.stream().filter(t -> indexIsWaterEnoughSurroundedExpand(t, initialWater)).collect(Collectors.toList());
         } while (waterTiles.size() != initialSize);
+
         for (Tile water : waterTiles) {
             tileTypes[water.x + 1][water.y + 1] = TileType.WATER;
         }
+
+        boardGroup = this.entityManager.createGroup()
+                .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
+                .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
+        tooltipModule.registerEntity(boardGroup);
+        tooltipModule.setSize(board.size);
 
         ArrayList<ArrayList<Point>> regions = findRegions(tileTypes, board.size + 2);
         boolean[][] filled = new boolean[board.size + 2][board.size + 2];
@@ -107,6 +114,7 @@ public class ViewController {
         boardGroup.add(bufferedGroup);
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
+
         while (regions.size() > 0) {
             ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);
             regions.remove(take);
@@ -144,7 +152,7 @@ public class ViewController {
         for (int x = 0; x < board.size + 2; x++) {
             for (int y = 0; y < board.size + 2; y++) {
                 if (tileTypes[x][y] != TileType.WATER) {
-                    if (board.tiles[x-1][y-1].type == Tile.Type.Wall) {
+                    if (board.tiles[x - 1][y - 1].type == Tile.Type.Wall) {
                         String[] cand = new String[]{TileFactory.getInstance().tree};
                         if (tileTypes[x][y] == TileType.ROCK) cand = TileFactory.getInstance().rockStuff;
                         if (tileTypes[x][y] == TileType.EARTH) cand = TileFactory.getInstance().earthStuff;
@@ -156,7 +164,7 @@ public class ViewController {
                                 .setZIndex(-1);
                         innerGroup.add(obstacle);
                     }
-                    if (board.tiles[x-1][y-1].type == Tile.Type.Tavern) {
+                    if (board.tiles[x - 1][y - 1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png")
                                 .setX(x * CELL_SIZE)
@@ -171,11 +179,14 @@ public class ViewController {
 
         for (Hero hero : board.heroes) {
             HeroView view = new HeroView(hero, entityManager);
+            _heroes.add(view);
             _views.add(view);
+            createTooltip(view._model, view._sprite);
             bufferedGroup.add(view.getView());
         }
+
         for (Mine mine : board.mines) {
-            MineView view = new MineView(mine, entityManager);
+            MineView view = new MineView(mine, entityManager, tooltipModule);
             _views.add(view);
             bufferedGroup.add(view.getView());
         }
@@ -183,8 +194,7 @@ public class ViewController {
         _views.add(new GoldCounterView(board.heroes, entityManager));
         _views.add(new BloodView(board, entityManager, bufferedGroup));
 
-        //TOO MUCH DATA :sob:
-        _views.add(new FootstepsView(board.heroes, entityManager, bufferedGroup));
+        _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
 
     private String smoothEdge(Point p, TileType[][] tileTypes, boolean[][] filled, int size) {
@@ -302,10 +312,21 @@ public class ViewController {
         return result;
     }
 
+    public void addCellTooltip(Entity entity, int x, int y) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("x", x + "");
+        params.put("y", y + "");
+        tooltipModule.registerEntity(entity, params);
+    }
+
     public void onRound(List<Tile> fightLocations) {
         ViewController.fightLocations = fightLocations;
         for (IView view : _views) {
             view.onRound();
+        }
+
+        for (HeroView view : _heroes) {
+            //     updateTooltip(view._model, view.getView());
         }
     }
 
@@ -320,6 +341,29 @@ public class ViewController {
                 .setAlpha(1.0);
         group.add(spawn);
         boardGroup.add(group);
+    }
+
+    private void createTooltip(Hero unit, Entity entity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("Type", "Hero");
+        params.put("Owner", unit.player.getNicknameToken());
+
+        //TODO: load parameters the viewer needs for the general tooltip contents.
+        tooltipModule.registerEntity(entity, params);
+    }
+
+
+    private void updateTooltip(Hero unit, Entity entity) {
+        tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
+                "\ny: " + unit.tile.y);
+    }
+
+    private String groundForPosition(int x, int y, String[][] tileTypes) {
+        if (x == -1) x++;
+        if (y == -1) y++;
+        if (x == board.size) x--;
+        if (y == board.size) y--;
+        return tileTypes[x][y];
     }
 
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {
