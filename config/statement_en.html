@@ -10,7 +10,6 @@
         <br> Making their way in the dangerous woods
         <br> Slashing goblins and stealing gold mines
         <br> And looking for a tavern where to drink their gold
-        <br>
     </div>
     <!-- GOAL -->
     <div class="statement-section statement-goal">
@@ -46,14 +45,14 @@
                     <const>0</const>, this is the success indicator of the hero. At the end of the game, heroes will be scored based on their gold value.</li>
             </ul>
 
-            <strong>Resolution of a turn</strong> A bot must issue one order per turn. Possible orders are:
+            <strong>Resolution of a turn</strong><br> A bot must issue one order per turn. Possible orders are:
             <command>WAIT</command>,
             <command>NORTH</command>,
             <command>EAST</command>,
             <command>SOUTH</command> or
             <command>WEST</command>. Once the order is executed, the hero stays, or moves one square in the given direction.
-
-            <em>Hero move</em> If the hero:
+            <br><br>
+            <em>Hero move</em><br> If the hero:
             <ul>
                 <li>Tries to step out of the map, or over a tree, nothing happens.</li>
                 <li>Steps into a gold mine, he stays in place, and:
@@ -71,13 +70,15 @@
                 <li>Times out, i.e. fails to send an order in the given delay, he stays in place until the game is finished. Note that he can still win if he has more gold than the other players at the end of the game.</li>
             </ul>
             <br>
-            <strong>End of a hero turn</strong> After the hero has moved (or decided to stay in place), a few things happen:
+            <strong>End of a hero turn</strong><br> After the hero has moved (or decided to stay in place), a few things happen:
             <br><br>
             <em>Fights</em>
             <br> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance,
-            in this situation, at the end of the green Hero's turn:
-            <img src="https://imgur.com/a/YAy99I6" style="width: 100%;border-radius: 5px;"> <br>
-            Green atacks blue. Green does not attack yellow because it's
+            in this situation, at the end of the green Hero's turn: <br>
+            <a href="https://i.imgur.com/qvOh4LO.png" target="_blank" style="border: none;">
+                <img src="https://i.imgur.com/qvOh4LO.png" style="border-radius: 5px;">
+        </a>
+            <br> Green atacks blue. Green does not attack yellow because it's
             <const>2</const> moves away. The attacking hero doesn't lose any life point, the defending one loses
             <const>20</const> life points. If the defender dies (see: Death of a hero), the attacking hero obtains control of all the loser's gold mines.
             <br> <br>
@@ -235,17 +236,17 @@
                 <const>
                     10
                 </const>
-                â‰¤
+                &le;
                 <var>
      size
-    </var> â‰¤
+ </var> &le;
                 <const>
                     30
                 </const>
                 <br>
-                <br> Response time first turn â‰¤
+                <br> Response time first turn &le;
                 <const>1000</const> ms
-                <br> Response time per turn â‰¤
+                <br> Response time per turn &le;
                 <const>50</const> ms
             </div>
         </div>
