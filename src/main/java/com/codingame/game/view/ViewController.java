@@ -114,6 +114,7 @@ public class ViewController {
         boardGroup.add(bufferedGroup);
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
+        tooltipModule.registerEntity(boardGroup);
 
         while (regions.size() > 0) {
             ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);
@@ -182,7 +183,7 @@ public class ViewController {
             _heroes.add(view);
             _views.add(view);
             createTooltip(view._model, view._sprite);
-            bufferedGroup.add(view.getView());
+            boardGroup.add(view.getView());
         }
 
         for (Mine mine : board.mines) {
@@ -326,12 +327,12 @@ public class ViewController {
         }
 
         for (HeroView view : _heroes) {
-            //     updateTooltip(view._model, view.getView());
+                 updateTooltip(view._model, view.getView());
         }
     }
 
     public void setSpawn(Tile tile, int index) {
-        Group group = this.entityManager.createGroup().setZIndex(-2);
+        Group group = this.entityManager.createGroup().setZIndex(-100);
         group.setX(CELL_SIZE * (tile.x + 1) - 4)
                 .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(9);
         Sprite spawn = entityManager.createSprite()

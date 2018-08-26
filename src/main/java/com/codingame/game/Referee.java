@@ -36,6 +36,7 @@ public class Referee extends AbstractReferee {
     public void init() {
         gameManager.setMaxTurns(ViewConstants.MAX_ROUNDS);
         gameManager.setTurnMaxTime(50);
+        gameManager.setFrameDuration(250);
 
         Properties params = gameManager.getGameParameters();
         System.err.println("seed: " + getSeed(params));
@@ -49,7 +50,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void initGridView() {
-        view = new ViewController(graphicEntityModule, gameManager, tooltipModule);//, tooltipModule);
+        view = new ViewController(graphicEntityModule, gameManager, tooltipModule);
         view.createGrid(board);
 
         int c = 0;

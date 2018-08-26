@@ -1,7 +1,7 @@
-import { ErrorLog } from '../../core/ErrorLog.js';
-import { WIDTH, HEIGHT } from '../../core/constants.js';
-import * as utils from '../../core/utils.js';
-import { api as entityModule } from '../../entity-module/GraphicEntityModule.js';
+import { ErrorLog } from '../core/ErrorLog.js';
+import { WIDTH, HEIGHT } from '../core/constants.js';
+import * as utils from '../core/utils.js';
+import { api as entityModule } from '../entity-module/GraphicEntityModule.js';
 
 function getMouseOverFunc(id, tooltip) {
   return function () {
@@ -54,11 +54,11 @@ function getMouseMoveFunc(tooltip, container, module) {
       if (showing.length) {
         ////setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft
           var cellsize = 24;
-          var scale = 1080.0 / (cellsize*module.size + 2);
+          var scale =  HEIGHT / (cellsize*module.size + 2);
           var y0 = 0;
           var frameright = 1155*1.2;
           var frameleft = 15*1.2;
-          var x0 = (frameright-frameleft -1080)/2+frameleft;
+          var x0 = (frameright-frameleft - HEIGHT)/2+frameleft;
         const tooltipBlocks = [];
         
         for (let show of showing) {
@@ -85,8 +85,8 @@ function getMouseMoveFunc(tooltip, container, module) {
           }
         }
 
-        tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale));
-        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale));
+        tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
+        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0.5));
         tooltip.label.text = tooltipBlocks.join('\n');
       } else {
         tooltip.visible = false;

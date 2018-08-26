@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.codingame.game.Player;
 import com.codingame.gameengine.core.AbstractPlayer;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.Module;
@@ -24,7 +25,7 @@ public class TooltipModule implements Module {
     int size;
 
     @Inject
-    TooltipModule(GameManager<AbstractPlayer> gameManager) {
+    public TooltipModule(GameManager<AbstractPlayer> gameManager) {
         this.gameManager = gameManager;
         gameManager.registerModule(this);
         registrations = new HashMap<>();
