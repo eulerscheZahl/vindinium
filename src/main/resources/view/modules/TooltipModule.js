@@ -81,9 +81,14 @@ function getMouseMoveFunc(tooltip, container, module) {
               }
 
             tooltip.visible = true;
-            const extra = module.currentFrame.extraText[show];
+            var extra = module.currentFrame.extraText[show];
             if (extra && extra.length) {
               tooltipBlock = extra;
+            }else{
+                extra = module.currentFrame.extraText[show-1];
+                if (extra && extra.length) {
+                  tooltipBlock = extra;
+                }
             }
             tooltipBlocks.push(tooltipBlock);
           }
