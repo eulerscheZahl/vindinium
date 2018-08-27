@@ -359,14 +359,6 @@ public class ViewController {
                 "\ny: " + unit.tile.y);
     }
 
-    private String groundForPosition(int x, int y, String[][] tileTypes) {
-        if (x == -1) x++;
-        if (y == -1) y++;
-        if (x == board.size) x--;
-        if (y == board.size) y--;
-        return tileTypes[x][y];
-    }
-
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {
         List<Tile> news = new ArrayList<>();
         positions = positions.stream().filter(p -> canReach.test(p)).collect(Collectors.toList());

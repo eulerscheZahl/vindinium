@@ -54,11 +54,8 @@ public class BloodView implements IView {
             hits[tile.x][tile.y]++;
             sprites[tile.x][tile.y] = _entityModule.createSprite().setImage(bloods[1 + 7 * bloodType[tile.x][tile.y]])
                     .setZIndex(1)
-                    .setAnchor(0.5)
-                    .setBaseWidth(ViewController.CELL_SIZE)
-                    .setBaseHeight(ViewController.CELL_SIZE)
-                    .setX(ViewConstants.getCellPos(tile.x) + ViewController.CELL_SIZE - 4, Curve.NONE)
-                    .setY(ViewConstants.getCellPos(tile.y) + ViewController.CELL_SIZE - 4, Curve.NONE);
+                    .setX((tile.x + 1) * ViewController.CELL_SIZE - 4)
+                    .setY((tile.y + 1) * ViewController.CELL_SIZE - 4);
             _boardGroup.add(sprites[tile.x][tile.y]);
         }
     }
