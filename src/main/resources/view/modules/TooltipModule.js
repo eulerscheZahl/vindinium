@@ -57,7 +57,12 @@ function getMouseMoveFunc(tooltip, container, module) {
           var frameright = 1155*1.2;
           var frameleft = 15*1.2;
           var x0 = (frameright-frameleft - HEIGHT)/2+frameleft;
+          if(point.x > frameleft+HEIGHT+cellsize*scale || point.x < frameleft) {
+            tooltip.visible = false;
+            return;
+          }
         const tooltipBlocks = [];
+        var found = false;
         
         for (let show of showing) {
           const entity = entityModule.entities.get(show);
@@ -69,8 +74,9 @@ function getMouseMoveFunc(tooltip, container, module) {
             if(params != null)
               for (var key in params) {
                     // check if the property/key is defined in the object itself, not in parent
-                  if (params.hasOwnProperty(key)) {           
-                    tooltipBlocks.push(key + ": " + params[key] );
+                  if (params.hasOwnProperty(key)) {         
+                  var txt =  key + ": " + params[key] ;
+                    tooltipBlocks.push(txt);
                   }
               }
 
@@ -81,18 +87,18 @@ function getMouseMoveFunc(tooltip, container, module) {
             }
             tooltipBlocks.push(tooltipBlock);
           }
-          break;
+          if(found) break;
         }
 
         tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
-        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0.5));
+        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0));
         tooltip.label.text = tooltipBlocks.join('\n');
       } else {
         tooltip.visible = false;
       }
 
-      tooltip.background.width = 200;
-      tooltip.background.height = 150;
+      tooltip.background.width = tooltip.label.width + 20;
+      tooltip.background.height = tooltip.label.height + 20;
 
       tooltip.pivot.x = -80;
       tooltip.pivot.y = -50;

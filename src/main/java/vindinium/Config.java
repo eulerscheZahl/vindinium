@@ -11,7 +11,7 @@ public class Config {
     private static int minePercent;
 
     public static Board generateMap(List<Player> players) {
-        size = 10 + 2 * random.nextInt(10);
+        size = 10 + 2 * random.nextInt(3);
         wallPercent = 10 + random.nextInt(32);
         minePercent = 3 + random.nextInt(7);
 

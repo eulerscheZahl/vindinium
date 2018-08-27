@@ -34,8 +34,8 @@ public class HeroView implements IView {
                 .setZIndex(-1);
         _group.add(_sprite);
 
-        _group.add(entityManager.createRectangle().setWidth(3).setHeight(_healthBarHeight).setX(-5).setFillColor(0xff0000));
-        _group.add(_healthBar = entityManager.createRectangle().setWidth(3).setHeight(_healthBarHeight).setX(-5).setFillColor(0x00ff00));
+        _group.add(entityManager.createRectangle().setWidth(_healthBarHeight).setHeight(3).setX(0).setY(-5).setFillColor(0xff0000));
+        _group.add(_healthBar = entityManager.createRectangle().setWidth(_healthBarHeight).setHeight(3).setX(0).setY(-5).setFillColor(0x00ff00));
     }
 
     private boolean wasDead;
@@ -48,7 +48,7 @@ public class HeroView implements IView {
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
             _entityManager.commitEntityState(0.8, _sprite, _group);
             _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
-                    .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
+                    .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4).setZIndex(_model.tile.y);
 
             _entityManager.commitEntityState(1.0, _sprite, _group);
             _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
@@ -65,13 +65,14 @@ public class HeroView implements IView {
             if(_model.tile != _lastTile) {
                 _lastTile = _model.tile;
                 _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
-                        .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4);
+                        .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4)
+                        .setZIndex(_model.tile.y);
             }
         }
 
         if(_lastLife != _model.life){
             _lastLife = _model.life;
-            _healthBar.setHeight((int)(_healthBarHeight*_model.life/100.0));
+            _healthBar.setWidth((int)(_healthBarHeight*_model.life/100.0));
         }
     }
 

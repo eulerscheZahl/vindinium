@@ -110,7 +110,7 @@ public class ViewController {
         boardGroup = this.entityManager.createGroup()
                 .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
                 .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
-        Group bufferedGroup = this.entityManager.createBufferedGroup();
+        Group bufferedGroup = this.entityManager.createBufferedGroup().setZIndex(-10);
         boardGroup.add(bufferedGroup);
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
@@ -162,15 +162,15 @@ public class ViewController {
                                 .setImage(obst)
                                 .setX(x * CELL_SIZE)
                                 .setY(y * CELL_SIZE)
-                                .setZIndex(-1);
-                        innerGroup.add(obstacle);
+                                .setZIndex(y);
+                        boardGroup.add(obstacle);
                     }
                     if (board.tiles[x - 1][y - 1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png")
                                 .setX(x * CELL_SIZE)
                                 .setY(y * CELL_SIZE - 4)
-                                .setZIndex(-1);
+                                .setZIndex(y);
                         createTooltip(tav, "Tavern");
                         boardGroup.add(tav);
                     }
@@ -190,7 +190,6 @@ public class ViewController {
         for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager, tooltipModule);
             _views.add(view);
-            //createTooltip(view.getView(), "Mine");
             boardGroup.add(view.getView());
         }
 
@@ -336,7 +335,7 @@ public class ViewController {
     public void setSpawn(Tile tile, int index) {
         Group group = this.entityManager.createGroup().setZIndex(-100);
         group.setX(CELL_SIZE * (tile.x + 1) - 4)
-                .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(9);
+                .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(-1);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)
@@ -362,8 +361,7 @@ public class ViewController {
     }
 
     private void updateTooltip(Hero unit, Entity entity) {
-        tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
-                "\ny: " + unit.tile.y);
+        tooltipModule.updateExtraTooltipText(entity, "Life: " + unit.life);
     }
 
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {
