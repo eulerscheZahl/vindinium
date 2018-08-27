@@ -26,8 +26,6 @@ function getEntityState(entity, frame, progress) {
 function getMouseMoveFunc(tooltip, container, module) {
   return function (ev) {
     if (tooltip) {
-        
-
       var pos = ev.data.getLocalPosition(container);
       tooltip.x = pos.x;
       tooltip.y = pos.y;
@@ -83,6 +81,7 @@ function getMouseMoveFunc(tooltip, container, module) {
             }
             tooltipBlocks.push(tooltipBlock);
           }
+          break;
         }
 
         tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
@@ -92,10 +91,10 @@ function getMouseMoveFunc(tooltip, container, module) {
         tooltip.visible = false;
       }
 
-      tooltip.background.width = tooltip.label.width + 20;
-      tooltip.background.height = tooltip.label.height + 20;
+      tooltip.background.width = 200;
+      tooltip.background.height = 150;
 
-      tooltip.pivot.x = -30;
+      tooltip.pivot.x = -80;
       tooltip.pivot.y = -50;
 
       if (tooltip.y - tooltip.pivot.y + tooltip.height > HEIGHT) {

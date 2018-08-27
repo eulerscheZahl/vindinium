@@ -171,7 +171,8 @@ public class ViewController {
                                 .setX(x * CELL_SIZE)
                                 .setY(y * CELL_SIZE - 4)
                                 .setZIndex(-1);
-                        innerGroup.add(tav);
+                        createTooltip(tav, "Tavern");
+                        boardGroup.add(tav);
                     }
                 }
             }
@@ -189,7 +190,8 @@ public class ViewController {
         for (Mine mine : board.mines) {
             MineView view = new MineView(mine, entityManager, tooltipModule);
             _views.add(view);
-            bufferedGroup.add(view.getView());
+            //createTooltip(view.getView(), "Mine");
+            boardGroup.add(view.getView());
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
@@ -349,10 +351,15 @@ public class ViewController {
         params.put("Type", "Hero");
         params.put("Owner", unit.player.getNicknameToken());
 
-        //TODO: load parameters the viewer needs for the general tooltip contents.
         tooltipModule.registerEntity(entity, params);
     }
 
+    private void createTooltip(Entity entity, String type) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("Type", type);
+
+        tooltipModule.registerEntity(entity, params);
+    }
 
     private void updateTooltip(Hero unit, Entity entity) {
         tooltipModule.updateExtraTooltipText(entity, "x: " + unit.tile.x +
