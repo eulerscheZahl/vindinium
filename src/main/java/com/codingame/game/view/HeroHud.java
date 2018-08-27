@@ -1,5 +1,6 @@
 package com.codingame.game.view;
 
+import com.codingame.game.HeroView;
 import com.codingame.game.Player;
 import com.codingame.game.ViewConstants;
 import com.codingame.gameengine.module.entities.*;
@@ -46,5 +47,6 @@ public class HeroHud {
     public void setLeader(boolean leading){
         if(leading)_medal.setAlpha(1);
         else _medal.setAlpha(0);
+        _hero.leading = leading;
     }
 }

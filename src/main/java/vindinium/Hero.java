@@ -14,6 +14,7 @@ public class Hero {
     public int life;
     public int gold;
     public boolean justRespawned = false;
+    public boolean leading = false;
 
     public static final int maxLife = 100;
     static final int beerLife = 50;

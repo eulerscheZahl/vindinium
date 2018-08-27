@@ -18,7 +18,7 @@ public class ViewController {
     private Board board;
     public Group boardGroup;
     private ArrayList<IView> _views = new ArrayList<>();
-    private ArrayList<HeroView> _heroes = new ArrayList<>();
+    public ArrayList<HeroView> _heroes = new ArrayList<>();
     public static List<Tile> fightLocations;
 
     public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {

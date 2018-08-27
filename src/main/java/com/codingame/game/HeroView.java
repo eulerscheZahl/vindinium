@@ -42,7 +42,7 @@ public class HeroView implements IView {
     private int _lastLife = -1;
     @Override
     public void onRound() {
-
+        int leadingOffset = _model.leading ? 5 : 0;
         if(_model.justRespawned && !wasDead){
             wasDead = true;
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
@@ -51,14 +51,14 @@ public class HeroView implements IView {
                     .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4).setZIndex(_model.tile.y);
 
             _entityManager.commitEntityState(1.0, _sprite, _group);
-            _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
+            _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
         }
         else
         {
             if(_lastDir != _model.lastDir || wasDead) {
                 wasDead = false;
                 _lastDir = _model.lastDir;
-                _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir]);
+                _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
                 _entityManager.commitEntityState(0, _sprite);
             }
 

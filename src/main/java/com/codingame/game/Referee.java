@@ -144,15 +144,15 @@ public class Referee extends AbstractReferee {
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);
-        view.onRound(fightLocations);
-        hero.justRespawned = false;
-
 
         Hero leader = board.getLeader();
         for (HeroHud heroHud : HeroHuds) {
             if (heroHud._hero == leader) heroHud.setLeader(true);
             else heroHud.setLeader(false);
         }
+
+        view.onRound(fightLocations);
+        hero.justRespawned = false;
 
         if (turn == ViewConstants.MAX_ROUNDS-1){
             ArrayList<Hero> heroes = new ArrayList<>();
