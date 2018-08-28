@@ -15,6 +15,7 @@ public class Hero {
     public int gold;
     public boolean justRespawned = false;
     public boolean leading = false;
+    public boolean didFight;
 
     public static final int maxLife = 100;
     static final int beerLife = 50;
@@ -59,6 +60,7 @@ public class Hero {
 
     public void fightMine(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
         if (target.mine.owner == this) return;
+        didFight = true;
         life -= mineLife;
         if (life > 0) {
             target.mine.conquer(this);
@@ -76,6 +78,7 @@ public class Hero {
             if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
             h.defend();
             fightLocations.add(h.tile);
+            didFight = true;
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);

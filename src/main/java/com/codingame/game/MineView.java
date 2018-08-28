@@ -41,7 +41,7 @@ public class MineView implements IView
                 .setBaseWidth(ViewConstants.SPRITE_SIZE)
                 .setAlpha(1.0)
                 .setY(-16)
-                .setZIndex(-1);
+                .setZIndex(-2);
         goblinGroup.add(goblin);
 
         _mineSprite = entityManager.createSprite()

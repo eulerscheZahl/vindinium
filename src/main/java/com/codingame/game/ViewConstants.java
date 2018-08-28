@@ -1,6 +1,8 @@
 package com.codingame.game;
 
 import com.codingame.game.view.ViewController;
+import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.SpriteAnimation;
 
 public class ViewConstants {
     public static int SPRITE_SIZE = 32;
@@ -31,5 +33,24 @@ public class ViewConstants {
         if(player.getIndex()==3) return 0xEFFD5F;
         if(player.getIndex()==0) return 0xFF8080;
         else return 0x00C200;
+    }
+
+    public static SpriteAnimation createAnimation(GraphicEntityModule module, boolean loop, int duration, String... images){
+        return module.createSpriteAnimation().setImages(images).setLoop(loop).setDuration(duration);
+    }
+
+    public static int getAngleFromLastDir(int dir){
+      // if (tile.y < target.y) lastDir = 0;
+      // else if (tile.x > target.x) lastDir = 1;
+      // else if (tile.x < target.x) lastDir = 2;
+      // else if (tile.y > target.y) lastDir = 3;
+        if(dir == 0) return 270;
+        if(dir == 1) return 0;
+        if(dir == 2) return 180;
+        return 90;
+    }
+
+    public static double getRadAngle(int angle){
+        return Math.toRadians(angle);
     }
 }
