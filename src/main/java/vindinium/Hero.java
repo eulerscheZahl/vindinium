@@ -51,7 +51,7 @@ public class Hero {
         tile = spawnPos;
 
         for (Hero h : board.heroes) {
-            if (h == this || tile != h.tile) continue;
+            if (h == this || tile != h.tile || h.life <= 0) continue;
             board.transferMines(h, this);
             h.respawn(board);
         }
@@ -76,6 +76,8 @@ public class Hero {
             if (tile.distance(h.tile) != 1 || this.justRespawned || h.justRespawned) continue;
             h.defend();
             fightLocations.add(h.tile);
+        }
+        for (Hero h : board.heroes) {
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);
