@@ -92,6 +92,7 @@ public class Hero {
     }
 
     public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
+        justRespawned = false;
         if (tile.distance(target) > 1) {
             target = findTarget(board, target);
         }
