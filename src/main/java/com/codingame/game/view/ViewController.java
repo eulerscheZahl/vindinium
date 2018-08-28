@@ -159,18 +159,14 @@ public class ViewController {
                         if (tileTypes[x][y] == TileType.EARTH) cand = TileFactory.getInstance().earthStuff;
                         String obst = cand[Config.random.nextInt(cand.length)];
                         Sprite obstacle = entityManager.createSprite()
-                                .setImage(obst)
-                                .setX(x * CELL_SIZE)
-                                .setY(y * CELL_SIZE)
-                                .setZIndex(y);
+                                .setImage(obst).setZIndex(y);
+                        moveEntity(obstacle, board.tiles[x - 1][y - 1], 0, 0);
                         boardGroup.add(obstacle);
                     }
                     if (board.tiles[x - 1][y - 1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
-                                .setImage("beer2.png")
-                                .setX(x * CELL_SIZE)
-                                .setY(y * CELL_SIZE - 4)
-                                .setZIndex(y);
+                                .setImage("beer2.png").setZIndex(y);
+                        moveEntity(tav, board.tiles[x - 1][y - 1], 0, -4);
                         createTooltip(tav, "Tavern");
                         boardGroup.add(tav);
                     }
@@ -333,9 +329,8 @@ public class ViewController {
     }
 
     public void setSpawn(Tile tile, int index) {
-        Group group = this.entityManager.createGroup().setZIndex(-100);
-        group.setX(CELL_SIZE * (tile.x + 1) - 4)
-                .setY(CELL_SIZE * (tile.y + 1) - 4).setZIndex(-1);
+        Group group = this.entityManager.createGroup().setZIndex(-1);
+        moveEntity(group, tile, 0, -4);
         Sprite spawn = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().spawns[index])
                 .setBaseHeight(CELL_SIZE)
@@ -343,6 +338,12 @@ public class ViewController {
                 .setAlpha(1.0);
         group.add(spawn);
         boardGroup.add(group);
+    }
+
+    public static void moveEntity(Entity entity, Tile tile, int dx, int dy) {
+        // tile offset because there is a frame of water around the board
+        entity.setX((tile.x + 1) * CELL_SIZE + dx)
+                .setY((tile.y + 1) * CELL_SIZE + dy);
     }
 
     private void createTooltip(Hero unit, Entity entity) {

@@ -52,7 +52,7 @@ public class Hero {
         tile = spawnPos;
 
         for (Hero h : board.heroes) {
-            if (h == this || tile != h.tile) continue;
+            if (h == this || tile != h.tile || h.life <= 0) continue;
             board.transferMines(h, this);
             h.respawn(board);
         }
@@ -75,7 +75,7 @@ public class Hero {
     public List<Tile> fight(Board board, MultiplayerGameManager<Player> gameManager) {
         ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
-            if (tile.distance(h.tile) != 1 || h.justRespawned) continue;
+            if (tile.distance(h.tile) != 1 || this.justRespawned || h.justRespawned) continue;
             h.defend();
             fightLocations.add(h.tile);
             didFight = true;
@@ -95,8 +95,9 @@ public class Hero {
     }
 
     public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
+        justRespawned = false;
         if (tile.distance(target) > 1) {
-            target = FindTarget(board, target);
+            target = findTarget(board, target);
         }
 
         if (tile.y < target.y) lastDir = 0;
@@ -122,7 +123,7 @@ public class Hero {
         }
     }
 
-    private Tile FindTarget(Board board, Tile target) {
+    private Tile findTarget(Board board, Tile target) {
         int[][] distToHero = Config.findDistance(board, tile);
         Tile t = tile;
         double toTarget = Integer.MAX_VALUE;

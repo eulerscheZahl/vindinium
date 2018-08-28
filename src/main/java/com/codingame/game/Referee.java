@@ -152,7 +152,6 @@ public class Referee extends AbstractReferee {
         }
 
         view.onRound(fightLocations);
-        hero.justRespawned = false;
 
         if (turn == ViewConstants.MAX_ROUNDS-1){
             ArrayList<Hero> heroes = new ArrayList<>();
