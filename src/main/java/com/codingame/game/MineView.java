@@ -24,16 +24,16 @@ public class MineView implements IView
     private Group _mineGroup;
     private Sprite _mineSprite;
 
-    public MineView(Mine model, GraphicEntityModule entityManager, TooltipModule tooltipModule){
+    public MineView(Mine model, GraphicEntityModule entityManager, TooltipModule tooltipModule) {
         _model = model;
         this.tooltipModule = tooltipModule;
         Tile tile = _model.tile;
 
-        _mineGroup = entityManager.createGroup().setX(ViewController.CELL_SIZE * (tile.x + 1) - 4)
-                .setY(ViewController.CELL_SIZE * (tile.y + 1) - 4).setZIndex    (tile.y);
+        _mineGroup = entityManager.createGroup().setZIndex(tile.y);
+        ViewController.moveEntity(_mineGroup, tile, -4, -4);
 
         Group goblinGroup = entityManager.createGroup();
-        _mineGroup .add(goblinGroup);
+        _mineGroup.add(goblinGroup);
 
         Sprite goblin = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().goblins[4])
