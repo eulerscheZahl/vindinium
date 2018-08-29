@@ -167,7 +167,7 @@ public class ViewController {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png").setZIndex(y);
                         moveEntity(tav, board.tiles[x - 1][y - 1], 0, -4);
-                        createTooltip(tav, "Tavern");
+                        addCellTooltip(tav, x-1, y-1, "Tavern");
                         boardGroup.add(tav);
                     }
                 }
@@ -179,12 +179,12 @@ public class ViewController {
             HeroView view = new HeroView(hero, entityManager);
             _heroes.add(view);
             _views.add(view);
-            createTooltip(view._model, view._sprite);
+            createTooltip(view._model, view._group);
             boardGroup.add(view.getView());
         }
 
         for (Mine mine : board.mines) {
-            MineView view = new MineView(mine, entityManager, tooltipModule);
+            MineView view = new MineView(mine, entityManager, tooltipModule, board);
             _views.add(view);
             boardGroup.add(view.getView());
         }
@@ -310,10 +310,11 @@ public class ViewController {
         return result;
     }
 
-    public void addCellTooltip(Entity entity, int x, int y) {
+    public void addCellTooltip(Entity entity, int x, int y, String type) {
         Map<String, Object> params = new HashMap<>();
-        params.put("x", x + "");
-        params.put("y", y + "");
+        params.put("Type", type);
+        params.put("X", x + "");
+        params.put("Y", y + "");
         tooltipModule.registerEntity(entity, params);
     }
 
@@ -324,7 +325,7 @@ public class ViewController {
         }
 
         for (HeroView view : _heroes) {
-                 updateTooltip(view._model, view.getView());
+             updateTooltip(view._model, view.getView());
         }
     }
 
@@ -350,19 +351,13 @@ public class ViewController {
         Map<String, Object> params = new HashMap<>();
         params.put("Type", "Hero");
         params.put("Owner", unit.player.getNicknameToken());
-
         tooltipModule.registerEntity(entity, params);
-    }
 
-    private void createTooltip(Entity entity, String type) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Type", type);
-
-        tooltipModule.registerEntity(entity, params);
+        updateTooltip(unit, entity);
     }
 
     private void updateTooltip(Hero unit, Entity entity) {
-        tooltipModule.updateExtraTooltipText(entity, "Life: " + unit.life);
+        tooltipModule.updateExtraTooltipText(entity, "Life: " + unit.life + " \nX: " + unit.tile.x + "\nY: "+unit.tile.y);
     }
 
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {

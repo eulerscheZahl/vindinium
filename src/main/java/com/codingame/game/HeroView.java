@@ -12,7 +12,7 @@ public class HeroView implements IView {
     private int _healthBarHeight = 32;
     public Hero _model;
     public Sprite _sprite;
-    private Group _group;
+    public Group _group;
     private GraphicEntityModule _entityManager;
     private Tile _lastTile;
     private int _lastDir = -1;
@@ -47,23 +47,26 @@ public class HeroView implements IView {
         int leadingOffset = _model.leading ? 5 : 0;
         if(_model.justRespawned && !wasDead){
             wasDead = true;
+
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
+            _entityManager.commitEntityState(0.0, _sprite);
             _entityManager.commitEntityState(0.8, _sprite, _group);
             ViewController.moveEntity(_group, _model.tile, -4, -4);
             _group.setZIndex(_model.tile.y);
 
-            _entityManager.commitEntityState(1.0, _sprite, _group);
             _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
             _model.justRespawned = false;
+            //_entityManager.commitEntityState(1.0, _sprite, _group);
         }
         else
         {
-            if(_lastDir != _model.lastDir || wasDead) {
-                wasDead = false;
+            wasDead = false;
+            if(_lastDir != _model.lastDir) {
                 _lastDir = _model.lastDir;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
                 _entityManager.commitEntityState(0, _sprite);
             }
+
             if(_model.didFight) {
                 animation.reset();
                 _model.didFight = false;

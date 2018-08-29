@@ -96,7 +96,9 @@ public class TooltipModule implements Module {
 
     public void updateExtraTooltipText(Entity<?> entity, String... lines) {
         int id = entity.getId();
-        if (!deepEquals(lines, extra.get(id))) {
+        if (!deepEquals(lines, extra.get(id)))
+        {
+
             newExtra.put(id, lines);
             extra.put(id, lines);
         }

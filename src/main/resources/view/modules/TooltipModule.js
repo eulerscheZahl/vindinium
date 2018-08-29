@@ -75,7 +75,8 @@ function getMouseMoveFunc(tooltip, container, module) {
               for (var key in params) {
                     // check if the property/key is defined in the object itself, not in parent
                   if (params.hasOwnProperty(key)) {         
-                  var txt =  key + ": " + params[key] ;
+                    var txt =  key + ": " + params[key] ;
+                    found = true;
                     tooltipBlocks.push(txt);
                   }
               }
@@ -87,16 +88,20 @@ function getMouseMoveFunc(tooltip, container, module) {
             }else{
                 extra = module.currentFrame.extraText[show-1];
                 if (extra && extra.length) {
+                  found = true;
                   tooltipBlock = extra;
                 }
             }
             tooltipBlocks.push(tooltipBlock);
+            tooltipBlocks.push("");
           }
-          if(found) break;
+          //if(found) break;
+        }
+        if(!found){
+          tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
+          tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0));
         }
 
-        tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
-        tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0));
         tooltip.label.text = tooltipBlocks.join('\n');
       } else {
         tooltip.visible = false;
@@ -117,7 +122,6 @@ function getMouseMoveFunc(tooltip, container, module) {
         tooltip.pivot.x = tooltip.width;
       }
     }
-
   }
 };
 
