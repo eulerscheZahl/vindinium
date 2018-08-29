@@ -3,6 +3,7 @@ package com.codingame.game.view;
 import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.*;
+import modules.FXModule;
 import modules.TooltipModule;
 import vindinium.*;
 
@@ -14,6 +15,7 @@ public class ViewController {
     private GraphicEntityModule entityManager;
     private MultiplayerGameManager<Player> gameManager;
     private TooltipModule tooltipModule;
+    private FXModule fxModule;
     public static int CELL_SIZE = 24;
     private Board board;
     public Group boardGroup;
@@ -21,10 +23,11 @@ public class ViewController {
     public ArrayList<HeroView> _heroes = new ArrayList<>();
     public static List<Tile> fightLocations;
 
-    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
+    public ViewController(GraphicEntityModule entityManager, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule, FXModule fxModule) {
         this.entityManager = entityManager;
         this.gameManager = gameManager;
         this.tooltipModule = tooltipModule;
+        this.fxModule = fxModule;
 
         TileFactory.getInstance().init(entityManager);
     }
@@ -115,6 +118,9 @@ public class ViewController {
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
         tooltipModule.registerEntity(boardGroup);
+        Group debuggroup = ViewConstants.createGrid(entityManager, board.size).setZIndex(-1).setVisible(false);
+        boardGroup.add(debuggroup);
+        fxModule.entityId = debuggroup.getId();
 
         while (regions.size() > 0) {
             ArrayList<Point> take = takeRegion(regions, filled, tileTypes, board.size + 2);

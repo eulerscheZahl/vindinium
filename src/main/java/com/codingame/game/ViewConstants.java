@@ -2,6 +2,8 @@ package com.codingame.game;
 
 import com.codingame.game.view.ViewController;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.entities.Group;
+import com.codingame.gameengine.module.entities.Line;
 import com.codingame.gameengine.module.entities.SpriteAnimation;
 
 public class ViewConstants {
@@ -52,5 +54,26 @@ public class ViewConstants {
 
     public static double getRadAngle(int angle){
         return Math.toRadians(angle);
+    }
+
+    public static Group createGrid(GraphicEntityModule module, int size){
+        int cellWidth = ViewController.CELL_SIZE;
+        int width = ViewController.CELL_SIZE*size;
+        int height = ViewController.CELL_SIZE*size;
+        Group group = module.createGroup();
+        for(int i = 1; i < size+2; i++)
+        {
+            group.add(createLine(module, cellWidth, width+cellWidth, i*cellWidth, i*cellWidth));
+        }
+        for(int j = 1; j < size+2; j++)
+        {
+            group.add(createLine(module, j*cellWidth, j*cellWidth, cellWidth, height+cellWidth));
+        }
+
+        return group.setAlpha(0.3);
+    }
+
+    private static Line createLine(GraphicEntityModule module, int x0, int x1, int y0, int y1){
+        return module.createLine().setX(x0).setY(y0).setX2(x1).setY2(y1).setFillColor(0x000000).setLineWidth(1);
     }
 }

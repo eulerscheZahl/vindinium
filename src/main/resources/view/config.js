@@ -1,9 +1,10 @@
 import { GraphicEntityModule } from './entity-module/GraphicEntityModule.js';
 import { TooltipModule } from './modules/TooltipModule.js';
+import { FXModule, api } from './modules/FXModule.js'
 
 // List of viewer modules that you want to use in your game
 export const modules = [
-	GraphicEntityModule , TooltipModule
+	GraphicEntityModule , TooltipModule, FXModule
 ];
 
 export const playerColors = [
@@ -14,3 +15,18 @@ export const playerColors = [
     ];
 
 export const gameName = 'Vindinium';
+
+
+export const options = [{
+  title: 'SHOW DEBUG GRID',
+  get: function () {
+    return api.showGrid
+  },
+  set: function (value) {
+    api.showGrid = value
+  },
+  values: {
+    'ON': true,
+    'OFF': false
+  }
+}]

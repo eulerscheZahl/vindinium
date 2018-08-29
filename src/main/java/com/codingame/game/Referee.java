@@ -5,6 +5,7 @@ import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.google.inject.Inject;
+import modules.FXModule;
 import modules.TooltipModule;
 import vindinium.Board;
 import vindinium.Config;
@@ -28,6 +29,9 @@ public class Referee extends AbstractReferee {
     @Inject
     private TooltipModule tooltipModule;
 
+    @Inject
+    private FXModule fxModule;
+
     private HeroHud[] HeroHuds = new HeroHud[4];
     private Board board;
     private ViewController view;
@@ -50,7 +54,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void initGridView() {
-        view = new ViewController(graphicEntityModule, gameManager, tooltipModule);
+        view = new ViewController(graphicEntityModule, gameManager, tooltipModule, fxModule);
         view.createGrid(board);
 
         int c = 0;
