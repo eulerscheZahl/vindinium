@@ -105,6 +105,7 @@ public class Referee extends AbstractReferee {
             if (player.getExpectedOutputLines() == 1) {
                 player.setDeactivated();
                 gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " timeout"));
+                gameManager.addToGameSummary("[Error] " + player.getNicknameToken() + " didn't provide any output in time");
             }
         }
 
@@ -139,12 +140,13 @@ public class Referee extends AbstractReferee {
                 if (player.getExpectedOutputLines() == 1) {
                     player.setDeactivated();
                     gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " invalid action: \"" + action + "\""));
+                    gameManager.addToGameSummary("[Error] " + player.getNicknameToken() + " performed an invalid action: " + action);
                 }
             }
         }
 
-        hero.move(board, target, gameManager);
-        List<Tile> fightLocations = hero.fight(board, gameManager);
+        hero.move(board, target, gameManager, tooltipModule);
+        List<Tile> fightLocations = hero.fight(board, gameManager, tooltipModule);
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds[player.getIndex()].OnRound(message);

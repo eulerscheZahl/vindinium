@@ -2,6 +2,8 @@ package vindinium;
 
 import com.codingame.game.Player;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.core.Tooltip;
+import modules.TooltipModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +60,7 @@ public class Hero {
         }
     }
 
-    public void fightMine(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
+    public void fightMine(Board board, Tile target, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
         if (target.mine.owner == this) return;
         didFight = true;
         life -= mineLife;
@@ -68,11 +70,12 @@ public class Hero {
         } else {
             board.transferMines(this, null);
             respawn(board);
+            gameManager.addTooltip(new Tooltip(player.getIndex(), player.getNicknameToken() + " died"));
             gameManager.addToGameSummary(player.getNicknameToken() + " died while trying to conquer a mine");
         }
     }
 
-    public List<Tile> fight(Board board, MultiplayerGameManager<Player> gameManager) {
+    public List<Tile> fight(Board board, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
         ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || this.justRespawned || h.justRespawned) continue;
@@ -82,6 +85,7 @@ public class Hero {
             if (h.life <= 0) {
                 board.transferMines(h, this);
                 h.respawn(board);
+                gameManager.addTooltip(new Tooltip(player.getIndex(), h.player.getNicknameToken() + " died"));
                 gameManager.addToGameSummary(player.getNicknameToken() + " kills " + h.player.getNicknameToken());
             } else {
                 gameManager.addToGameSummary(player.getNicknameToken() + " attacks " + h.player.getNicknameToken());
@@ -94,7 +98,7 @@ public class Hero {
         life -= defendLife;
     }
 
-    public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
+    public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager, TooltipModule tooltipModule) {
         justRespawned = false;
         if (tile.distance(target) > 1) {
             target = findTarget(board, target);
@@ -113,7 +117,7 @@ public class Hero {
         if (target.type == Tile.Type.Tavern) {
             drinkBeer(gameManager);
         } else if (target.type == Tile.Type.Mine) {
-            fightMine(board, target, gameManager);
+            fightMine(board, target, gameManager, tooltipModule);
         } else {
             final Tile t = target;
             if (board.heroes.stream().anyMatch(h -> h.tile == t)) {
