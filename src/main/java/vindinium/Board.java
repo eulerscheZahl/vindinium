@@ -8,9 +8,9 @@ public class Board {
     public int size;
     public List<Mine> mines = new ArrayList<>();
     public List<Hero> heroes = new ArrayList<>();
-                                //N   E   S   W   NW  SW  NE  SE  P
-    private static int[] dirX = { 0,  1,  0, -1,  -1, -1,  1,  1, 0 };
-    private static int[] dirY = { -1, 0,  1,  0,  -1,  1, -1,  1, 0 };
+    //N   E   S   W   NW  SW  NE  SE  P
+    private static int[] dirX = {0, 1, 0, -1, -1, -1, 1, 1, 0};
+    private static int[] dirY = {-1, 0, 1, 0, -1, 1, -1, 1, 0};
 
     public Board(Tile[][] tiles, int size) {
         this.tiles = tiles;
@@ -76,7 +76,7 @@ public class Board {
         }
     }
 
-    public boolean IsOnBoard(int x, int y){
+    public boolean IsOnBoard(int x, int y) {
         return x >= 0 && x < size && y >= 0 && y < size;
     }
 
@@ -92,8 +92,8 @@ public class Board {
         Tile[][] newTiles = new Tile[size][size];
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                newTiles[x][y] = tiles[x+1][y+1];
-                tiles[x+1][y+1].shrink();
+                newTiles[x][y] = tiles[x + 1][y + 1];
+                tiles[x + 1][y + 1].shrink();
             }
         }
         this.tiles = newTiles;
@@ -104,7 +104,7 @@ public class Board {
     public String print() {
         StringBuilder result = new StringBuilder();
         result.append(size + "\n");
-        for(int y = 0; y < size; y++) {
+        for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 result.append(tiles[x][y].toString());
             }
@@ -114,7 +114,7 @@ public class Board {
     }
 
     public String boardState() {
-       StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         result.append((heroes.size() + mines.size()) + "\n");
         for (Hero hero : heroes) {
             result.append(hero.print() + "\n");
@@ -125,13 +125,13 @@ public class Board {
         return result.toString();
     }
 
-    public Hero getLeader(){
+    public Hero getLeader() {
         Hero leader = null;
         int mostGold = 0;
-        for(Hero hero : heroes){
-            if(hero.gold==mostGold){
-                leader=null;
-            }else if(hero.gold>mostGold){
+        for (Hero hero : heroes) {
+            if (hero.gold == mostGold) {
+                leader = null;
+            } else if (hero.gold > mostGold) {
                 mostGold = hero.gold;
                 leader = hero;
             }

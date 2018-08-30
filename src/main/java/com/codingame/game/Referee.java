@@ -32,9 +32,10 @@ public class Referee extends AbstractReferee {
     @Inject
     private FXModule fxModule;
 
-    private HeroHud[] HeroHuds = new HeroHud[4];
+    private List<HeroHud> HeroHuds = new ArrayList<>();
     private Board board;
     private ViewController view;
+    private int playerCount;
 
     @Override
     public void init() {
@@ -46,9 +47,11 @@ public class Referee extends AbstractReferee {
         System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
 
-        board = Config.generateMap(gameManager.getPlayers());
+        board = Config.generateMap(gameManager.getPlayers(), params);
         System.err.print(board.print());
 
+        playerCount = gameManager.getPlayerCount();
+        if (params.containsKey("players") && params.getProperty("players").equals("2")) playerCount = 2;
         board.initMines();
         initGridView();
     }
@@ -58,27 +61,25 @@ public class Referee extends AbstractReferee {
         view.createGrid(board);
 
         int c = 0;
-        int remainingSpace =(graphicEntityModule.getWorld().getWidth()-graphicEntityModule.getWorld().getHeight());
-        int rightXPos = remainingSpace/2+graphicEntityModule.getWorld().getHeight();
         for (Player p : gameManager.getPlayers()) {
+            if (p.getIndex() >= playerCount) break;
             view.setSpawn(p.hero.spawnPos, p.getIndex());
             int w = graphicEntityModule.getWorld().getWidth();
-            int h = graphicEntityModule.getWorld().getHeight();
-            int width = (w-ViewConstants.BarRight);
+            int width = (w - ViewConstants.BarRight);
 
-            HeroHuds[c] = new HeroHud(p.hero, graphicEntityModule, p,  ViewConstants.BarRight+(width-350)/2-10, c*125+20,width);
+            HeroHuds.add(new HeroHud(p.hero, graphicEntityModule, p, ViewConstants.BarRight + (width - 350) / 2 - 10, c * 125 + 20, width));
             c++;
         }
     }
 
     private void sendInputs(Player player, boolean initial) {
-        //System.err.println("input to player  " + player.getIndex());
-        //if (initial) {
-        //    System.err.println(board.print().trim());
-        //    System.err.println(player.getIndex());
-        //}
-        //System.err.println(board.boardState().trim());
-        //System.err.println("------------");
+       //System.err.println("input to player  " + player.getIndex());
+       //if (initial) {
+       //    System.err.println(board.print().trim());
+       //    System.err.println(player.getIndex());
+       //}
+       //System.err.println(board.boardState().trim());
+       //System.err.println("------------");
 
         if (initial) {
             player.sendInputLine(board.print().trim());
@@ -89,16 +90,16 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void gameTurn(int turn) {
-        Player player = gameManager.getPlayer(turn % 4);
-        //System.err.println("TURN: " + turn);
+        Player player = gameManager.getPlayer(turn % playerCount);
+        System.err.println("TURN: " + turn + ", player = " + player.getIndex());
 
         String action = "WAIT";
         try {
-            if(player.getExpectedOutputLines()==1) {
-                sendInputs(player, turn < gameManager.getPlayerCount());
+            if (player.getExpectedOutputLines() == 1) {
+                sendInputs(player, turn < playerCount);
             }
             player.execute();
-            if(player.getExpectedOutputLines()==1) {
+            if (player.getExpectedOutputLines() == 1) {
                 action = player.getOutputs().get(0).trim().toUpperCase();
             }
         } catch (Exception timeout) {
@@ -149,7 +150,7 @@ public class Referee extends AbstractReferee {
         List<Tile> fightLocations = hero.fight(board, gameManager, tooltipModule);
         hero.finalize(board);
         player.setScore(hero.gold);
-        HeroHuds[player.getIndex()].OnRound(message);
+        HeroHuds.get(player.getIndex()).OnRound(message);
 
         Hero leader = board.getLeader();
         for (HeroHud heroHud : HeroHuds) {
@@ -159,13 +160,13 @@ public class Referee extends AbstractReferee {
 
         view.onRound(fightLocations);
 
-        if (turn == ViewConstants.MAX_ROUNDS-1){
+        if (turn == ViewConstants.MAX_ROUNDS - 1) {
             ArrayList<Hero> heroes = new ArrayList<>();
-            for(Hero h : board.heroes){
+            for (Hero h : board.heroes) {
                 heroes.add(h);
             }
 
-            Comparator<Hero> c = (s1, s2) -> s1.gold < s2.gold? 1 : -1;
+            Comparator<Hero> c = (s1, s2) -> s1.gold < s2.gold ? 1 : -1;
             heroes.sort(c);
             new EndGameView(graphicEntityModule, heroes);
         }

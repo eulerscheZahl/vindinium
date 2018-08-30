@@ -10,10 +10,18 @@ public class Config {
     private static int wallPercent;
     private static int minePercent;
 
-    public static Board generateMap(List<Player> players) {
+    public static Board generateMap(List<Player> players, Properties params) {
         size = 10 + 2 * random.nextInt(3);
         wallPercent = 10 + random.nextInt(32);
         minePercent = 3 + random.nextInt(7);
+
+        try {
+            if (params.containsKey("size")) size = Integer.parseInt(params.getProperty("size"));
+            if (params.containsKey("wallPercent")) wallPercent = Integer.parseInt(params.getProperty("wallPercent"));
+            if (params.containsKey("minePercent")) minePercent = Integer.parseInt(params.getProperty("minePercent"));
+        } catch (Exception ex) {
+            // keep default values, if the user set unparsable input
+        }
 
         while (true) {
             Board board = generateBoard();
@@ -32,6 +40,22 @@ public class Config {
             board.heroes.add(players.get(1).hero);
             board.heroes.add(players.get(2).hero);
             board.heroes.add(players.get(3).hero);
+
+            params.setProperty("size", String.valueOf(size));
+            params.setProperty("wallPercent", String.valueOf(wallPercent));
+            params.setProperty("minePercent", String.valueOf(minePercent));
+            if (params.containsKey("players") && params.getProperty("players").equals("2")) {
+                for (int y = size/2; y < size; y++) {
+                    for (int x = 0; x < size; x++) {
+                        board.tiles[x][y].type = Tile.Type.Wall;
+                    }
+                }
+                board.heroes.remove(3);
+                board.heroes.remove(2);
+                board.heroes.remove(1);
+                players.get(1).hero = new Hero(players.get(1), board.tiles[size - spawnPos.x - 1][spawnPos.y]);
+                board.heroes.add(players.get(1).hero);
+            }
             return board;
         }
     }
