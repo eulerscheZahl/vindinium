@@ -91,7 +91,7 @@ public class Referee extends AbstractReferee {
     @Override
     public void gameTurn(int turn) {
         Player player = gameManager.getPlayer(turn % playerCount);
-        System.err.println("TURN: " + turn + ", player = " + player.getIndex());
+        //System.err.println("TURN: " + turn + ", player = " + player.getIndex());
 
         String action = "WAIT";
         try {

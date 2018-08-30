@@ -52,7 +52,7 @@ function getMouseMoveFunc(tooltip, container, module) {
       if (showing.length) {
         ////setScale(1080.0 / (CELL_SIZE * (board.size + 2))).setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft
           var cellsize = 24;
-          var scale =  HEIGHT / (cellsize*module.size + 2);
+          var scale =  HEIGHT / (cellsize*(module.size + 2));
           var y0 = 0;
           var frameright = 1155*1.2;
           var frameleft = 15*1.2;
@@ -98,8 +98,8 @@ function getMouseMoveFunc(tooltip, container, module) {
           //if(found) break;
         }
         if(!found){
-          tooltipBlocks.push("x: " + Math.ceil((point.x-x0)/cellsize/scale - 0.5));
-          tooltipBlocks.push("y: " + Math.ceil((point.y-y0)/cellsize/scale - 0));
+          tooltipBlocks.push("x: " + (Math.floor((point.x-x0)/cellsize/scale) - 1));
+          tooltipBlocks.push("y: " + (Math.floor((point.y-y0)/cellsize/scale) - 1));
         }
 
         tooltip.label.text = tooltipBlocks.join('\n');
