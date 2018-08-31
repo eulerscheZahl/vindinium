@@ -146,8 +146,8 @@ public class Referee extends AbstractReferee {
             }
         }
 
-        hero.move(board, target, gameManager, tooltipModule);
-        List<Tile> fightLocations = hero.fight(board, gameManager, tooltipModule);
+        hero.move(board, target, gameManager);
+        List<Tile> fightLocations = hero.fight(board, gameManager);
         hero.finalize(board);
         player.setScore(hero.gold);
         HeroHuds.get(player.getIndex()).OnRound(message);
