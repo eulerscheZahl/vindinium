@@ -48,7 +48,7 @@ public class HeroView implements IView {
     public void onRound() {
         counter++;
         int leadingOffset = _model.leading ? 5 : 0;
-        if(_model.justRespawned && !wasDead){
+        if (_model.justRespawned && !wasDead) {
             wasDead = true;
             hasDeadImg = true;
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
@@ -57,33 +57,30 @@ public class HeroView implements IView {
             ViewController.moveEntity(_group, _model.tile, -4, -4);
             _group.setZIndex(_model.tile.y);
 
-           // _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
+            // _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
             _model.justRespawned = false;
             //_entityManager.commitEntityState(1.0, _sprite, _group);
-        }
-        else
-        {
-            if(counter % 4 == _model.player.getIndex() && hasDeadImg){
+        } else {
+            if (counter % 4 == _model.player.getIndex() && hasDeadImg) {
                 hasDeadImg = false;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
             }
             wasDead = false;
-            if(_lastDir != _model.lastDir) {
+            if (_lastDir != _model.lastDir) {
                 _lastDir = _model.lastDir;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
                 _entityManager.commitEntityState(0, _sprite);
             }
 
-            if(_model.didFight) {
+            if (_model.didFight) {
                 animation.reset();
                 _model.didFight = false;
-                animation.setRotation(ViewConstants.getRadAngle(ViewConstants.getAngleFromLastDir(_model.lastDir)+180));
+                animation.setRotation(ViewConstants.getRadAngle(ViewConstants.getAngleFromLastDir(_model.lastDir) + 180));
                 animation.setAlpha(1, Curve.NONE);
                 animation.start();
                 _entityManager.commitEntityState(0.8, animation);
             }
-            if(_model.tile != _lastTile) {
-                _lastTile = _model.tile;
+            if (_model.tile != _lastTile) {
                 _group.setX(ViewController.CELL_SIZE * (_model.tile.x + 1) - 4)
                         .setY(ViewController.CELL_SIZE * (_model.tile.y + 1) - 4)
                         .setZIndex(_model.tile.y);
@@ -93,10 +90,11 @@ public class HeroView implements IView {
             }
         }
 
-        if(_lastLife != _model.life){
+        if (_lastLife != _model.life) {
             _lastLife = _model.life;
-            _healthBar.setWidth((int)(_healthBarHeight*_model.life/100.0));
+            _healthBar.setWidth((int) (_healthBarHeight * _model.life / 100.0));
         }
+        _lastTile = _model.tile;
     }
 
     public Group getView() {
