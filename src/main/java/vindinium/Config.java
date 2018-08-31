@@ -11,7 +11,7 @@ public class Config {
     private static int minePercent;
 
     public static Board generateMap(List<Player> players, Properties params) {
-        size = 10 + 2 * random.nextInt(3);
+        size = 10 + 2 * random.nextInt(3); // TODO: back to random.nextInt(10)
         wallPercent = 10 + random.nextInt(32);
         minePercent = 3 + random.nextInt(7);
 
@@ -19,6 +19,12 @@ public class Config {
             if (params.containsKey("size")) size = Integer.parseInt(params.getProperty("size"));
             if (params.containsKey("wallPercent")) wallPercent = Integer.parseInt(params.getProperty("wallPercent"));
             if (params.containsKey("minePercent")) minePercent = Integer.parseInt(params.getProperty("minePercent"));
+            if (size < 10) size = 10;
+            if (size > 30) size = 30;
+            if (wallPercent < 10) wallPercent = 10;
+            if (wallPercent > 41) wallPercent = 41;
+            if (minePercent < 3) minePercent = 3;
+            if (minePercent > 9) minePercent = 9;
         } catch (Exception ex) {
             // keep default values, if the user set unparsable input
         }
