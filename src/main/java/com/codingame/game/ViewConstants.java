@@ -63,11 +63,11 @@ public class ViewConstants {
         Group group = module.createGroup();
         for(int i = 1; i < size+2; i++)
         {
-            group.add(createLine(module, cellWidth, width+cellWidth, i*cellWidth, i*cellWidth));
+            group.add(createLine(module, cellWidth, width+cellWidth+1, i*cellWidth, i*cellWidth));
         }
         for(int j = 1; j < size+2; j++)
         {
-            group.add(createLine(module, j*cellWidth, j*cellWidth, cellWidth, height+cellWidth));
+            group.add(createLine(module, j*cellWidth, j*cellWidth, cellWidth, height+cellWidth+1));
         }
 
         return group.setAlpha(0.3);

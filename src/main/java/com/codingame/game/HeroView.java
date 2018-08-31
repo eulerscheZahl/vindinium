@@ -18,6 +18,7 @@ public class HeroView implements IView {
     private int _lastDir = -1;
     private Rectangle _healthBar;
     private SpriteAnimation animation;
+    private int counter = -1;
 
     public HeroView(Hero model, GraphicEntityModule entityManager){
         _model = model;
@@ -41,25 +42,31 @@ public class HeroView implements IView {
     }
 
     private boolean wasDead;
+    private boolean hasDeadImg;
     private int _lastLife = -1;
     @Override
     public void onRound() {
+        counter++;
         int leadingOffset = _model.leading ? 5 : 0;
         if(_model.justRespawned && !wasDead){
             wasDead = true;
-
+            hasDeadImg = true;
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
             _entityManager.commitEntityState(0.0, _sprite);
             _entityManager.commitEntityState(0.8, _sprite, _group);
             ViewController.moveEntity(_group, _model.tile, -4, -4);
             _group.setZIndex(_model.tile.y);
 
-            _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
+           // _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
             _model.justRespawned = false;
             //_entityManager.commitEntityState(1.0, _sprite, _group);
         }
         else
         {
+            if(counter % 4 == _model.player.getIndex() && hasDeadImg){
+                hasDeadImg = false;
+                _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
+            }
             wasDead = false;
             if(_lastDir != _model.lastDir) {
                 _lastDir = _model.lastDir;
