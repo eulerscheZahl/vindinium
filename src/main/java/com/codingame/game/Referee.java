@@ -32,6 +32,7 @@ public class Referee extends AbstractReferee {
     @Inject
     private FXModule fxModule;
 
+    public static int MAX_ROUNDS = 200;
     private List<HeroHud> HeroHuds = new ArrayList<>();
     private Board board;
     private ViewController view;
@@ -39,19 +40,26 @@ public class Referee extends AbstractReferee {
 
     @Override
     public void init() {
-        gameManager.setMaxTurns(ViewConstants.MAX_ROUNDS);
-        gameManager.setTurnMaxTime(50);
-        gameManager.setFrameDuration(250);
-
         Properties params = gameManager.getGameParameters();
         System.err.println("seed: " + getSeed(params));
         Config.random = new Random(getSeed(params));
+        try {
+            MAX_ROUNDS = Integer.parseInt(params.getProperty("turns"));
+            if (MAX_ROUNDS < 10) MAX_ROUNDS = 10;
+            if (MAX_ROUNDS > 200) MAX_ROUNDS = 200;
+        } catch (Exception ex) {
+            // keep the default number of 200, if no value specified
+        }
+        playerCount = gameManager.getPlayerCount();
+        if (params.containsKey("players") && params.getProperty("players").equals("2")) playerCount = 2;
+
+        gameManager.setMaxTurns(playerCount * MAX_ROUNDS);
+        gameManager.setTurnMaxTime(50);
+        gameManager.setFrameDuration(250);
 
         board = Config.generateMap(gameManager.getPlayers(), params);
         System.err.print(board.print());
 
-        playerCount = gameManager.getPlayerCount();
-        if (params.containsKey("players") && params.getProperty("players").equals("2")) playerCount = 2;
         board.initMines();
         initGridView();
     }
@@ -161,7 +169,7 @@ public class Referee extends AbstractReferee {
 
         view.onRound(fightLocations);
 
-        if (turn == ViewConstants.MAX_ROUNDS - 1) {
+        if (turn == MAX_ROUNDS * playerCount - 1) {
             ArrayList<Hero> heroes = new ArrayList<>();
             for (Hero h : board.heroes) {
                 heroes.add(h);
