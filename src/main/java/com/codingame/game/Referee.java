@@ -73,13 +73,13 @@ public class Referee extends AbstractReferee {
     }
 
     private void sendInputs(Player player, boolean initial) {
-       //System.err.println("input to player  " + player.getIndex());
-       //if (initial) {
-       //    System.err.println(board.print().trim());
-       //    System.err.println(player.getIndex());
-       //}
-       //System.err.println(board.boardState().trim());
-       //System.err.println("------------");
+        //System.err.println("input to player  " + player.getIndex());
+        //if (initial) {
+        //    System.err.println(board.print().trim());
+        //    System.err.println(player.getIndex());
+        //}
+        //System.err.println(board.boardState().trim());
+        //System.err.println("------------");
 
         if (initial) {
             player.sendInputLine(board.print().trim());
@@ -111,22 +111,22 @@ public class Referee extends AbstractReferee {
         }
 
         Hero hero = player.hero;
-        Tile target = hero.tile;
         String message = "";
         if (action.contains(" ")) {
             message = action.substring(action.indexOf(' ') + 1);
             action = action.substring(0, action.indexOf(' '));
         }
 
+        Tile target = new Tile(Tile.Type.Air, hero.tile.x, hero.tile.y);
         if (action.equals("WAIT")) ;
         else if (action.equals("NORTH")) {
-            if (target.y > 0) target = board.tiles[target.x][target.y - 1];
+            target.y--;
         } else if (action.equals("SOUTH")) {
-            if (target.y + 1 < board.size) target = board.tiles[target.x][target.y + 1];
+            target.y++;
         } else if (action.equals("EAST")) {
-            if (target.x + 1 < board.size) target = board.tiles[target.x + 1][target.y];
+            target.x++;
         } else if (action.equals("WEST")) {
-            if (target.x > 0) target = board.tiles[target.x - 1][target.y];
+            target.x--;
         } else {
             try {
                 if (!action.equals("MOVE")) throw new Exception();
@@ -136,7 +136,8 @@ public class Referee extends AbstractReferee {
                 message = "";
                 for (int i = 2; i < parts.length; i++) message += parts[i] + " ";
                 message = message.trim();
-                target = board.tiles[x][y];
+                target.x = x;
+                target.y = y;
             } catch (Exception ex) {
                 if (player.getExpectedOutputLines() == 1) {
                     player.setDeactivated();

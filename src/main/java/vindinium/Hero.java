@@ -98,6 +98,15 @@ public class Hero {
 
     public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
         justRespawned = false;
+        boolean warning = false;
+        if (target.x < 0 || target.x >= board.size || target.y < 0 || target.y >= board.size) {
+            warning = true;
+            gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk out of the map");
+            if (target.x < 0) target.x = 0;
+            if (target.x >= board.size) target.x = board.size - 1;
+            if (target.y < 0) target.y = 0;
+            if (target.y >= board.size) target.y = board.size - 1;
+        }
         if (tile.distance(target) > 1) {
             target = findTarget(board, target);
         }
@@ -108,9 +117,10 @@ public class Hero {
         else if (tile.y > target.y) lastDir = 3;
 
         if (target.type == Tile.Type.Wall) {
-            gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk into a wall");
+            if (!warning) gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk into a wall");
             return;
         }
+        target = board.tiles[target.x][target.y];
 
         if (target.type == Tile.Type.Tavern) {
             drinkBeer(gameManager);
