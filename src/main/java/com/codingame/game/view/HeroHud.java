@@ -38,9 +38,9 @@ public class HeroHud {
         Group playerImageGroup = graphicEntityModule.createGroup().setX(250);
         _container.add(playerImageGroup);
         playerImageGroup.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setBaseWidth(113).setTint(0xc0b9b4));
-        Sprite mask = graphicEntityModule.createSprite().setImage("playerfilter.png").setAnchor(0.5).setBaseHeight(90).setBaseWidth(90).setX(113/2).setY(113/2).setZIndex(10);
-        playerImageGroup.add(mask);
-        playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setMask(mask).setAnchor(0.5).setBaseHeight(100).setBaseWidth(100));
+       // Sprite mask = graphicEntityModule.createSprite().setImage("playerfilter.png").setAnchor(0.5).setBaseHeight(90).setBaseWidth(90).setX(113/2).setY(113/2).setZIndex(10);
+       // playerImageGroup.add(mask);
+        playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setAnchor(0.5).setBaseHeight(100).setBaseWidth(100));
     }
 
     public void OnRound(String message, Board board){
