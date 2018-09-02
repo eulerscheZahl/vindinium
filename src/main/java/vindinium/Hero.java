@@ -120,11 +120,11 @@ public class Hero {
         else if (tile.x < target.x) lastDir = 2;
         else if (tile.y > target.y) lastDir = 3;
 
+        target = board.tiles[target.x][target.y];
         if (target.type == Tile.Type.Wall) {
             if (!warning) gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk into a wall");
             return;
         }
-        target = board.tiles[target.x][target.y];
 
         if (target.type == Tile.Type.Tavern) {
             drinkBeer(gameManager);
