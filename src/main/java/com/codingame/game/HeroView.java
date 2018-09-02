@@ -41,6 +41,7 @@ public class HeroView implements IView {
         _group.add(animation);
     }
 
+    private boolean wasLeading;
     private boolean wasDead;
     private boolean hasDeadImg;
     private int _lastLife = -1;
@@ -66,8 +67,9 @@ public class HeroView implements IView {
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
             }
             wasDead = false;
-            if (_lastDir != _model.lastDir) {
+            if (_lastDir != _model.lastDir || wasLeading != _model.leading) {
                 _lastDir = _model.lastDir;
+                wasLeading = _model.leading;
                 _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);
                 _entityManager.commitEntityState(0, _sprite);
             }
@@ -88,13 +90,24 @@ public class HeroView implements IView {
                 ViewController.moveEntity(_group, _model.tile, -4, -4);
                 _group.setZIndex(_model.tile.y);
             }
+
+            if(_model.receivedDamage){
+                _sprite.setTint(0xffffff, Curve.IMMEDIATE);
+                _entityManager.commitEntityState(0.9, _sprite);
+                _sprite.setTint(0x999999, Curve.LINEAR);
+                _entityManager.commitEntityState(0.95, _sprite);
+                _sprite.setTint(0xffffff, Curve.IMMEDIATE);
+                _entityManager.commitEntityState(1, _sprite);
+            }
         }
 
         if (_lastLife != _model.life) {
             _lastLife = _model.life;
             _healthBar.setWidth((int) (_healthBarHeight * _model.life / 100.0));
         }
+
         _lastTile = _model.tile;
+        _model.receivedDamage = false;
     }
 
     public Group getView() {

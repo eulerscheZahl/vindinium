@@ -58,7 +58,7 @@ public class MineView implements IView
                 .setZIndex(-1);
 
         _mineGroup.add(_mineSprite);
-        addMineTooltip(_model, _mineGroup);
+        addMineTooltip(_model, _mineSprite);
     }
 
 
@@ -91,7 +91,7 @@ public class MineView implements IView
             }
         }
         if(_model.owner != _previousOwner){
-            updateMineOwners(_model, _mineGroup);
+            updateMineOwners(_model, _mineSprite);
             _previousOwner = _model.owner;
             _mineSprite.setImage(TileFactory.getInstance().mines[_model.owner == null ? 4 : _model.owner.player.getIndex()]);
             goblin.setImage(TileFactory.getInstance().goblins[_model.owner == null ? 4 : _model.owner.player.getIndex()]);

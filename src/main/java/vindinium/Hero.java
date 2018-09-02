@@ -18,6 +18,7 @@ public class Hero {
     public boolean justRespawned = false;
     public boolean leading = false;
     public boolean didFight;
+    public boolean receivedDamage;
 
     public static final int maxLife = 100;
     static final int beerLife = 50;
@@ -68,6 +69,7 @@ public class Hero {
             target.mine.conquer(this);
             gameManager.addToGameSummary(player.getNicknameToken() + " conquered a mine");
         } else {
+            receivedDamage = true;
             board.transferMines(this, null);
             respawn(board);
             gameManager.addToGameSummary(player.getNicknameToken() + " died while trying to conquer a mine");
@@ -78,10 +80,12 @@ public class Hero {
         ArrayList<Tile> fightLocations = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || this.justRespawned || h.justRespawned) continue;
+            h.receivedDamage = true;
             h.defend();
             fightLocations.add(h.tile);
             didFight = true;
             if (h.life <= 0) {
+                h.receivedDamage = false;
                 board.transferMines(h, this);
                 h.respawn(board);
                 gameManager.addToGameSummary(player.getNicknameToken() + " kills " + h.player.getNicknameToken());

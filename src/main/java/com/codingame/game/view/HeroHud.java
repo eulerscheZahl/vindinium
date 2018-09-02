@@ -4,6 +4,7 @@ import com.codingame.game.HeroView;
 import com.codingame.game.Player;
 import com.codingame.game.ViewConstants;
 import com.codingame.gameengine.module.entities.*;
+import vindinium.Board;
 import vindinium.Hero;
 
 public class HeroHud {
@@ -13,6 +14,7 @@ public class HeroHud {
     private Text _messageText;
     private Text _goldText;
     private Sprite _medal;
+    private Text _mineCounter;
     private GraphicEntityModule _graphicEntityModule;
     public HeroHud(Hero hero, GraphicEntityModule graphicEntityModule, Player player, int x, int y, int width){
         _graphicEntityModule = graphicEntityModule;
@@ -20,9 +22,14 @@ public class HeroHud {
 
         _container = graphicEntityModule.createGroup().setZIndex(3).setX(x).setY(y);
         _container.add(graphicEntityModule.createText(ViewConstants.cropString(player.getNicknameToken(), 14)).setFontFamily(ViewConstants.FontFamily).setX(120).setY(113/2).setAnchor(0.5).setZIndex(1).setFontSize(30).setFillColor(ViewConstants.getPlayerColor(player)));
-        _container.add(_messageText = graphicEntityModule.createText("").setX(15).setY(113/2 + 25).setFontSize(20).setAnchorX(0));
+        _container.add(_messageText = graphicEntityModule.createText("").setX(15).setY(113/2 + 35).setFontSize(20).setAnchorY(0.5).setAnchorX(0));
+
         _container.add(_goldText = graphicEntityModule.createText("0").setX(195).setY(25).setFontSize(25).setAnchorX(1).setAnchorY(0.5));
         _container.add(graphicEntityModule.createSprite().setImage("coin.png").setX(205).setY(25).setAnchorY(0.5));
+
+        _container.add(graphicEntityModule.createSprite().setImage(TileFactory.getInstance().mines[player.getIndex()]).setX(205).setY(113/2 + 35).setAnchorY(0.5));
+        _container.add(_mineCounter = graphicEntityModule.createText("0").setX(195).setY(113/2 + 35).setFontSize(25).setAnchorX(1).setAnchorY(0.5));
+
         _container.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setAnchorX(0).setX(0));
         _container.add(graphicEntityModule.createSprite().setImage("player"+(player.getIndex()+1)+".png").setX(15).setY(25).setAnchorY(0.5));
         _container.add(_medal = graphicEntityModule.createSprite().setImage("award.png").setX(55).setScale(1.5).setY(25).setAnchorY(0.5).setAlpha(0));
@@ -36,12 +43,17 @@ public class HeroHud {
         playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setMask(mask).setAnchor(0.5).setBaseHeight(100).setBaseWidth(100));
     }
 
-    public void OnRound(String message){
+    public void OnRound(String message, Board board){
         if(!ViewConstants.cropString(message, 10).equals(_messageText.getText()))
             _messageText.setText(ViewConstants.cropString(message, 10));
 
         if(!_goldText.getText().equals(_hero.gold+""))
             _goldText.setText(_hero.gold+"");
+
+        int mines = board.countMines(_hero);
+        if(!_mineCounter.getText().equals(mines+""))
+            _mineCounter.setText(mines+"");
+
     }
 
     public void setLeader(boolean leading){

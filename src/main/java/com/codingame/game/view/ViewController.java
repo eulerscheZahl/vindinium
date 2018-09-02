@@ -185,7 +185,7 @@ public class ViewController {
             HeroView view = new HeroView(hero, entityManager);
             _heroes.add(view);
             _views.add(view);
-            createTooltip(view._model, view._group);
+            createTooltip(view._model, view._sprite);
             boardGroup.add(view.getView());
         }
 
@@ -331,7 +331,7 @@ public class ViewController {
         }
 
         for (HeroView view : _heroes) {
-             updateTooltip(view._model, view.getView());
+             updateTooltip(view._model, view._sprite);
         }
     }
 
