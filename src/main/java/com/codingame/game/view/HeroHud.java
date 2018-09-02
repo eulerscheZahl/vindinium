@@ -19,33 +19,43 @@ public class HeroHud {
     public HeroHud(Hero hero, GraphicEntityModule graphicEntityModule, Player player, int x, int y, int width){
         _graphicEntityModule = graphicEntityModule;
         _hero = hero;
-
+//50 -150
         _container = graphicEntityModule.createGroup().setZIndex(3).setX(x).setY(y);
-        _container.add(graphicEntityModule.createText(ViewConstants.cropString(player.getNicknameToken(), 14)).setFontFamily(ViewConstants.FontFamily).setX(120).setY(113/2).setAnchor(0.5).setZIndex(1).setFontSize(30).setFillColor(ViewConstants.getPlayerColor(player)));
-        _container.add(_messageText = graphicEntityModule.createText("").setX(15).setY(113/2 + 35).setFontSize(20).setAnchorY(0.5).setAnchorX(0));
-
-        _container.add(_goldText = graphicEntityModule.createText("0").setX(195).setY(25).setFontSize(25).setAnchorX(1).setAnchorY(0.5));
-        _container.add(graphicEntityModule.createSprite().setImage("coin.png").setX(205).setY(25).setAnchorY(0.5));
-
-        _container.add(graphicEntityModule.createSprite().setImage(TileFactory.getInstance().mines[player.getIndex()]).setX(205).setY(113/2 + 35).setAnchorY(0.5));
-        _container.add(_mineCounter = graphicEntityModule.createText("0").setX(195).setY(113/2 + 35).setFontSize(25).setAnchorX(1).setAnchorY(0.5));
-
-        _container.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setAnchorX(0).setX(0));
-        _container.add(graphicEntityModule.createSprite().setImage("player"+(player.getIndex()+1)+".png").setX(15).setY(25).setAnchorY(0.5));
-        _container.add(_medal = graphicEntityModule.createSprite().setImage("award.png").setX(55).setScale(1.5).setY(25).setAnchorY(0.5).setAlpha(0));
+        _container.add(graphicEntityModule.createSprite().setImage("playerframe.png").setZIndex(-2).setAnchorX(0).setX(0));
 
 
-        Group playerImageGroup = graphicEntityModule.createGroup().setX(250);
-        _container.add(playerImageGroup);
-        playerImageGroup.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setBaseWidth(113).setTint(0xc0b9b4));
+        int messageY = 143;
+        int goldY = 77;
+        int mineY = 110;
+        int iconX = 165;
+        int textX = 210;
+
+        _container.add(graphicEntityModule.createSprite().setImage("messagebobble.png").setBaseWidth(23).setBaseHeight(26).setX(iconX).setY(messageY).setAnchor(0.5));
+        _container.add(_messageText = graphicEntityModule.createText("").setX(textX).setY(messageY).setFontSize(25).setAnchorY(0.5).setAnchorX(0));
+
+        _container.add(graphicEntityModule.createSprite().setImage("coin.png").setX(iconX).setY(goldY).setAnchor(0.5));
+        _container.add(_goldText = graphicEntityModule.createText("0").setX(textX).setY(goldY).setFontSize(25).setAnchorX(0).setAnchorY(0.5));
+
+        _container.add(graphicEntityModule.createSprite().setImage(TileFactory.getInstance().mines[player.getIndex()]).setX(iconX).setY(mineY).setAnchor(0.5));
+        _container.add(_mineCounter = graphicEntityModule.createText("0").setX(textX).setY(mineY).setFontSize(25).setAnchorX(0).setAnchorY(0.5));
+
+        int toplineY = 32;
+        _container.add(graphicEntityModule.createSprite().setImage("player"+(player.getIndex()+1)+".png").setX(27).setY(toplineY).setAnchorY(0.5).setZIndex(0));
+        _container.add(_medal = graphicEntityModule.createSprite().setImage("award.png").setX(300).setScale(1.5).setY(toplineY).setAnchorY(0.5).setAlpha(0));
+        _container.add(graphicEntityModule.createText(ViewConstants.cropString(player.getNicknameToken(), 14)).setFontFamily(ViewConstants.FontFamily).setX(width/2).setY(toplineY).setAnchor(0.5).setZIndex(1).setFontSize(30).setFillColor(ViewConstants.getPlayerColor(player)));
+
+
+       // Group playerImageGroup = graphicEntityModule.createGroup().setX(250);
+       // _container.add(playerImageGroup);
+       // playerImageGroup.add(graphicEntityModule.createSprite().setImage("winner_parchment.png").setZIndex(-2).setBaseWidth(113).setTint(0xc0b9b4));
        // Sprite mask = graphicEntityModule.createSprite().setImage("playerfilter.png").setAnchor(0.5).setBaseHeight(90).setBaseWidth(90).setX(113/2).setY(113/2).setZIndex(10);
        // playerImageGroup.add(mask);
-        playerImageGroup.add(graphicEntityModule.createSprite().setZIndex(1).setX(113/2).setY(113/2).setImage(player.getAvatarToken()).setAnchor(0.5).setBaseHeight(100).setBaseWidth(100));
+        _container.add(graphicEntityModule.createSprite().setZIndex(-10).setX(83).setY(115).setImage(player.getAvatarToken()).setAnchor(0.5).setBaseHeight(110).setBaseWidth(110));
     }
 
     public void OnRound(String message, Board board){
-        if(!ViewConstants.cropString(message, 10).equals(_messageText.getText()))
-            _messageText.setText(ViewConstants.cropString(message, 10));
+        if(!ViewConstants.cropString(message, 8).equals(_messageText.getText()))
+            _messageText.setText(ViewConstants.cropString(message, 8));
 
         if(!_goldText.getText().equals(_hero.gold+""))
             _goldText.setText(_hero.gold+"");

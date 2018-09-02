@@ -75,7 +75,7 @@ public class Referee extends AbstractReferee {
             int w = graphicEntityModule.getWorld().getWidth();
             int width = (w - ViewConstants.BarRight);
 
-            HeroHuds.add(new HeroHud(p.hero, graphicEntityModule, p, ViewConstants.BarRight + (width - 350) / 2 - 10, c * 125 + 20, width));
+            HeroHuds.add(new HeroHud(p.hero, graphicEntityModule, p, ViewConstants.BarRight + (width - 350) / 2 - 10, c * (1080/4-20)+60, 340));
             c++;
         }
     }
