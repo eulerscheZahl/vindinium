@@ -4,6 +4,7 @@ import com.codingame.game.HeroView;
 import com.codingame.game.Player;
 import com.codingame.game.ViewConstants;
 import com.codingame.gameengine.module.entities.*;
+import org.apache.commons.lang3.StringUtils;
 import vindinium.Board;
 import vindinium.Hero;
 
@@ -30,8 +31,8 @@ public class HeroHud {
         int iconX = 165;
         int textX = 210;
 
-        _container.add(graphicEntityModule.createSprite().setImage("messagebobble.png").setBaseWidth(23).setBaseHeight(26).setX(iconX).setY(messageY).setAnchor(0.5));
-        _container.add(_messageText = graphicEntityModule.createText("").setX(textX).setY(messageY).setFontSize(25).setAnchorY(0.5).setAnchorX(0));
+      //  _container.add(graphicEntityModule.createSprite().setImage("messagebobble.png").setBaseWidth(23).setBaseHeight(26).setX(iconX).setY(messageY).setAnchor(0.5));
+        _container.add(_messageText = graphicEntityModule.createText("").setX(iconX-15).setY(messageY-10).setFontSize(25).setAnchorY(0).setAnchorX(0));
 
         _container.add(graphicEntityModule.createSprite().setImage("coin.png").setX(iconX).setY(goldY).setAnchor(0.5));
         _container.add(_goldText = graphicEntityModule.createText("0").setX(textX).setY(goldY).setFontSize(25).setAnchorX(0).setAnchorY(0.5));
@@ -54,8 +55,12 @@ public class HeroHud {
     }
 
     public void OnRound(String message, Board board){
-        if(!ViewConstants.cropString(message, 8).equals(_messageText.getText()))
-            _messageText.setText(ViewConstants.cropString(message, 8));
+        String msg=message;
+        if(msg == null)  msg = "";
+        msg = StringUtils.rightPad(msg, 20);
+        msg =msg.substring(0,7) + "\n" + msg.substring(7, 14);
+        if(!msg.equals(_messageText.getText()))
+            _messageText.setText(msg);
 
         if(!_goldText.getText().equals(_hero.gold+""))
             _goldText.setText(_hero.gold+"");
