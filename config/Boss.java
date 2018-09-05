@@ -4,7 +4,6 @@ import java.util.Scanner;
 class Player {
     public static void main(String[] args) {
         System.err.println("in bot");
-        Random random = new Random();
         Scanner scanner = new Scanner(System.in);
 
         // read board
@@ -21,6 +20,7 @@ class Player {
         }
         int myID = scanner.nextInt();
         System.err.println("id: " + myID);
+        Random random = new Random(myID);
 
         while (true) {
             int entityCount = scanner.nextInt();

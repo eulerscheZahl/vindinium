@@ -19,6 +19,7 @@ public class Config {
             if (params.containsKey("size")) size = Integer.parseInt(params.getProperty("size"));
             if (params.containsKey("wallPercent")) wallPercent = Integer.parseInt(params.getProperty("wallPercent"));
             if (params.containsKey("minePercent")) minePercent = Integer.parseInt(params.getProperty("minePercent"));
+            size += size % 2;
             if (size < 10) size = 10;
             if (size > 30) size = 30;
             if (wallPercent < 10) wallPercent = 10;

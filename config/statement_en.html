@@ -145,7 +145,17 @@
 </h2>
         <div class="statement-expert-rules-content">
 
-            You can see the game's source code on <a href="https://github.com/eulerschezahl/vindinium">https://github.com/eulerschezahl/vindinium</a>.
+            You can see the game's source code on <a href="https://github.com/eulerschezahl/vindinium">https://github.com/eulerschezahl/vindinium</a>. <br>
+            <br>
+            There are some optional game parameters that you can pass along with the seed:<br>
+            <ul>
+                <li>turns=x: limit the turns per player</li><br>
+                <li>players=2: replace the lower half of the map by water and play 1 vs 1</li><br>
+                <li>turns=x: limit the turns per player</li><br>
+                <li>size=x: board size</li><br>
+                <li>wallPercent=x: probability of a wall</li><br>
+                <li>minePercent=x: probability of a mine</li><br>
+            </ul>
         </div>
     </div>
 
@@ -241,8 +251,8 @@
      size
  </var> &le;
                 <const>
-                    30
-                </const>
+                    28
+                </const>, size is even
                 <br>
                 <br> Response time first turn &le;
                 <const>1000</const> ms
