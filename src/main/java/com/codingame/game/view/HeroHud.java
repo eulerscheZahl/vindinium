@@ -55,10 +55,10 @@ public class HeroHud {
     }
 
     public void OnRound(String message, Board board){
-        String msg=message;
-        if(msg == null)  msg = "";
-        msg = StringUtils.rightPad(msg, 20);
-        msg =msg.substring(0,7) + "\n" + msg.substring(7, 14);
+        String msg=ViewConstants.cropString(message, 7);
+        //if(msg == null)  msg = "";
+       // msg = StringUtils.rightPad(msg, 20);
+       // msg =msg.substring(0,7) + "\n" + msg.substring(7, 14);
         if(!msg.equals(_messageText.getText()))
             _messageText.setText(msg);
 
