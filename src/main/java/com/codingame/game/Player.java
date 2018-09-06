@@ -4,6 +4,7 @@ import vindinium.Hero;
 
 public class Player extends AbstractMultiplayerPlayer {
     private int _expected = 1;
+    public boolean expertInput = false;
     @Override
     public int getExpectedOutputLines() {
         return _expected;

@@ -37,6 +37,7 @@ public class Referee extends AbstractReferee {
     private Board board;
     private ViewController view;
     private int playerCount;
+    private List<String> playerActions = new ArrayList<>();
 
     @Override
     public void init() {
@@ -89,6 +90,11 @@ public class Referee extends AbstractReferee {
         //System.err.println(board.boardState().trim());
         //System.err.println("------------");
 
+        if (playerActions.size() == playerCount) playerActions.remove(0);
+        if (player.expertInput) {
+            for (String action : playerActions) player.sendInputLine(action);
+            for (String action : playerActions) System.err.println(action);
+        }
         if (initial) {
             player.sendInputLine(board.print().trim());
             player.sendInputLine(String.valueOf(player.getIndex()));
@@ -122,7 +128,11 @@ public class Referee extends AbstractReferee {
         String message = "";
         if (action.contains(" ")) {
             message = action.substring(action.indexOf(' ') + 1);
-            action = action.substring(0, action.indexOf(' '));
+            action = action.substring(0, action.indexOf(' ')).trim();
+            if (message.contains("EXPERT_INPUT")) {
+                message = message.replace("EXPERT_INPUT", "");
+                player.expertInput = true;
+            }
         }
 
         Tile target = new Tile(Tile.Type.Air, hero.tile.x, hero.tile.y);
@@ -155,7 +165,7 @@ public class Referee extends AbstractReferee {
             }
         }
 
-        hero.move(board, target, gameManager);
+        hero.move(board, target, playerActions, gameManager);
         List<Tile> fightLocations = hero.fight(board, gameManager);
         hero.finalize(board);
         player.setScore(hero.gold);

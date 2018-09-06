@@ -155,7 +155,10 @@
                 <li>size=x: board size</li><br>
                 <li>wallPercent=x: probability of a wall</li><br>
                 <li>minePercent=x: probability of a mine</li><br>
-            </ul>
+            </ul> <br>
+            If you output a debug message that contains "EXPERT_INPUT", you will get a list of opponent actions before the game input for every following turn.
+            It has the format "<var>playerID</var> <var>x</var> <var>y</var>". Note that this will give you the target after parsing the move.
+            It will always be the current position of the hero or a direct neighbor to it.
         </div>
     </div>
 

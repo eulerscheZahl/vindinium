@@ -100,7 +100,7 @@ public class Hero {
         life -= defendLife;
     }
 
-    public void move(Board board, Tile target, MultiplayerGameManager<Player> gameManager) {
+    public void move(Board board, Tile target, List<String> playerActions, MultiplayerGameManager<Player> gameManager) {
         justRespawned = false;
         boolean warning = false;
         if (target.x < 0 || target.x >= board.size || target.y < 0 || target.y >= board.size) {
@@ -121,6 +121,7 @@ public class Hero {
         else if (tile.y > target.y) lastDir = 3;
 
         target = board.tiles[target.x][target.y];
+        playerActions.add(player.getIndex() + " " + target.x + " " + target.y);
         if (target.type == Tile.Type.Wall) {
             if (!warning) gameManager.addToGameSummary("[Warning] " + player.getNicknameToken() + " tried to walk into a wall");
             return;
