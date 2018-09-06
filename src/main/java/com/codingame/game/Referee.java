@@ -93,7 +93,6 @@ public class Referee extends AbstractReferee {
         if (playerActions.size() == playerCount) playerActions.remove(0);
         if (player.expertInput) {
             for (String action : playerActions) player.sendInputLine(action);
-            for (String action : playerActions) System.err.println(action);
         }
         if (initial) {
             player.sendInputLine(board.print().trim());
