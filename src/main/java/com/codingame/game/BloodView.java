@@ -52,10 +52,13 @@ public class BloodView implements IView {
         for (Tile tile : fightLocations) {
             if (hits[tile.x][tile.y] == 6) continue; // no more sprites
             hits[tile.x][tile.y]++;
-            sprites[tile.x][tile.y] = _entityModule.createSprite().setImage(bloods[1 + 7 * bloodType[tile.x][tile.y]])
+            if (sprites[tile.x][tile.y] == null) {
+                sprites[tile.x][tile.y] = _entityModule.createSprite();
+                ViewController.moveEntity(sprites[tile.x][tile.y], tile, -4, -4);
+                _boardGroup.add(sprites[tile.x][tile.y]);
+            }
+            sprites[tile.x][tile.y].setImage(bloods[hits[tile.x][tile.y] + 7 * bloodType[tile.x][tile.y]])
                     .setZIndex(1);
-            ViewController.moveEntity(sprites[tile.x][tile.y], tile, -4, -4);
-            _boardGroup.add(sprites[tile.x][tile.y]);
         }
     }
 }
