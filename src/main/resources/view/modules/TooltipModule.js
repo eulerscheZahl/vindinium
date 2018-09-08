@@ -57,7 +57,9 @@ function getMouseMoveFunc(tooltip, container, module) {
           var frameright = 1155*1.2;
           var frameleft = 15*1.2;
           var x0 = (frameright-frameleft - HEIGHT)/2+frameleft;
-          if(point.x > frameleft+HEIGHT+cellsize*scale || point.x < frameleft) {
+          var cellX = (Math.floor((point.x-x0)/cellsize/scale) - 1);
+          var cellY = (Math.floor((point.y-y0)/cellsize/scale) - 1);
+          if(cellX < 0 || cellX >= module.size || cellY < 0 || cellY >= module.size) {
             tooltip.visible = false;
             return;
           }
@@ -75,7 +77,7 @@ function getMouseMoveFunc(tooltip, container, module) {
               for (var key in params) {
                     // check if the property/key is defined in the object itself, not in parent
                   if (params.hasOwnProperty(key)) {         
-                    var txt =  key + ": " + params[key] ;
+                    var txt =  key + ": " + params[key];
                     found = true;
                     tooltipBlocks.push(txt);
                   }
@@ -98,8 +100,8 @@ function getMouseMoveFunc(tooltip, container, module) {
           //if(found) break;
         }
         if(!found){
-          tooltipBlocks.push("x: " + (Math.floor((point.x-x0)/cellsize/scale) - 1));
-          tooltipBlocks.push("y: " + (Math.floor((point.y-y0)/cellsize/scale) - 1));
+          tooltipBlocks.push("x: " + cellX);
+          tooltipBlocks.push("y: " + cellY);
         }
 
         tooltip.label.text = tooltipBlocks.join('\n');
