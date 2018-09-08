@@ -102,11 +102,21 @@ public class Board {
     }
 
     public String print() {
+        String[][] grid = new String[size][size];
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                grid[x][y] = tiles[x][y].toString();
+            }
+        }
+        for (Hero h : heroes) {
+            grid[h.spawnPos.x][h.spawnPos.y] = String.valueOf(h.player.getIndex());
+        }
+
         StringBuilder result = new StringBuilder();
         result.append(size + "\n");
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                result.append(tiles[x][y].toString());
+                result.append(grid[x][y]);
             }
             result.append("\n");
         }
