@@ -167,14 +167,14 @@ public class ViewController {
                         Sprite obstacle = entityManager.createSprite()
                                 .setImage(obst).setZIndex(y);
                         moveEntity(obstacle, board.tiles[x - 1][y - 1], 0, 0);
-                        boardGroup.add(obstacle);
+                        innerGroup.add(obstacle);
                     }
                     if (board.tiles[x - 1][y - 1].type == Tile.Type.Tavern) {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png").setZIndex(y);
                         moveEntity(tav, board.tiles[x - 1][y - 1], 0, -4);
                         addCellTooltip(tav, x-1, y-1, "Tavern");
-                        boardGroup.add(tav);
+                        innerGroup.add(tav);
                     }
                 }
             }

@@ -24,7 +24,7 @@ public class HeroView implements IView {
         _model = model;
         _entityManager = entityManager;
         _group = entityManager.createGroup().setZIndex(model.tile.y);
-        ViewController.moveEntity(_group, _model.tile, -4, -4);
+        ViewController.moveEntity(_group, _model.tile, -5, -5);
 
         _sprite = entityManager.createSprite()
                 .setImage(TileFactory.getInstance().heroes[model.player.getIndex() * 9])
@@ -55,7 +55,7 @@ public class HeroView implements IView {
             _sprite.setImage(TileFactory.getInstance().heroes[4 * 9 + _model.lastDir]);
             _entityManager.commitEntityState(0.0, _sprite);
             _entityManager.commitEntityState(0.8, _sprite, _group);
-            ViewController.moveEntity(_group, _model.tile, -4, -4);
+            ViewController.moveEntity(_group, _model.tile, -5, -5);
             _group.setZIndex(_model.tile.y);
 
             // _sprite.setImage(TileFactory.getInstance().heroes[_model.player.getIndex() * 9 + _model.lastDir + leadingOffset]);

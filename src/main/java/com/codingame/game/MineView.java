@@ -37,7 +37,7 @@ public class MineView implements IView
         Tile tile = _model.tile;
 
         _mineGroup = entityManager.createGroup().setZIndex(tile.y);
-        ViewController.moveEntity(_mineGroup, tile, -4, -4);
+        ViewController.moveEntity(_mineGroup, tile, -5, -5);
 
         goblinGroup = entityManager.createGroup().setZIndex(-2);
         _mineGroup.add(goblinGroup);
