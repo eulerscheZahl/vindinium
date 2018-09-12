@@ -113,7 +113,7 @@ public class ViewController {
         boardGroup = this.entityManager.createGroup()
                 .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
                 .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
-        Group bufferedGroup = this.entityManager.createBufferedGroup().setZIndex(-10);
+        BufferedGroup bufferedGroup = this.entityManager.createBufferedGroup().setZIndex(-10);
         boardGroup.add(bufferedGroup);
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
@@ -196,7 +196,7 @@ public class ViewController {
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
-        _views.add(new BloodView(board, entityManager, bufferedGroup));
+        _views.add(new BloodView(board, entityManager, boardGroup));
 
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }
