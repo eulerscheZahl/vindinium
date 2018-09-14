@@ -23,6 +23,7 @@ function getEntityState(entity, frame, progress) {
   return null;
 }
 
+var playerList = [];
 function getMouseMoveFunc(tooltip, container, module) {
   return function (ev) {
     if (tooltip) {
@@ -104,6 +105,11 @@ function getMouseMoveFunc(tooltip, container, module) {
           tooltipBlocks.push("y: " + cellY);
         }
 
+        for (var i = 0; i < tooltipBlocks.length; i++) {
+          for (var p = 0; p < playerList.length; p++) {
+            tooltipBlocks[i] = tooltipBlocks[i].toString().replace("$" + p, playerList[p].name);
+          }
+        }
         tooltip.label.text = tooltipBlocks.join('\n');
       } else {
         tooltip.visible = false;
@@ -223,7 +229,7 @@ export class TooltipModule {
   }
 
   handleGlobalData(players, globalData) {
-
+    playerList = players;
   }
 }
 
