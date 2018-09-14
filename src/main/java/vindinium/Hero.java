@@ -84,6 +84,8 @@ public class Hero {
             h.defend();
             fightLocations.add(h.tile);
             didFight = true;
+        }
+        for (Hero h : board.heroes) {
             if (h.life <= 0) {
                 h.receivedDamage = false;
                 board.transferMines(h, this);
