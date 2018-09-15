@@ -46,7 +46,7 @@ public class HeroView implements IView {
     private boolean hasDeadImg;
     private int _lastLife = -1;
     @Override
-    public void onRound() {
+    public void onRound(int round) {
         counter++;
         int leadingOffset = _model.leading ? 5 : 0;
         if (_model.justRespawned && !wasDead) {

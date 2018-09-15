@@ -80,7 +80,7 @@ public class MineView implements IView
     }
 
     @Override
-    public void onRound() {
+    public void onRound(int round) {
         boolean shouldDefend = shouldDefend();
         if(shouldDefend != wasDefending){
             wasDefending = shouldDefend;

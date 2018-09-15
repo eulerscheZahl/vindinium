@@ -18,9 +18,9 @@ public class Agent1 {
         }
         int myID = scanner.nextInt();
         int k = 0;
-        int targetX = 0;
-        int targetY = 0;
         while (true) {
+            int targetX = -1;
+            int targetY = -1;
             int entityCount = scanner.nextInt();
             for (int entity = 0; entity < entityCount; entity++) {
                 String type = scanner.next();
@@ -29,7 +29,7 @@ public class Agent1 {
                 int y = scanner.nextInt();
                 int life = scanner.nextInt();
                 int gold = scanner.nextInt();
-                if (type.equals("MINE") && id != myID) {
+                if (type.equals("MINE") && id != myID && (targetY == -1 || y < targetY)) {
                     targetX = x;
                     targetY = y;
                 }

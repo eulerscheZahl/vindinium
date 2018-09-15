@@ -7,6 +7,7 @@ import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
 import vindinium.Board;
 import vindinium.Config;
+import vindinium.Hero;
 import vindinium.Tile;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class BloodView implements IView {
     }
 
     @Override
-    public void onRound() {
+    public void onRound(int round) {
         List<Tile> fightLocations = ViewController.fightLocations;
         for (Tile tile : fightLocations) {
             if (hits[tile.x][tile.y] == 6) continue; // no more sprites
@@ -58,7 +59,11 @@ public class BloodView implements IView {
                 _boardGroup.add(sprites[tile.x][tile.y]);
             }
             sprites[tile.x][tile.y].setImage(bloods[hits[tile.x][tile.y] + 7 * bloodType[tile.x][tile.y]])
-                    .setZIndex(1);
+                    .setZIndex(-2);
+        }
+
+        for (Hero h : _board.heroes) {
+            if (hits[h.tile.x][h.tile.y] > 0) h.lastBlood = round;
         }
     }
 }

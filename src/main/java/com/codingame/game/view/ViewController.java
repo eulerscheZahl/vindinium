@@ -324,10 +324,10 @@ public class ViewController {
         tooltipModule.registerEntity(entity, params);
     }
 
-    public void onRound(List<Tile> fightLocations) {
+    public void onRound(List<Tile> fightLocations, int round) {
         ViewController.fightLocations = fightLocations;
         for (IView view : _views) {
-            view.onRound();
+            view.onRound(round);
         }
 
         for (HeroView view : _heroes) {

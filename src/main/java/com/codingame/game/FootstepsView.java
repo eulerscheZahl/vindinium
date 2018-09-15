@@ -17,7 +17,6 @@ public class FootstepsView implements IView {
     private GraphicEntityModule _entityModule;
     private String[] footSteps;
     private Group _boardGroup;
-    private int _round = -1;
     private ArrayList<Sprite>[] _steps = new ArrayList[16];
 
     public FootstepsView(List<Hero> heroes, GraphicEntityModule entityModule, Group boardGroup) {
@@ -41,31 +40,30 @@ public class FootstepsView implements IView {
         }
     }
 
-    public Sprite getStep() {
+    public Sprite getStep(boolean bloody) {
         if (_footSteps.size() == 0) {
             Sprite steps = _entityModule.createSprite().setImage(footSteps[0])
-                    .setZIndex(1)
+                    .setZIndex(-1)
                     .setAnchor(0.5);
 
             _boardGroup.add(steps);
             _footSteps.add(steps);
         }
 
-        return _footSteps.remove(0);
+        return _footSteps.remove(0).setImage(footSteps[bloody ? 1 : 0]);
     }
 
     @Override
-    public void onRound() {
-        _round++;
+    public void onRound(int round) {
 
         //Add new
         ArrayList<Sprite> newSteps = new ArrayList<>();
         for (Hero hero : _heroes) {
-            if (_round % 4 != 0) continue;
+            if (round % 4 != 0) continue;
 
-            double dir = (hero.lastDir + 1) * Math.PI / 2.0;
+            double dir = new int[] {0, 1, 1, 0} [hero.lastDir] * (Math.PI / 2);
 
-            Sprite step = getStep();
+            Sprite step = getStep(hero.lastBlood > round - 14);
             ViewController.moveEntity(step, hero.tile, 12, 22);
             step.setAlpha(1, Curve.NONE)
                     .setRotation(dir, Curve.NONE);

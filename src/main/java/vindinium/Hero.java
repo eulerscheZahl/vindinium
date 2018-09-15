@@ -13,6 +13,7 @@ public class Hero {
     public Tile tile;
     public Tile spawnPos;
     public int lastDir;
+    public int lastBlood = -100; // for bloody footsteps in the replay
     public int life;
     public int gold;
     public boolean justRespawned = false;
@@ -53,6 +54,7 @@ public class Hero {
         justRespawned = true;
         life = maxLife;
         tile = spawnPos;
+        lastBlood = -100;
 
         for (Hero h : board.heroes) {
             if (h == this || tile != h.tile || h.life <= 0) continue;
@@ -78,14 +80,16 @@ public class Hero {
 
     public List<Tile> fight(Board board, MultiplayerGameManager<Player> gameManager) {
         ArrayList<Tile> fightLocations = new ArrayList<>();
+        ArrayList<Hero> attacked = new ArrayList<>();
         for (Hero h : board.heroes) {
             if (tile.distance(h.tile) != 1 || this.justRespawned || h.justRespawned) continue;
             h.receivedDamage = true;
             h.defend();
+            attacked.add(h);
             fightLocations.add(h.tile);
             didFight = true;
         }
-        for (Hero h : board.heroes) {
+        for (Hero h : attacked) {
             if (h.life <= 0) {
                 h.receivedDamage = false;
                 board.transferMines(h, this);

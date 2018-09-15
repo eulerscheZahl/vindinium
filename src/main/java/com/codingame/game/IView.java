@@ -1,5 +1,5 @@
 package com.codingame.game;
 
 public interface IView {
-    void onRound();
+    void onRound(int round);
 }

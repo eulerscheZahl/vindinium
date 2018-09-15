@@ -176,7 +176,7 @@ public class Referee extends AbstractReferee {
             else heroHud.setLeader(false);
         }
 
-        view.onRound(fightLocations);
+        view.onRound(fightLocations, turn);
 
         if (turn == MAX_ROUNDS * playerCount - 1) {
             ArrayList<Hero> heroes = new ArrayList<>();

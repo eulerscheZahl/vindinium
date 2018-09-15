@@ -31,7 +31,7 @@ public class GoldCounterView implements IView {
     }
 
     @Override
-    public void onRound() {
+    public void onRound(int round) {
         int sumGold = findGold(_heroes.size());
         for (int i = 0; i < _heroes.size(); i++) {
             if (sumGold == 0) _rectangles.get(i).setHeight(_fullHeight / 4 * i + _fullHeight / 4);
