@@ -211,26 +211,26 @@ public class TileFactory {
                 .setName("f")
                 .setWidth(24)
                 .setHeight(24)
-                .setImageCount(20 * 20)
-                .setImagesPerRow(20)
+                .setImageCount(7 * 2)
+                .setImagesPerRow(7)
                 .setOrigCol(0)
                 .setOrigRow(0)
                 .load();
         earthStuff = new String[]{
-                farm[1 * 20 + 5],// medium wood
-                farm[1 * 20 + 1], // big wood
-                farm[4 * 20 + 0], // seeds
-                farm[2 * 20 + 6], // tools
-                farm[6 * 20 + 0], // green weird seeds
-                farm[0 * 20 + 6], // forge
-                farm[3 * 20 + 1], // seed bag
-                farm[1 * 20 + 6], // forge with hammer
-                farm[2 * 20 + 7], // hammers
-                farm[2 * 20 + 8],  // tools 2
-                farm[0 * 20 + 7], // cut tools 1
-                farm[0 * 20 + 8], // cut tools 2
-                farm[1 * 20 + 7], // cut tools 3
-                farm[1 * 20 + 8] // cut tools 4
+                farm[0 * 7 + 0],// medium wood
+                farm[0 * 7 + 1], // big wood
+                farm[0 * 7 + 2], // seeds
+                farm[0 * 7 + 3], // tools
+                farm[0 * 7 + 4], // green weird seeds
+                farm[0 * 7 + 5], // forge
+                farm[0 * 7 + 6], // seed bag
+                farm[1 * 7 + 0], // forge with hammer
+                farm[1 * 7 + 1], // hammers
+                farm[1 * 7 + 2],  // tools 2
+                farm[1 * 7 + 3], // cut tools 1
+                farm[1 * 7 + 4], // cut tools 2
+                farm[1 * 7 + 5], // cut tools 3
+                farm[1 * 7 + 6] // cut tools 4
         };
 
         String[] rocks = instance.graphicEntityModule.createSpriteSheetLoader()
@@ -282,8 +282,8 @@ public class TileFactory {
         rightBorderTexture = ground[3 * 3 + 2];
 
         possibleWallObjectsTexture = new String[]{
-                farm[1 * 20 + 5],
-                farm[1 * 20 + 1],
+                farm[0 * 7 + 0],
+                farm[0 * 7 + 1],
                 rocks[1 * 0 + 0],
                 rocks[1 * 1 + 0],
                 rocks[2 * 1 + 0],
