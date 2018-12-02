@@ -174,7 +174,7 @@ public class ViewController {
                                 .setImage("beer2.png").setZIndex(y);
                         moveEntity(tav, board.tiles[x - 1][y - 1], 0, -4);
                         addCellTooltip(tav, x-1, y-1, "Tavern");
-                        innerGroup.add(tav);
+                        boardGroup.add(tav);
                     }
                 }
             }
@@ -196,7 +196,7 @@ public class ViewController {
         }
 
         _views.add(new GoldCounterView(board.heroes, entityManager));
-        _views.add(new BloodView(board, entityManager, boardGroup));
+        _views.add(new BloodView(board, entityManager, innerGroup));
 
         _views.add(new FootstepsView(board.heroes, entityManager, boardGroup));
     }

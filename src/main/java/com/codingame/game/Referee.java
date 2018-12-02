@@ -59,7 +59,7 @@ public class Referee extends AbstractReferee {
         gameManager.setFrameDuration(250);
 
         board = Config.generateMap(gameManager.getPlayers(), params);
-        System.err.print(board.print());
+        //System.err.print(board.print());
 
         board.initMines();
         initGridView();

@@ -58,8 +58,7 @@ public class BloodView implements IView {
                 ViewController.moveEntity(sprites[tile.x][tile.y], tile, -4, -4);
                 _boardGroup.add(sprites[tile.x][tile.y]);
             }
-            sprites[tile.x][tile.y].setImage(bloods[hits[tile.x][tile.y] + 7 * bloodType[tile.x][tile.y]])
-                    .setZIndex(-2);
+            sprites[tile.x][tile.y].setImage(bloods[hits[tile.x][tile.y] + 7 * bloodType[tile.x][tile.y]]);
         }
 
         for (Hero h : _board.heroes) {
