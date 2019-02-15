@@ -1,5 +1,6 @@
 <div style="color:#76b2c6;background-color:rgba( 118 , 178 , 198 , 0.1 );padding:20px;margin-right:15px;margin-left:15px;margin-bottom:10px;text-align:left">
-    This is a port of the game <a href="https://github.com/ornicar/vindinium">vindinium</a>. The port is as close to the original game as possible. There were changes made to the allowed response time per turn, the total number of turns as well as the
+    This is a port of the game <a href="https://github.com/ornicar/vindinium">vindinium</a>. The port is as close to the original game as possible. There were changes made to the allowed response time per turn, the total number of turns as well as
+    the
     input/output format.
 </div>
 
@@ -14,13 +15,16 @@
     <!-- GOAL -->
     <div class="statement-section statement-goal">
         <h2>
-<span class="icon icon-goal">&nbsp;</span>
-<span>The Goal</span>
-</h2>
+            <span class="icon icon-goal">&nbsp;</span>
+            <span>The Goal</span>
+        </h2>
         <div class="statement-goal-content">
-            Vindinium is a multi-player turn based dungeon crawling game. Each player has one hero that can move across a map. The objective is for players to amass the maximum quantity of gold during a predetermined number of turns. Players must take control of
-            gold mines to produce gold; however, gold mines are protected by goblins. When a player defeats a goblin, he becomes owner of the gold mine and receives one gold per turn. Furthermore, the goblin now defends the mine against other players.
-            Heroes can fight each other. The survivor gets control of all his opponent's gold mines. The killed hero is immediately respawned with all his gold, but no mine. When going to the tavern, heroes can buy beers for gold, restoring their life
+            Vindinium is a multi-player turn based dungeon crawling game. Each player has one hero that can move across a map. The objective is for players to amass the maximum quantity of gold during a predetermined number of turns. Players must
+            take control of
+            gold mines to produce gold; however, gold mines are protected by goblins. When a player defeats a goblin, he becomes owner of the gold mine and receives one gold per turn. Furthermore, the goblin now defends the mine against other
+            players.
+            Heroes can fight each other. The survivor gets control of all his opponent's gold mines. The killed hero is immediately respawned with all his gold, but no mine. When going to the tavern, heroes can buy beers for gold, restoring their
+            life
             points. The objective is to create a computer program (a bot) that plays the game of Vindinium as intelligently as possible.
         </div>
     </div>
@@ -28,9 +32,9 @@
     <!-- RULES -->
     <div class="statement-section statement-rules">
         <h2>
-<span class="icon icon-rules">&nbsp;</span>
-<span>Rules</span>
-</h2>
+            <span class="icon icon-rules">&nbsp;</span>
+            <span>Rules</span>
+        </h2>
         <div class="statement-rules-content">
 
             <strong>Maps</strong> Maps are generated randomly. Generated maps are symmetric, and always contain
@@ -73,11 +77,12 @@
             <strong>End of a hero turn</strong><br> After the hero has moved (or decided to stay in place), a few things happen:
             <br><br>
             <em>Fights</em>
-            <br> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For instance,
+            <br> Heroes are quite nervous and never miss an opportunity to slap each others with their big blades. At the end of the hero turn, if there is an enemy at a distance of one square in any direction, the hero attacks the enemy. For
+            instance,
             in this situation, at the end of the green Hero's turn: <br>
             <a href="https://i.imgur.com/qvOh4LO.png" target="_blank" style="border: none;">
                 <img src="https://i.imgur.com/qvOh4LO.png" style="border-radius: 5px;">
-        </a>
+            </a>
             <br> Green attacks blue. Green does not attack yellow because it's
             <const>2</const> moves away. The attacking hero doesn't lose any life point, the defending one loses
             <const>20</const> life points. If the defender dies (see: Death of a hero), the attacking hero obtains control of all the loser's gold mines.
@@ -93,7 +98,8 @@
             <strong>Death of a hero</strong>
             <br> When a hero HP drops to
             <const>0</const>, he ceases to live. The hero immediately respawns on the map at its initial position, with HP=
-            <const>100</const>. The hero loses control of all his gold mines, but keeps all his amassed gold. Be careful, when a hero respawns on its initial position, every opponent that may be at this position is automatically killed. So, you should avoid
+            <const>100</const>. The hero loses control of all his gold mines, but keeps all his amassed gold. Be careful, when a hero respawns on its initial position, every opponent that may be at this position is automatically killed. So, you
+            should avoid
             being at the respawn position of one of the heroes... A hero can't die of thirst. Thirst can put the hero HP to
             <const>1</const>, but not to
             <const>0</const>.
@@ -103,6 +109,7 @@
             <const>200</const> turns has been reached. The winner is the hero with the greatest amount of gold. If two players have the same amount of gold, there is no winner.
         </div>
     </div>
+    <i>Thanks to <a href="https://www.codingame.com/profile/433c83b2f60d89f64e138f0fce10b30f8598731" target="_blank" rel="nofollow noopener noreferrer">Illedan</a> for helping me with the implementation</i>
 
     <!-- Victory conditions -->
     <div class="statement-victory-conditions">
@@ -140,9 +147,9 @@
     <!-- EXPERT RULES -->
     <div class="statement-section statement-expertrules">
         <h2>
-<span class="icon icon-expertrules">&nbsp;</span>
-<span>Advanced Details</span>
-</h2>
+            <span class="icon icon-expertrules">&nbsp;</span>
+            <span>Advanced Details</span>
+        </h2>
         <div class="statement-expert-rules-content">
 
             You can see the game's source code on <a href="https://github.com/eulerschezahl/vindinium">https://github.com/eulerschezahl/vindinium</a>. <br>
@@ -164,9 +171,9 @@
     <!-- PROTOCOL -->
     <div class="statement-section statement-protocol">
         <h2>
-<span class="icon icon-protocol">&nbsp;</span>
-<span>Game Input</span>
-</h2>
+            <span class="icon icon-protocol">&nbsp;</span>
+            <span>Game Input</span>
+        </h2>
         <!-- Protocol block -->
         <div class="blk">
             <div class="title">Initial input</div>
@@ -177,15 +184,20 @@
                 <span class="statement-lineno">Next <var>size</var> lines</span>: The board as strings of length <var>size</var>. The characters can be:
                 <ul>
                     <li>
-                        <const>.</const>: empty cell <br></li>
+                        <const>.</const>: empty cell <br>
+                    </li>
                     <li>
-                        <const>0</const>, <const>1</const>, <const>2</const>, <const>3</const>: the spawn point of the hero with the corresponding ID<br></li>
+                        <const>0</const>, <const>1</const>, <const>2</const>, <const>3</const>: the spawn point of the hero with the corresponding ID<br>
+                    </li>
                     <li>
-                        <const>#</const>: wall<br></li>
+                        <const>#</const>: wall<br>
+                    </li>
                     <li>
-                        <const>T</const>: tavern<br></li>
+                        <const>T</const>: tavern<br>
+                    </li>
                     <li>
-                        <const>M</const>: mine<br></li>
+                        <const>M</const>: mine<br>
+                    </li>
                 </ul>
                 <span class="statement-lineno">Next line</span>: The ID of your hero
             </div>
@@ -252,8 +264,8 @@
                 </const>
                 &le;
                 <var>
-     size
- </var> &le;
+                    size
+                </var> &le;
                 <const>
                     28
                 </const>, size is even

@@ -62,6 +62,8 @@ public class Referee extends AbstractReferee {
 		gameManager.setTurnMaxTime(50);
 		gameManager.setFrameDuration(250);
 
+		if (gameManager.getLeagueLevel() == 1) // wood league
+			params.put("size", "10");
 		board = Config.generateMap(gameManager.getPlayers(), params);
 		//System.err.print(board.print());
 
