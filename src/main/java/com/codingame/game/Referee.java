@@ -33,7 +33,7 @@ public class Referee extends AbstractReferee {
 	@Inject
 	private FXModule fxModule;
 
-	public static int MAX_ROUNDS = 200;
+	public static int MAX_ROUNDS = 150;
 	private List<HeroHud> HeroHuds = new ArrayList<>();
 	private Board board;
 	private ViewController view;
@@ -49,8 +49,8 @@ public class Referee extends AbstractReferee {
 			MAX_ROUNDS = Integer.parseInt(params.getProperty("turns"));
 			if (MAX_ROUNDS < 10)
 				MAX_ROUNDS = 10;
-			if (MAX_ROUNDS > 200)
-				MAX_ROUNDS = 200;
+			if (MAX_ROUNDS > 150)
+				MAX_ROUNDS = 150;
 		} catch (Exception ex) {
 			// keep the default number of 200, if no value specified
 		}
