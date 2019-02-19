@@ -39,8 +39,8 @@ function getMouseMoveFunc(tooltip, container, module) {
             tooltip.x = pos.x;
             tooltip.y = pos.y;
             var point = {
-                x: pos.x * entityModule.coeff,
-                y: pos.y * entityModule.coeff
+                x: pos.x * entityModule.toWorldUnits,
+                y: pos.y * entityModule.toWorldUnits
             };
             const showing = [];
             const ids = Object.keys(tooltip.inside).map(n => +n);
