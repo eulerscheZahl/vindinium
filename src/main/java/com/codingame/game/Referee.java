@@ -112,13 +112,13 @@ public class Referee extends AbstractReferee {
 
 	@Override
 	public void gameTurn(int turn) {
-		Player player = gameManager.getPlayer(turn % playerCount);
+		Player player = gameManager.getPlayer((turn - 1) % playerCount);
 		//System.err.println("TURN: " + turn + ", player = " + player.getIndex());
 
 		String action = "WAIT";
 		try {
 			if (player.getExpectedOutputLines() == 1) {
-				sendInputs(player, turn < playerCount);
+				sendInputs(player, turn <= playerCount);
 			}
 			player.execute();
 			if (player.getExpectedOutputLines() == 1) {
