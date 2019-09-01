@@ -1,10 +1,10 @@
 import { GraphicEntityModule } from './entity-module/GraphicEntityModule.js';
-import { TooltipModule } from './modules/TooltipModule.js';
+import { TooltipModule } from './tooltip-module/TooltipModule.js';
 import { FXModule, api } from './modules/FXModule.js'
 
 // List of viewer modules that you want to use in your game
 export const modules = [
-	GraphicEntityModule , TooltipModule, FXModule
+	GraphicEntityModule, TooltipModule, FXModule
 ];
 
 export const playerColors = [

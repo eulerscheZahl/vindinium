@@ -4,7 +4,7 @@ import com.codingame.gameengine.module.entities.Entity;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Sprite;
-import modules.TooltipModule;
+import com.codingame.gameengine.module.tooltip.TooltipModule;
 import vindinium.Board;
 import vindinium.Hero;
 import vindinium.Mine;
@@ -12,7 +12,6 @@ import vindinium.Tile;
 import com.codingame.game.view.TileFactory;
 import com.codingame.game.view.ViewController;
 
-import javax.tools.Tool;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,25 +57,18 @@ public class MineView implements IView
                 .setZIndex(-1);
 
         _mineGroup.add(_mineSprite);
-        addMineTooltip(_model, _mineSprite);
+        setMineTooltip(_model, _mineSprite);
     }
 
 
-    private void addMineTooltip(Mine unit, Entity entity){
-        Map<String, Object> params = new HashMap<>();
-        params.put("Type", "Mine");
-        params.put("X", unit.tile.x+"");
-        params.put("Y", unit.tile.y+"");
-        tooltipModule.registerEntity(entity, params);
-
-        updateMineOwners(unit, entity);
-    }
-
-    private void updateMineOwners(Mine unit, Entity entity){
+    private void setMineTooltip(Mine unit, Entity entity){
+        String tooltip = "Type: Mine\n";
+        tooltipModule.setTooltipText(entity, "Type: Mine");
         if(this._model.owner != null)
-            tooltipModule.updateExtraTooltipText(entity, "Owner: " + unit.owner.player.getNicknameToken());
+            tooltip += "Owner: " + unit.owner.player.getIndex();
         else
-            tooltipModule.updateExtraTooltipText(entity, "Owner: none");
+            tooltip += "Owner: none";
+        tooltipModule.setTooltipText(entity, tooltip);
     }
 
     @Override
@@ -91,7 +83,7 @@ public class MineView implements IView
             }
         }
         if(_model.owner != _previousOwner){
-            updateMineOwners(_model, _mineSprite);
+            setMineTooltip(_model, _mineSprite);
             _previousOwner = _model.owner;
             _mineSprite.setImage(TileFactory.getInstance().mines[_model.owner == null ? 4 : _model.owner.player.getIndex()]);
             goblin.setImage(TileFactory.getInstance().goblins[_model.owner == null ? 4 : _model.owner.player.getIndex()]);

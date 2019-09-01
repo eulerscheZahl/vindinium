@@ -3,8 +3,8 @@ package com.codingame.game.view;
 import com.codingame.game.*;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.module.entities.*;
+import com.codingame.gameengine.module.tooltip.TooltipModule;
 import modules.FXModule;
-import modules.TooltipModule;
 import vindinium.*;
 
 import java.util.*;
@@ -104,8 +104,6 @@ public class ViewController {
         boardGroup = this.entityManager.createGroup()
                 .setScale(1080.0 / (CELL_SIZE * (board.size + 2)))
                 .setX((ViewConstants.FrameRight - ViewConstants.FrameLeft - 1080) / 2 + ViewConstants.FrameLeft);
-        tooltipModule.registerEntity(boardGroup);
-        tooltipModule.setSize(board.size);
 
         ArrayList<ArrayList<Point>> regions = findRegions(tileTypes, board.size + 2);
         boolean[][] filled = new boolean[board.size + 2][board.size + 2];
@@ -117,7 +115,6 @@ public class ViewController {
         boardGroup.add(bufferedGroup);
         Group innerGroup = this.entityManager.createGroup();
         bufferedGroup.add(innerGroup);
-        tooltipModule.registerEntity(boardGroup);
         Group debuggroup = ViewConstants.createGrid(entityManager, board.size).setZIndex(-1).setVisible(false);
         boardGroup.add(debuggroup);
         fxModule.entityId = debuggroup.getId();
@@ -154,6 +151,11 @@ public class ViewController {
                         .setY(p.y * CELL_SIZE)
                         .setZIndex(-1);
                 innerGroup.add(background);
+                if (x >= 0 && x < board.size && y >= 0 && y < board.size) {
+                    Rectangle tooltipRect = entityManager.createRectangle().setX(p.x * CELL_SIZE).setY(p.y * CELL_SIZE).setWidth(CELL_SIZE).setHeight(CELL_SIZE).setAlpha(0);
+                    boardGroup.add(tooltipRect);
+                    tooltipModule.setTooltipText(tooltipRect, "X: " + x + "\nY: " + y);
+                }
             }
         }
         for (int x = 0; x < board.size + 2; x++) {
@@ -173,7 +175,7 @@ public class ViewController {
                         Sprite tav = entityManager.createSprite()
                                 .setImage("beer2.png").setZIndex(y);
                         moveEntity(tav, board.tiles[x - 1][y - 1], 0, -4);
-                        addCellTooltip(tav, x-1, y-1, "Tavern");
+                        addCellTooltip(tav, "Tavern");
                         boardGroup.add(tav);
                     }
                 }
@@ -185,7 +187,7 @@ public class ViewController {
             HeroView view = new HeroView(hero, entityManager);
             _heroes.add(view);
             _views.add(view);
-            createTooltip(view._model, view._sprite);
+            setTooltip(view._model, view._sprite);
             boardGroup.add(view.getView());
         }
 
@@ -316,12 +318,8 @@ public class ViewController {
         return result;
     }
 
-    public void addCellTooltip(Entity entity, int x, int y, String type) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Type", type);
-        params.put("X", x + "");
-        params.put("Y", y + "");
-        tooltipModule.registerEntity(entity, params);
+    public void addCellTooltip(Entity entity, String type) {
+        tooltipModule.setTooltipText(entity, "Type: " + type);
     }
 
     public void onRound(List<Tile> fightLocations, int round) {
@@ -331,7 +329,7 @@ public class ViewController {
         }
 
         for (HeroView view : _heroes) {
-             updateTooltip(view._model, view._sprite);
+            setTooltip(view._model, view._sprite);
         }
     }
 
@@ -353,17 +351,8 @@ public class ViewController {
                 .setY((tile.y + 1) * CELL_SIZE + dy);
     }
 
-    private void createTooltip(Hero unit, Entity entity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("Type", "Hero");
-        params.put("Owner", unit.player.getNicknameToken());
-        tooltipModule.registerEntity(entity, params);
-
-        updateTooltip(unit, entity);
-    }
-
-    private void updateTooltip(Hero unit, Entity entity) {
-        tooltipModule.updateExtraTooltipText(entity, "Life: " + unit.life + " \nX: " + unit.tile.x + "\nY: "+unit.tile.y);
+    private void setTooltip(Hero unit, Entity entity) {
+        tooltipModule.setTooltipText(entity, "Type: Hero\nOwner: " + unit.player.getIndex() + "\nLife: " + unit.life);
     }
 
     private List<Tile> connected(List<Tile> positions, List<Tile> explored, Predicate<Tile> canReach) {

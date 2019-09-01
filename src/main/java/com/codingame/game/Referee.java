@@ -12,10 +12,10 @@ import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.MultiplayerGameManager;
 import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.inject.Inject;
 
 import modules.FXModule;
-import modules.TooltipModule;
 import vindinium.Board;
 import vindinium.Config;
 import vindinium.Hero;
@@ -192,7 +192,7 @@ public class Referee extends AbstractReferee {
 
 		view.onRound(fightLocations, turn);
 
-		if (turn == MAX_ROUNDS * playerCount - 1) {
+		if (turn == MAX_ROUNDS * playerCount) {
 			ArrayList<Hero> heroes = new ArrayList<>();
 			for (Hero h : board.heroes) {
 				heroes.add(h);

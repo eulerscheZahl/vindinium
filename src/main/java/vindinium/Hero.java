@@ -2,8 +2,6 @@ package vindinium;
 
 import com.codingame.game.Player;
 import com.codingame.gameengine.core.MultiplayerGameManager;
-import com.codingame.gameengine.core.Tooltip;
-import modules.TooltipModule;
 
 import java.util.ArrayList;
 import java.util.List;
